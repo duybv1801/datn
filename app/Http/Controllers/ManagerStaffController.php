@@ -60,7 +60,6 @@ class ManagerStaffController extends AppBaseController
      */
     public function update($id, UpdateStaffRequest $request)
     {
-        dd($request);
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {

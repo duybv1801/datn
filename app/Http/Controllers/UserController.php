@@ -113,7 +113,6 @@ class UserController extends AppBaseController
      */
     public function update($id, UpdateUserRequest $request)
     {
-        dd($request);
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
