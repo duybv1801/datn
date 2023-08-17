@@ -56,4 +56,8 @@ class UserRepository extends BaseRepository
     {
         return User::class;
     }
+    public function paginate($perPage, $columns = ['*'])
+    {
+        return User::paginate($perPage, $columns);
+    }
 }

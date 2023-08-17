@@ -31,56 +31,9 @@ class UserController extends AppBaseController
     public function index(Request $request)
     {
         $users = $this->userRepository->all();
-
+        $users = $this->userRepository->paginate(10);
+        
         return view('users.index')->with('users', $users);
-    }
-
-    /**
-     * Show the form for creating a new User.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        return view('users.create');
-    }
-
-    /**
-     * Store a newly created User in storage.
-     *
-     * @param CreateUserRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateUserRequest $request)
-    {
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        $user = $this->userRepository->create($input);
-
-        Flash::success('User saved successfully.');
-
-        return redirect(route('users.index'));
-    }
-
-    /**
-     * Display the specified User.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        $user = $this->userRepository->find($id);
-
-        if (empty($user)) {
-            Flash::error('User not found');
-
-            return redirect(route('users.index'));
-        }
-
-        return view('users.show')->with('user', $user);
     }
 
     /**
@@ -95,7 +48,7 @@ class UserController extends AppBaseController
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
-            Flash::error('User not found');
+            Flash::error('validation.crud.erro_user');
 
             return redirect(route('users.index'));
         }

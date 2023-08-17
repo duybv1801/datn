@@ -23,7 +23,7 @@
         <!-- Email Field -->
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="email">{{ trans('staff.email') }}</label>
-            <input type="email" name="email" id="email" class="form-control col-sm-5"
+            <input type="email" name = "email" id="email" class="form-control col-sm-5"
                 value="{{ $user->email }}" />
         </div>
 

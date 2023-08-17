@@ -14,11 +14,12 @@
                                 <th>{{ Form::label('gender', trans('staff.genders.name')) }} </th>
                                 <th>{{ Form::label('birthday', trans('staff.birthday')) }}</th>
                                 <th>{{ Form::label('phone', trans('staff.phone')) }} </th>
+                                <th>{{ Form::label('funtions', trans('Funtions')) }}</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <?php $i = 0; ?>
+                            <?php $i = $users->firstItem(); ?>
                             @foreach ($users as $user)
                                 <tr>
                                     <td> {{ ++$i }}</td>
@@ -58,10 +59,13 @@
                                         </div>
                                         {!! Form::close() !!}
                                     </td>
-                                </tr>
+                                </tr> 
                             @endforeach
-                        </tbody>
+                        </tbody>          
                     </table>
+                    <div class="pagination justify-content-center">
+                        {{ $users->links() }}
+                    </div>
                 </div>
             </div>
         </div>

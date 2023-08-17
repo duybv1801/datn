@@ -10,11 +10,12 @@
                                 <th>#</th>
                                 <th>{{ Form::label('name', trans('staff.name.name')) }}</th>
                                 <th>{{ Form::label('email', trans('staff.email')) }}</th>
+                                <th>{{ Form::label('funtions', trans('Funtions')) }}</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <?php $i = 0; ?>
+                            <?php $i = $users->firstItem(); ?>
                             @foreach ($users as $user)
                                 <tr>
                                     <td> {{ ++$i }}</td>
@@ -42,6 +43,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="pagination justify-content-center">
+                        {{ $users->links() }}
+                    </div>
                 </div>
             </div>
         </div>
