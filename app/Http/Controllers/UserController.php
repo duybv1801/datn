@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
@@ -31,9 +30,9 @@ class UserController extends AppBaseController
     public function index(Request $request)
     {
         $users = $this->userRepository->all();
-        $users = $this->userRepository->paginate(10);
-        
-        return view('users.index')->with('users', $users);
+        $currentUser = $this->userRepository->find(auth()->id());
+
+        return view('users.index', compact('users', 'currentUser'));
     }
 
     /**

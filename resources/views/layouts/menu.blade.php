@@ -19,7 +19,7 @@
         <li class="nav-item">
             <a href="{!! route('users.index') !!}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('Account') }}</p>
+                <p> {{ trans('Account information') }}</p>
             </a>
         </li>
     </ul>
@@ -32,5 +32,13 @@
             {{ trans('Manager Staff') }}
         </p>
     </a>
+</li>
 
+<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <a href="{!! route('settings.index') !!}" class="nav-link">
+        <i class="fas fa-cog"></i>
+        <p>
+            {{ trans('Setting') }}
+        </p>
+    </a>
 </li>

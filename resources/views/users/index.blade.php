@@ -2,9 +2,7 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left"> {{ trans('Account') }}</h1>
-        <h1 class="pull-right">
-        </h1>
+        <h1 class="pull-left"> {{ trans('Account Manager') }}</h1>
     </section>
     <div class="content">
         <div class="clearfix"></div>

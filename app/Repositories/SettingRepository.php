@@ -8,16 +8,14 @@ use App\Repositories\BaseRepository;
 /**
  * Class SettingRepository
  * @package App\Repositories
-*/
+ */
 
 class SettingRepository extends BaseRepository
 {
     /**
      * @var array
      */
-    protected $fieldSearchable = [
-      
-    ];
+    protected $fieldSearchable = [];
 
     /**
      * Return searchable fields
@@ -37,7 +35,7 @@ class SettingRepository extends BaseRepository
         return Setting::class;
     }
 
-    
+
     public function searchByConditions($search)
     {
         $query = $this->model;
@@ -45,12 +43,23 @@ class SettingRepository extends BaseRepository
             foreach ($search as $key => $value) {
                 switch ($key) {
                     default:
-                    $query = $query->where($key, $value);
+                        $query = $query->where($key, $value);
                         break;
                 }
             }
         }
 
         return $query->get();
+    }
+
+    public function findByKey($key)
+    {
+        return Setting::where('key', $key)->first();
+    }
+
+    public function updateValue(Setting $setting, $value)
+    {
+        $setting->value = $value;
+        $setting->save();
     }
 }

@@ -18,7 +18,7 @@
 
 <!-- Confirmation Password Field -->
 <div class="form-group col-sm-6 ">
-      {!! Form::label('password', 'Password Confirmation') !!}
+      {!! Form::label('password_confirmation', 'Password Confirmation') !!}
     {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
 </div>
 

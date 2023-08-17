@@ -13,6 +13,7 @@
 
 return [
     'mail' => [
+        'vertify' => 'Hãy mật khẩu mới cho bạn',
         'name' => 'Email',
         'mail_auth' => 'Mã xác thực email',
         'mail_thanks' => 'Chân thành cảm ơn bạn <3',

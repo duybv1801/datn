@@ -2,8 +2,11 @@
     <div class="col-md-5 mx-auto">
         <!-- Username Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="name">{{ trans('staff.name.name') }}</label>
+            <label class="col-sm-5 control-label" for="name">{{ trans('staff.name.name') }}
+                <span class="text-danger">*</span>
+            </label>
             <input type="name" name="name" id="name" class="form-control col-sm-5" value="{{ $user->name }}" />
+
         </div>
 
         <!-- First name Field -->
@@ -20,18 +23,22 @@
                 value="{{ $user->last_name }}" />
         </div>
 
-        <!-- Email Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="email">{{ trans('staff.email') }}</label>
-            <input type="email" name = "email" id="email" class="form-control col-sm-5"
+            <label class="col-sm-5 control-label" for="email">
+                {{ trans('staff.email') }}
+                <span class="text-danger">*</span>
+            </label>
+            <input type="email" name="email" id="email" class="form-control col-sm-5"
                 value="{{ $user->email }}" />
         </div>
 
         <!-- Code Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="code">{{ trans('staff.code') }}</label>
+            <label class="col-sm-5 control-label" for="code">{{ trans('staff.code') }}
+                <span class="text-danger">*</span>
+            </label>
             <input type="text" name="code" id="code" class="form-control col-sm-5"
-                value="{{ $user->code  ?? null}}" />
+                value="{{ $user->code }}" />
         </div>
 
         <!-- Start Date Field -->
@@ -59,9 +66,9 @@
                 </option>
             </select>
         </div>
-        
-         <!-- Submit Field -->
-         <div class="form-group col-sm-5 ">
+
+        <!-- Submit Field -->
+        <div class="form-group col-sm-5 ">
             {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
             <a href="{!! route('manager_staff.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
         </div>
