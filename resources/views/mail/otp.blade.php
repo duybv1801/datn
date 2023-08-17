@@ -8,7 +8,7 @@
             <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><a
                     href="{{ $verificationUrl }}">{{ trans('mail.mail.mail_alert_click') }}</a></p>
             <p style="margin:0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;"><a href="https://nal.vn/vi/"
-                    style="color:#ee4c50;text-decoration:underline;">{{ trans('nal') }}</a></p>
+                    style="color:#ee4c50;text-decoration:underline;">{{ trans('auth.nal') }}</a></p>
         </td>
     </tr>
 @endsection

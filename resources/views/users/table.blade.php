@@ -28,12 +28,12 @@
                                         {!! Form::open(['route' => ['users.destroy', $user->id], 'method' => 'delete']) !!}
                                         <div class="btn-group">
                                             <a href="{!! route('users.edit', [$user->id]) !!}" class="btn btn-primary btn-sm">
-                                                <i class="glyphicon glyphicon-edit"></i>{{ trans('edit') }}
+                                                <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
                                             </a>
-                                            {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('delete'), [
+                                            {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Delete'), [
                                                 'type' => 'submit',
                                                 'class' => 'btn btn-danger btn-sm',
-                                                'onclick' => "if(!confirm('".trans('alert delete')."')){return false;}",
+                                                'onclick' => "if(!confirm('".trans('Are you sure you want to delete?')."')){return false;}",
                                             ]) !!}
                                         </div>
                                         {!! Form::close() !!}

@@ -8,14 +8,14 @@
 
         <!-- First name Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="name">{{ trans('staff.name.first_name') }}</label>
+            <label class="col-sm-5 control-label" for="first_name">{{ trans('staff.name.first_name') }}</label>
             <input type="name" name="first_name" id="first_name" class="form-control col-sm-5"
                 value="{{ $user->first_name }}" />
         </div>
 
         <!-- Last name Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="name">{{ trans('staff.name.last_name') }}</label>
+            <label class="col-sm-5 control-label" for="last_name">{{ trans('staff.name.last_name') }}</label>
             <input type="name" name="last_name" id="last_name" class="form-control col-sm-5"
                 value="{{ $user->last_name }}" />
         </div>
@@ -31,7 +31,7 @@
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="code">{{ trans('staff.code') }}</label>
             <input type="text" name="code" id="code" class="form-control col-sm-5"
-                value="{{ $user->code }}" />
+                value="{{ $user->code  ?? null}}" />
         </div>
 
         <!-- Start Date Field -->
@@ -58,6 +58,12 @@
                 <option value="2" {{ $user->gender == 2 ? 'selected' : '' }}>{{ trans('staff.genders.female') }}
                 </option>
             </select>
+        </div>
+        
+         <!-- Submit Field -->
+         <div class="form-group col-sm-5 ">
+            {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
+            <a href="{!! route('manager_staff.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
         </div>
     </div>
 
@@ -145,9 +151,5 @@
         </div>
     </div>
 
-    <!-- Submit Field -->
-    <div class="form-group col-sm-5 ">
-        {!! Form::submit(trans('save'), ['class' => 'btn btn-primary']) !!}
-        <a href="{!! route('manager_staff.index') !!}" class="btn btn-default">{{ trans('cancel') }}</a>
-    </div>
+
 </div>

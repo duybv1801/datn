@@ -14,7 +14,7 @@
 return [
     'mail' => [
         'name' => 'Email',
-        'mail-auth' => 'Mã xác thực email',
+        'mail_auth' => 'Mã xác thực email',
         'mail_thanks' => 'Chân thành cảm ơn bạn <3',
         'mail_complete' => 'Bạn đã đăng kí thành công !',
         'mail_alert_sent' => 'Mã đã được gửi đến địa chỉ Email của bạn',

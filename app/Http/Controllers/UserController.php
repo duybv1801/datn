@@ -113,10 +113,11 @@ class UserController extends AppBaseController
      */
     public function update($id, UpdateUserRequest $request)
     {
+        dd($request);
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
-            Flash::error('User not found');
+            Flash::error(trans('validation.crud.erro_user'));
 
             return redirect(route('users.index'));
         }

@@ -12,5 +12,6 @@
 */
 
 return [
-
+    'nal'=> 'https://nal.vn/vi/',
+    'nal_lg'=>'NAL-COMPANY', 
 ];

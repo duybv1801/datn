@@ -44,7 +44,11 @@
 
                 <form method="post" action="{{ route('register') }}">
                     @csrf
-
+                    @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    @endif
                     <div class="input-group mb-3">
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                             value="{{ old('name') }}" placeholder=" {{ trans('staff.name.name') }}">
@@ -61,7 +65,7 @@
                     <div class="input-group mb-3">
                         <input type="email" name="email" value="{{ old('email') }}"
                             class="form-control @error('email') is-invalid @enderror"
-                            placeholder="{{ trans('mail.name') }}">
+                            placeholder="{{ trans('mail.mail.name') }}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>

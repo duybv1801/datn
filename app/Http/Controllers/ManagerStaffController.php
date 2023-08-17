@@ -60,10 +60,11 @@ class ManagerStaffController extends AppBaseController
      */
     public function update($id, UpdateStaffRequest $request)
     {
+        dd($request);
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
-            Flash::error('Staff not found');
+            Flash::error(trans('validation.crud.erro_user'));
 
             return redirect(route('manager_staff.index'));
         }

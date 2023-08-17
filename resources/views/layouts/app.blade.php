@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ trans('nal lg') }}</title>
+    <title>{{ trans('auth.nal_lg') }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -16,7 +16,8 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- iCheck -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
     <!-- JQVMap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css">
     <!-- Theme style -->
@@ -32,20 +33,14 @@
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
                             class="fas fa-bars"></i></a>
                 </li>
             </ul>
-
-            <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-
-                <!-- Messages Dropdown Menu -->
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>
@@ -62,46 +57,25 @@
                 </li>
             </ul>
         </nav>
-        <!-- /.navbar -->
-
-        <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
             <a href="index3.html" class="brand-link">
                 <img src="https://nal.vn/wp-content/uploads/2022/07/logoNAL-hd.png" alt="homepage"
                     class="brand-image img-circle elevation-4" style="opacity: .8">
-                <span class="brand-text font-weight-light">{{ trans('nal lg') }} </span>
+                <span class="brand-text font-weight-light">{{ trans('auth.nal_lg') }} </span>
             </a>
-
-            <!-- Sidebar -->
             <div class="sidebar">
-                <!-- SidebarSearch Form -->
-
-                <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-
                         @include('layouts.menu')
                     </ul>
                 </nav>
-                <!-- /.sidebar-menu -->
-
             </div>
-
-            <!-- /.sidebar -->
-
         </aside>
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Main content -->
             @yield('content')
-            <!-- /.content -->
         </div>
         <div class="col-4 link-wrap">
-            <!-- item-->
             <a href="" class="link" data-toggle="tooltip"
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();" title="Log"
                 data-original-title="Logout"><i class="fas fa-sign-out-alt"></i>{{ trans('passwords.sign_out') }}</a>
@@ -109,17 +83,9 @@
                 @csrf
             </form>
         </div>
-
-        <!-- /.content-wrapper -->
         <footer class="main-footer">
-            <footer class="footer"> {{ trans('nal') }}<a href="#">
+            <footer class="footer"> {{ trans('auth.nal') }}<a href="#">
             </footer>
-
-            <!-- Control Sidebar -->
-            <aside class="control-sidebar control-sidebar-dark">
-                <!-- Control sidebar content goes here -->
-            </aside>
-            <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
     <!-- jQuery -->

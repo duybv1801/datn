@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left"> {{ trans('manager staff') }}</h1>
+        <h1 class="pull-left"> {{ trans('Manager Staff') }}</h1>
     </section>
     <div class="content">
         @include('flash::message')

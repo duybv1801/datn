@@ -28,7 +28,6 @@ class UpdateStaffRequest extends FormRequest
         $rules = [
           'name'     => 'required',
           'email'    => 'required|email|unique:users,email,'.$id,
-          'code'    => 'required|unique:users,code,'.$id,
           'password' => 'confirmed'
         ];
         

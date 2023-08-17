@@ -34,6 +34,6 @@ class VerifyEmail extends Mailable
     public function build()
     {
         return $this->view('mail.otp', ['email' => $this->verificationUrl])
-        ->subject(trans('mail.mail_auth'));
+        ->subject(trans('mail.mail.mail_auth'));
     }
 }

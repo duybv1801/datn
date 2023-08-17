@@ -2,7 +2,7 @@
     <a href="{!! route('home') !!}" class="nav-link">
         <i class="fas fa-home"></i>
         <p>
-            {{ trans('home') }}
+            {{ trans('Home') }}
         </p>
     </a>
 </li>
@@ -11,7 +11,7 @@
     <a href="#" class="nav-link">
         <i class="	far fa-address-card"></i>
         <p>
-            {{ trans('account manager') }}
+            {{ trans('Account Manager') }}
             <i class="fas fa-angle-left right"></i>
         </p>
     </a>
@@ -19,7 +19,7 @@
         <li class="nav-item">
             <a href="{!! route('users.index') !!}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('account show') }}</p>
+                <p> {{ trans('Account') }}</p>
             </a>
         </li>
     </ul>
@@ -29,7 +29,7 @@
     <a href="{!! route('manager_staff.index') !!}" class="nav-link">
         <i class="fas fa-user-friends"></i>
         <p>
-            {{ trans('manager staff') }}
+            {{ trans('Manager Staff') }}
         </p>
     </a>
 
