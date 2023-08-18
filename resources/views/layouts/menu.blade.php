@@ -32,5 +32,13 @@
             {{ trans('Manager Staff') }}
         </p>
     </a>
+</li>
 
+<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <a href="{!! route('settings.index') !!}" class="nav-link">
+        <i class="fas fa-cog"></i>
+        <p>
+            {{ trans('Setting') }}
+        </p>
+    </a>
 </li>

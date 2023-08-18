@@ -22,7 +22,7 @@
                             <?php $i = $users->firstItem(); ?>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td> {{ ++$i }}</td>
+                                    <td> {{ $i++ }}</td>
                                     <td>
                                         <p>{!! $user->name !!}</p>
                                     </td>
