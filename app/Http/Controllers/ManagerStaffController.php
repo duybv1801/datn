@@ -7,15 +7,19 @@ use App\Http\Requests\CreateStaffRequest;
 use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Mail\VerifyEmail;
+use App\Models\Role;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Laracasts\Flash\Flash;
+use Carbon\Carbon;
+use App\Traits\HasPermission;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 class ManagerStaffController extends AppBaseController
 {
-    /** @var $userRepository UserRepository */
+    use HasPermission;
     private $userRepository;
     public function __construct(UserRepository $userRepo)
     {
@@ -27,8 +31,12 @@ class ManagerStaffController extends AppBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->user()->hasPermission('read')) {
+            return redirect()->back();
+        }
+
         $users = $this->userRepository->all();
         $users = $this->userRepository->paginate(10);
 
@@ -39,8 +47,12 @@ class ManagerStaffController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        if (!$request->user()->hasPermission('create')) {
+            return redirect()->back();
+        }
+
         return view('manager_staff.create');
     }
 
@@ -56,13 +68,23 @@ class ManagerStaffController extends AppBaseController
         $input = $request->all();
 
         $input['password'] = Hash::make($input['password']);
+
+        $roleId = $request->input('role');
         $user = $this->userRepository->create($input);
+        $role = Role::where('name', $roleId)->first();
 
+        if ($role) {
+            $user->roles()->sync([$role->id]);
+        }
+        $expirationTime = Carbon::now()->addMinutes(10);
         $token = app('auth.password.broker')->createToken($user);
-        $url = URL::signedRoute('password.reset', ['token' => $token, 'email' => $input['email']]);
+        $urlWithExpiration = URL::temporarySignedRoute(
+            'password.reset',
+            $expirationTime,
+            ['token' => $token, 'email' => $input['email']]
+        );
 
-        Mail::to($input['email'])->send(new VerifyEmail($url));
-
+        Mail::to($input['email'])->send(new VerifyEmail($urlWithExpiration));
         Flash::success(trans('Add New Complete'));
 
         return redirect(route('manager_staff.index'));
@@ -74,8 +96,11 @@ class ManagerStaffController extends AppBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
+        if (!$request->user()->hasPermission('update')) {
+            return redirect()->back();
+        }
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
@@ -116,8 +141,11 @@ class ManagerStaffController extends AppBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+        if (!$request->user()->hasPermission('delete')) {
+            return redirect()->back();
+        }
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {

@@ -53,12 +53,12 @@
 
                     <div class="input-group mb-3">
                         <input type="text" name="code" value="{{ old('code') }}"
-                            placeholder="  {{ trans('staff.code') }}"
+                            placeholder=" {{ trans('staff.code') }}"
                             class="form-control @error('code') is-invalid @enderror">
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-envelope"></span></div>
                         </div>
-                        @error('email')
+                        @error('code')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>

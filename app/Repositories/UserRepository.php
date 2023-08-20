@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class UserRepository
  * @package App\Repositories
-*/
+ */
 
 class UserRepository extends BaseRepository
 {
@@ -55,9 +55,5 @@ class UserRepository extends BaseRepository
     public function model()
     {
         return User::class;
-    }
-    public function paginate($perPage, $columns = ['*'])
-    {
-        return User::paginate($perPage, $columns);
     }
 }

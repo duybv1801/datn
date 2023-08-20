@@ -14,10 +14,8 @@
                         @include('adminlte-templates::common.errors')
                         <div class="box box-primary">
                             <div class="box-body">
-                                {!! Form::model($user, ['route' => ['users.update', $user->id], 'method' => 'put']) !!}
-
-                                @include('users.fields')
-
+                                {!! Form::model($user, ['route' => ['users.change_password', $user->id], 'method' => 'put']) !!}
+                                @include('users.change_password')
                                 {!! Form::close() !!}
                             </div>
                         </div>

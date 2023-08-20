@@ -49,7 +49,9 @@
         </div>
         <!-- Password Field -->
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label" for="password">{{ trans('passwords.password_input') }}</label>
+            <label class="col-sm-4 col-form-label" for="password">{{ trans('passwords.password_input') }}
+                <span class="text-danger">*</span>
+            </label>
             <div class="col-sm-8">
                 <input type="password" name="password" id="password" class="form-control"
                     value="{{ old('password') }}" />
@@ -59,7 +61,8 @@
         <!-- Confirm Password Field -->
         <div class="form-group row">
             <label class="col-sm-4 col-form-label"
-                for="password_confirmation">{{ trans('passwords.password_confirm') }}</label>
+                for="password_confirmation">{{ trans('passwords.password_confirm') }}
+                <span class="text-danger">*</span></label>
             <div class="col-sm-8">
                 <input type="password" name="password_confirmation" id="password_confirmation" class="form-control"
                     value="{{ old('password_confirmation') }}" />

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateUserRequest;
 use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use Flash;
-use Response;
-use Hash;
+use Laracasts\Flash\Flash;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Validated;
 
 class UserController extends AppBaseController
 {
@@ -54,16 +54,46 @@ class UserController extends AppBaseController
 
         return view('users.edit')->with('user', $user);
     }
+    public function password($id)
+    {
+        $user = $this->userRepository->find($id);
 
-    /**
-     * Update the specified User in storage.
-     *
-     * @param int $id
-     * @param UpdateUserRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateUserRequest $request)
+        if (empty($user)) {
+            Flash::error('validation.crud.erro_user');
+
+            return redirect(route('users.change_password'));
+        }
+
+        return view('users.password')->with('user', $user);
+    }
+    public function change_password($id, Request $request)
+    {
+        $user = $this->userRepository->find($id);
+
+        if (empty($user)) {
+            Flash::error(trans('validation.crud.erro_user'));
+            return redirect(route('users.index'));
+        }
+
+        $request->validate([
+            'password' => 'required|confirmed',
+        ]);
+
+        $input = $request->only(['password']);
+
+        if (!empty($input['password'])) {
+            $input['password'] = Hash::make($input['password']);
+        } else {
+            unset($input['password']);
+        }
+
+        $this->userRepository->update($input, $id);
+
+        Flash::success(trans('validation.crud.updated'));
+
+        return redirect(route('users.index'));
+    }
+    public function update($id, Request $request)
     {
         $user = $this->userRepository->find($id);
 
@@ -72,18 +102,14 @@ class UserController extends AppBaseController
 
             return redirect(route('users.index'));
         }
-        $input =  $request->all();
-        if (!empty($input['password'])) {
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            unset($input['password']);
-        }
+        $input = $request->only(['first_name', 'last_name']);
         $user = $this->userRepository->update($input, $id);
 
         Flash::success(trans('validation.crud.updated'));
 
         return redirect(route('users.index'));
     }
+
 
     /**
      * Remove the specified User from storage.

@@ -13,6 +13,7 @@
 
 return [
     'mail' => [
+        'attention' => 'Lưu ý: Mã này chỉ có hiệu lực trong 10 phút,Sau 10 phút bạn không thể truy cập được nữa !!!',
         'vertify' => 'Hãy mật khẩu mới cho bạn',
         'name' => 'Email',
         'mail_auth' => 'Mã xác thực email',

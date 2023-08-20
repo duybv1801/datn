@@ -54,14 +54,14 @@
                                             {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Delete'), [
                                                 'type' => 'submit',
                                                 'class' => 'btn btn-danger btn-sm',
-                                                'onclick' =>  "if(!confirm('".trans('Are you sure you want to delete?')."')){return false;}",
+                                                'onclick' => 'confirmDelete(event)',
                                             ]) !!}
                                         </div>
                                         {!! Form::close() !!}
                                     </td>
-                                </tr> 
+                                </tr>
                             @endforeach
-                        </tbody>          
+                        </tbody>
                     </table>
                     <div class="pagination justify-content-center">
                         {{ $users->links() }}

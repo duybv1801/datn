@@ -11,7 +11,7 @@
 |
 */
 
-return [  
+return [
     'staff_edit' => 'Sửa thông tin nhân viên',
     'email' => 'Email',
     'code' => 'Mã nhân viên',
@@ -34,7 +34,7 @@ return [
         'male' => 'Nam',
         'female' => 'Nữ',
     ],
-    'status' =>[
+    'status' => [
         'name' => 'Trạng thái',
         'active' => 'Hoạt động',
         'inactive' => 'Nghỉ việc'
@@ -48,10 +48,10 @@ return [
     ],
     'role' => [
         'name' => 'Quyền',
-        '1' => 'member',
-        '2' => 'hr',
+        '1' => 'admin',
+        '2' => 'member',
         '3' => 'accounter',
-        '4' => 'admin'
+        '4' => 'hr'
     ],
     'birthday' => 'Sinh nhật',
     'phone' => 'SĐT',

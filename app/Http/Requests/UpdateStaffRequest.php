@@ -24,12 +24,13 @@ class UpdateStaffRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('user');
+        $id = $this->route('manager_staff');
         $rules = [
             'name'     => 'required|max:15',
             'email'    => 'required|email|unique:users,email,' . $id,
             'code'    => 'required|unique:users,code,' . $id,
-            'password' => 'confirmed'
+            'password' => 'confirmed',
+            'phone' => 'size:10|unique:users,phone,' . $id,
         ];
 
         return $rules;

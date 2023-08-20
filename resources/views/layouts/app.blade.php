@@ -35,6 +35,8 @@
     <!-- tempusdominus -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -66,8 +68,8 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="{!! route('users.index') !!}" class="brand-link">
                 <div class="text-center">
-                    @if (Auth::user()->photo)
-                        <img src="{{ Auth::user()->photo }}" alt="User Avatar"
+                    @if (Auth::user()->avatar)
+                        <img src="{{ Auth::user()->avatar }}" alt="User Avatar"
                             class="brand-image img-circle elevation-3" style="max-width: 45px; opacity: .8">
                     @else
                         <img src="https://ron.nal.vn/api/files/avatar_tungts_human.png" alt="User Avatar"
@@ -146,6 +148,7 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js">
     </script>
+
     <script>
         $(function() {
             $('.nav-link[data-widget="fullscreen"]').on('click', function() {
@@ -236,6 +239,26 @@
                 format: 'HH:mm'
             });
         });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "{{ trans('Are you sure you want to delete?') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: "{{ trans('Yes, Delete it!') }}",
+                cancelButtonText: "{{ trans('Cancel') }}"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.closest('form').submit();
+                }
+            });
+        }
     </script>
 </body>
 
