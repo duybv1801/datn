@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\SettingService;
 use App\Http\Requests\UpdateSettingRequest;
+use Illuminate\Http\Request;
 
 
 class SettingController extends Controller
@@ -15,14 +16,20 @@ class SettingController extends Controller
         $this->settingService = $settingService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->user()->hasPermission('read')) {
+            return redirect()->back();
+        }
         $settings = $this->settingService->getAllSettings();
         return view('setting.setting', compact('settings'));
     }
 
     public function update(UpdateSettingRequest $request)
     {
+        if (!$request->user()->hasPermission('update')) {
+            return redirect()->back();
+        }
         $data = $request->except('_token');
         $this->settingService->updateSettings($data);
 

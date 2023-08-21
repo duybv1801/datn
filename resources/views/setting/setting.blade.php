@@ -17,6 +17,11 @@
                     </ul>
                 </div>
             @endif
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
             {!! Form::model(['route' => ['settings.update'], 'method' => 'post']) !!}
             @include('setting.fields')
             {!! Form::close() !!}

@@ -6,9 +6,8 @@ use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Traits\HasPermission;
 
-class ManagerStaffPolicy
+class SettingPolicy
 {
-
     use HandlesAuthorization, HasPermission;
 
     public function before(User $user)
@@ -19,12 +18,12 @@ class ManagerStaffPolicy
     }
     public function viewAny(User $user)
     {
-        return $user->hasAnyRole(['admin', 'accounter', 'hr']);
+        return $user->hasAnyRole(['admin', 'accounter', 'hr', 'member']);
     }
 
     public function view(User $user)
     {
-        return $user->hasAnyRole(['admin', 'accounter', 'hr']);
+        return $user->hasAnyRole(['admin', 'accounter', 'hr', 'member']);
     }
 
     public function create(User $user)

@@ -30,7 +30,10 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
 
-    //manager staff ->middleware('can:viewAny,App\Models\Category');
+    //home
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    //manager staff 
     Route::get('manager_staff', [ManagerStaffController::class, 'index'])->name('manager_staff.index')->middleware('can:viewAny,App\Models\User');
     Route::get('manager_staff/create', [ManagerStaffController::class, 'create'])->name('manager_staff.create')->middleware('can:create,App\Models\User');
     Route::post('manager_staff', [ManagerStaffController::class, 'store'])->name('manager_staff.store');
@@ -41,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
     //user
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::get('/change_password/{user}/password', [UserController::class, 'password'])->name('users.password');
     Route::put('/change_password/{user}', [UserController::class, 'change_password'])->name('users.change_password');
 
@@ -53,11 +56,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('leaves', LeaveController::class);
 
     //setting 
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('can:viewAny,App\Models\Setting');
+    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update')->middleware('can:update,App\Models\Setting');
 });
-//home
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 //password mail
 Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->middleware('verifyResetToken')->name('password.reset');

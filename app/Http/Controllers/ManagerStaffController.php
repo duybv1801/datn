@@ -69,13 +69,10 @@ class ManagerStaffController extends AppBaseController
 
         $input['password'] = Hash::make($input['password']);
 
-        $roleId = $request->input('role');
+        $role_id = $request->input('role');
+        $role = Role::where('id', $role_id)->first();
         $user = $this->userRepository->create($input);
-        $role = Role::where('name', $roleId)->first();
-
-        if ($role) {
-            $user->roles()->sync([$role->id]);
-        }
+        $user->roles()->sync($role);
         $expirationTime = Carbon::now()->addMinutes(10);
         $token = app('auth.password.broker')->createToken($user);
         $urlWithExpiration = URL::temporarySignedRoute(
@@ -121,6 +118,9 @@ class ManagerStaffController extends AppBaseController
      */
     public function update($id, UpdateStaffRequest $request)
     {
+        if (!$request->user()->hasPermission('update')) {
+            return redirect()->back();
+        }
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
@@ -129,7 +129,10 @@ class ManagerStaffController extends AppBaseController
             return redirect(route('manager_staff.index'));
         }
         $input =  $request->all();
+        $role_id = $request->input('role');
+        $role = Role::where('id', $role_id)->first();
         $user = $this->userRepository->update($input, $id);
+        $user->roles()->sync($role);
         Flash::success(trans('validation.crud.updated'));
 
         return redirect(route('manager_staff.index'));
@@ -149,7 +152,7 @@ class ManagerStaffController extends AppBaseController
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
-            Flash::error('Staff not found');
+            Flash::error(trans('Erros'));
 
             return redirect(route('manager_staff.index'));
         }

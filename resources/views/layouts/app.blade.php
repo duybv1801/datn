@@ -66,6 +66,9 @@
             </ul>
         </nav>
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            @php
+                use Illuminate\Support\Facades\Blade;
+            @endphp
             <a href="{!! route('users.index') !!}" class="brand-link">
                 <div class="text-center">
                     @if (Auth::user()->avatar)
@@ -260,6 +263,24 @@
             });
         }
     </script>
+    <script>
+        function previewAvatar(event) {
+            var input = event.target;
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var preview = document.getElementById('avatar-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
 </body>
 
 </html>

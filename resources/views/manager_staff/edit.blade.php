@@ -13,7 +13,11 @@
                     @include('adminlte-templates::common.errors')
                     <div class="box box-primary">
                         <div class="box-body">
-                            {!! Form::model($user, ['route' => ['manager_staff.update', $user->id], 'method' => 'put']) !!}
+                            {!! Form::model($user, [
+                                'route' => ['manager_staff.update', $user->id],
+                                'method' => 'put',
+                                'enctype' => 'multipart/form-data',
+                            ]) !!}
 
                             @include('manager_staff.fields')
 

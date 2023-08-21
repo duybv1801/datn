@@ -5,13 +5,23 @@
                 <h4>{{ trans('Account information') }}</h4>
             </div>
             <div class="card-body">
-                <a href="{{ route('users.edit', $currentUser->id) }}" class="btn btn-primary">
+                <a href="{{ route('users.edit', $currentUser->id) }}" enctype="multipart/form-data"
+                    class="btn btn-primary">
                     <i class="glyphicon glyphicon-edit"></i>
                     {{ trans('Edit') }}</a>
                 <div class="text-center mb-4">
-                    <img src="{{ $currentUser->avatar ?: 'https://ron.nal.vn/api/files/avatar_tungts_human.png' }}"
-                        alt="User Avatar" class="rounded-circle" width="150">
+
+                    <label for="avatar-input" class="avatar-label">
+                        <img id="avatar-preview"
+                            src="{{ $currentUser->avatar ?: 'https://ron.nal.vn/api/files/avatar_tungts_human.png' }}"
+                            alt="User Preview" class="rounded-circle" width="150">
+                        <div class="edit-icon">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                    </label>
+                    <input id="avatar-input" type="file" accept="image/*" style="display: none;">
                 </div>
+
                 <div class="form-group row">
                     <label class="col-sm-5 control-label" for="name">{{ trans('staff.name.name') }}</label>
                     <div class="col-sm-7">
@@ -68,3 +78,19 @@
         </div>
     </div>
 </div>
+<style>
+    .avatar-label {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .edit-icon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background-color: #fff;
+        padding: 2px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+</style>

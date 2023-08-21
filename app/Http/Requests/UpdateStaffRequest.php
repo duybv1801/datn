@@ -24,9 +24,9 @@ class UpdateStaffRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('manager_staff');
+        $id = $this->route('id');
         $rules = [
-            'name'     => 'required|max:15',
+            'name'     => 'required|max:15|unique:users,name,' . $id,
             'email'    => 'required|email|unique:users,email,' . $id,
             'code'    => 'required|unique:users,code,' . $id,
             'password' => 'confirmed',
