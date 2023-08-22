@@ -69,7 +69,6 @@ class HomeController extends Controller
 
             $start->addDay();
         }
-
         $setting = $this->settingRepository->searchByConditions(['key' => 'max_working_minutes_everyday_day'])->pluck('value', 'key')->toArray();
         $hourPerDay = (int)$setting['max_working_minutes_everyday_day']/60;
         return $day * $hourPerDay;

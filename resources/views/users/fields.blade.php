@@ -1,29 +1,25 @@
-<!-- Name Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('name', 'Name') !!}
-    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+<!-- firstName Field -->
+<div class="form-group col-sm-6  ">
+    {!! Form::label('first_name', trans('staff.name.first_name')) !!}
+
+    {!! Form::text('first_name', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Email Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('email', 'Email') !!}
-    {!! Form::email('email', null, ['class' => 'form-control']) !!}
+<!-- lastName Field -->
+<div class="form-group col-sm-6  ">
+    {!! Form::label('last_name', trans('staff.name.last_name')) !!}
+    {!! Form::text('last_name', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Password Field -->
+<!-- Avatar Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('password', 'Password') !!}
-    {!! Form::password('password', ['class' => 'form-control']) !!}
-</div>
-
-<!-- Confirmation Password Field -->
-<div class="form-group col-sm-6">
-      {!! Form::label('password', 'Password Confirmation') !!}
-    {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
+    {!! Form::label('avatar', trans('staff.avatar')) !!}
+    {!! Form::file('avatar', ['class' => 'form-control', 'onchange' => 'previewAvatar(event)']) !!}
+    <img id="avatar-preview" src="#" alt="Preview" style="max-width: 200px; margin-top: 10px; display: none;">
 </div>
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-    <a href="{!! route('users.index') !!}" class="btn btn-default">Cancel</a>
+    {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
+    <a href="{!! route('users.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
 </div>

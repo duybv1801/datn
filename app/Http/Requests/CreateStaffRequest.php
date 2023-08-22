@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUserRequest extends FormRequest
+class CreateStaffRequest extends FormRequest
 {
 
     /**
@@ -24,11 +24,13 @@ class CreateUserRequest extends FormRequest
      */
     public function rules()
     {
-       $rules = [
-          'name'                  => 'required',
-          'email'                 => 'required|email|unique:users,email',
-          'password'              => 'required|confirmed'
-       ];
+        $rules = [
+            'name'                  => 'required',
+            'email'                 => 'required|email|unique:users,email',
+            'password'              => 'required|confirmed',
+            'code'    => 'required|unique:users,code'
+
+        ];
 
         return $rules;
     }

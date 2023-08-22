@@ -4,7 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Mail\VerifyEmail;
+use App\Notifications\VerifyEmailNotification;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -64,10 +69,18 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    
+        $token = app('auth.password.broker')->createToken($user);
+    
+        $url = URL::signedRoute('password.reset', ['token' => $token, 'email' => $data['email']]);
+    
+        Mail::to($data['email'])->send(new VerifyEmail($url));
+    
+        return $user;
     }
 }
