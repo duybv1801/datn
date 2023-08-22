@@ -33,10 +33,6 @@ class SettingController extends Controller
         $data = $request->except('_token');
         $this->settingService->updateSettings($data);
 
-<<<<<<< HEAD
         return redirect()->route('settings.index')->with('success', trans('validation.crud.updated'));
-=======
-        return redirect()->route('settings.index');
->>>>>>> 2f483590b841b591e0eb9ecc64e6d81d2bb1f1b9
     }
 }
