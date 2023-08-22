@@ -15,7 +15,7 @@ class UpdateAvatarForUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('avatar')->nullable();
-            $table->integer('role')->default(1);
+            $table->bigInteger('role_id')->default(1);
             $table->integer('leave_hours_left')->default(0);
             $table->integer('leave_hours_left_in_month')->default(0);
         });
@@ -32,7 +32,7 @@ class UpdateAvatarForUsersTable extends Migration
 
             $table->dropColumn('leave_hours_left_in_month');
             $table->dropColumn('leave_hours_left');
-            $table->dropColumn('role');
+            $table->dropColumn('role_id');
             $table->dropColumn('avatar');
         });
     }
