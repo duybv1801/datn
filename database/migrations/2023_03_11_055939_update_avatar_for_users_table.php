@@ -15,7 +15,7 @@ class UpdateAvatarForUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('avatar')->nullable();
-            $table->tinyInteger('role')->default(1)->comment('1: admin, 2: member, 3: accounter, 4: hr');
+            $table->integer('role')->default(1);
             $table->integer('leave_hours_left')->default(0);
             $table->integer('leave_hours_left_in_month')->default(0);
         });
