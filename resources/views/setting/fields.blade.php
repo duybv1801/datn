@@ -332,6 +332,10 @@
 @endcan
 <style>
     .bootstrap-datetimepicker-widget {
+<<<<<<< HEAD
         max-width: 100%;
+=======
+        max-width: 50px;
+>>>>>>> 2f483590b841b591e0eb9ecc64e6d81d2bb1f1b9
     }
 </style>

@@ -23,4 +23,8 @@ return [
     'max_working_minutes_everyday_day' => 'Thời gian làm việc tối đa trong ngày',
     'minutes' => 'giờ',
     'percents' => '%',
+<<<<<<< HEAD
 ];
+=======
+];
+>>>>>>> 2f483590b841b591e0eb9ecc64e6d81d2bb1f1b9
