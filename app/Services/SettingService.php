@@ -20,9 +20,11 @@ class SettingService
 
     public function updateSettings(array $data)
     {
+        $settingsMap = $this->settingRepository->all()->keyBy('key');
+
         foreach ($data as $key => $value) {
-            $setting = $this->settingRepository->findByKey($key);
-            if ($setting) {
+            if ($settingsMap->has($key)) {
+                $setting = $settingsMap->get($key);
                 $this->settingRepository->updateValue($setting, $value);
             } else {
                 $this->settingRepository->create(['key' => $key, 'value' => $value]);
