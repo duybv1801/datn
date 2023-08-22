@@ -11,30 +11,11 @@
     {!! Form::text('last_name', null, ['class' => 'form-control']) !!}
 </div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<!-- Password Field -->
-<div class="form-group col-sm-6 ">
-    {!! Form::label('password', 'Password') !!}
-    {!! Form::password('password', ['class' => 'form-control']) !!}
-</div>
-
-<!-- Confirmation Password Field -->
-<div class="form-group col-sm-6 ">
-      {!! Form::label('password_confirmation', 'Password Confirmation') !!}
-    {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
-=======
-=======
->>>>>>> 2f483590b841b591e0eb9ecc64e6d81d2bb1f1b9
 <!-- Avatar Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('avatar', trans('staff.avatar')) !!}
     {!! Form::file('avatar', ['class' => 'form-control', 'onchange' => 'previewAvatar(event)']) !!}
     <img id="avatar-preview" src="#" alt="Preview" style="max-width: 200px; margin-top: 10px; display: none;">
-<<<<<<< HEAD
->>>>>>> 2f483590b841b591e0eb9ecc64e6d81d2bb1f1b9
-=======
->>>>>>> 2f483590b841b591e0eb9ecc64e6d81d2bb1f1b9
 </div>
 
 <!-- Submit Field -->
