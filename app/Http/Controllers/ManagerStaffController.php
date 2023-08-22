@@ -69,7 +69,7 @@ class ManagerStaffController extends AppBaseController
 
         $input['password'] = Hash::make($input['password']);
 
-        $role_id = $request->input('role');
+        $role_id = $request->input('role_id');
         $role = Role::where('id', $role_id)->first();
         $user = $this->userRepository->create($input);
         $user->roles()->sync($role);
@@ -129,7 +129,7 @@ class ManagerStaffController extends AppBaseController
             return redirect(route('manager_staff.index'));
         }
         $input =  $request->all();
-        $role_id = $request->input('role');
+        $role_id = $request->input('role_id');
         $role = Role::where('id', $role_id)->first();
         $user = $this->userRepository->update($input, $id);
         $user->roles()->sync($role);

@@ -33,7 +33,7 @@ class UserRepository extends BaseRepository
         'position',
         'user_id',
         'avatar',
-        'role',
+        'role_id',
         'leave_hours_left',
         'leave_hours_left_in_month'
 

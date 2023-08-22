@@ -148,12 +148,16 @@
 
         <!-- Role Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="role">{{ trans('staff.role.name') }}</label>
-            <select name="role" id="role" class="form-control col-sm-5">
-                <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}</option>
-                <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}</option>
-                <option value="3" {{ $user->role == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}</option>
-                <option value="4" {{ $user->role == 4 ? 'selected' : '' }}>{{ trans('staff.role.4') }}</option>
+            <label class="col-sm-5 control-label" for="role_id">{{ trans('staff.role.name') }}</label>
+            <select name="role_id" id="role_id" class="form-control col-sm-5">
+                <option value="1" {{ $user->role_id == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}
+                </option>
+                <option value="2" {{ $user->role_id == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}
+                </option>
+                <option value="3" {{ $user->role_id == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}
+                </option>
+                <option value="4" {{ $user->role_id == 4 ? 'selected' : '' }}>{{ trans('staff.role.4') }}
+                </option>
             </select>
         </div>
     </div>

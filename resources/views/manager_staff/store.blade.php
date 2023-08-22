@@ -32,17 +32,18 @@
 
         <!-- Role Field -->
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label" for="role">{{ trans('staff.role.name') }}
+            <label class="col-sm-4 col-form-label" for="role_id">{{ trans('staff.role.name') }}
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">
-                <select name="role" id="role" class="form-control">
-                    <option value="1" {{ old('role') == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}</option>
-                    <option value="2" {{ old('role') == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}
+                <select name="role_id" id="role_id" class="form-control">
+                    <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}
                     </option>
-                    <option value="3" {{ old('role') == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}
+                    <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}
                     </option>
-                    <option value="4" {{ old('role') == 4 ? 'selected' : '' }}>{{ trans('staff.role.4') }}
+                    <option value="3" {{ old('role_id') == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}
+                    </option>
+                    <option value="4" {{ old('role_id') == 4 ? 'selected' : '' }}>{{ trans('staff.role.4') }}
                     </option>
                 </select>
             </div>
