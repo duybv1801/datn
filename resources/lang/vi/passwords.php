@@ -20,7 +20,8 @@ return [
     'remember_me' => 'Ghi nhớ',
     'sign_out' => 'Đăng xuất',
     'sign_in' => 'Đăng nhập',
-    'password_up' => 'Cập nhật mật khẩu',
+    'password_require' => 'Hãy tạo mật khẩu cho bạn',
+    'password_require_update' => 'Cập nhật mật khẩu',
     'password_down' => 'Quên mật khẩu',
     'sign_again' => 'Tôi đã có tài khoản',
     'login' => [

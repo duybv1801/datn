@@ -48,20 +48,24 @@
                                     <td>
                                         {!! Form::open(['route' => ['manager_staff.destroy', $user->id], 'method' => 'delete']) !!}
                                         <div class="btn-group">
-                                            <a href="{!! route('manager_staff.edit', [$user->id]) !!}" class="btn btn-primary btn-sm">
-                                                <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
-                                            </a>
-                                            {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Delete'), [
-                                                'type' => 'submit',
-                                                'class' => 'btn btn-danger btn-sm',
-                                                'onclick' =>  "if(!confirm('".trans('Are you sure you want to delete?')."')){return false;}",
-                                            ]) !!}
+                                            @can('update', App\Models\User::class)
+                                                <a href="{!! route('manager_staff.edit', [$user->id]) !!}" class="btn btn-primary btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
+                                                </a>
+                                            @endcan
+                                            @can('delete', App\Models\User::class)
+                                                {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Delete'), [
+                                                    'type' => 'submit',
+                                                    'class' => 'btn btn-danger btn-sm',
+                                                    'onclick' => 'confirmDelete(event)',
+                                                ]) !!}
+                                            @endcan
                                         </div>
                                         {!! Form::close() !!}
                                     </td>
-                                </tr> 
+                                </tr>
                             @endforeach
-                        </tbody>          
+                        </tbody>
                     </table>
                     <div class="pagination justify-content-center">
                         {{ $users->links() }}

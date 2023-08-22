@@ -12,6 +12,7 @@
 */
 
 return [
-    'nal'=> 'https://nal.vn/vi/',
-    'nal_lg'=>'NAL-COMPANY', 
+    'nal' => 'https://nal.vn/vi/',
+    'nal_lg' => 'NAL-COMPANY',
+    'failed' => 'Thông tin đăng nhập không chính xác. Vui lòng kiểm tra lại.',
 ];

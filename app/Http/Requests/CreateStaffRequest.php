@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class CreateStaffRequest extends FormRequest
 {
 
     /**
@@ -24,13 +24,14 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('user');
         $rules = [
-          'name'     => 'required',
-          'email'    => 'required|email|unique:users,email,'.$id,
-          'password' => 'confirmed'
+            'name'                  => 'required',
+            'email'                 => 'required|email|unique:users,email',
+            'password'              => 'required|confirmed',
+            'code'    => 'required|unique:users,code'
+
         ];
-        
+
         return $rules;
     }
 }

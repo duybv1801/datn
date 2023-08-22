@@ -19,26 +19,30 @@
         <li class="nav-item">
             <a href="{!! route('users.index') !!}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('Account') }}</p>
+                <p> {{ trans('Account information') }}</p>
             </a>
         </li>
     </ul>
 </li>
 
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
-    <a href="{!! route('manager_staff.index') !!}" class="nav-link">
-        <i class="fas fa-user-friends"></i>
-        <p>
-            {{ trans('Manager Staff') }}
-        </p>
-    </a>
-</li>
+@can('viewAny', App\Models\User::class)
+    <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+        <a href="{!! route('manager_staff.index') !!}" class="nav-link">
+            <i class="fas fa-user-friends"></i>
+            <p>
+                {{ trans('Manager Staff') }}
+            </p>
+        </a>
+    </li>
+@endcan
 
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
-    <a href="{!! route('settings.index') !!}" class="nav-link">
-        <i class="fas fa-cog"></i>
-        <p>
-            {{ trans('Setting') }}
-        </p>
-    </a>
-</li>
+@can('viewAny', App\Models\Setting::class)
+    <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+        <a href="{!! route('settings.index') !!}" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <p>
+                {{ trans('Setting') }}
+            </p>
+        </a>
+    </li>
+@endcan

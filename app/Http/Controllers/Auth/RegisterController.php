@@ -78,7 +78,7 @@ class RegisterController extends Controller
     
         $token = app('auth.password.broker')->createToken($user);
     
-        $url = URL::signedRoute('password.reset', ['token' => $token]);
+        $url = URL::signedRoute('password.reset', ['token' => $token, 'email' => $data['email']]);
     
         Mail::to($data['email'])->send(new VerifyEmail($url));
     

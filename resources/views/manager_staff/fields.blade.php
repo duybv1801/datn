@@ -2,8 +2,11 @@
     <div class="col-md-5 mx-auto">
         <!-- Username Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="name">{{ trans('staff.name.name') }}</label>
+            <label class="col-sm-5 control-label" for="name">{{ trans('staff.name.name') }}
+                <span class="text-danger">*</span>
+            </label>
             <input type="name" name="name" id="name" class="form-control col-sm-5" value="{{ $user->name }}" />
+
         </div>
 
         <!-- First name Field -->
@@ -20,18 +23,22 @@
                 value="{{ $user->last_name }}" />
         </div>
 
-        <!-- Email Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="email">{{ trans('staff.email') }}</label>
-            <input type="email" name = "email" id="email" class="form-control col-sm-5"
+            <label class="col-sm-5 control-label" for="email">
+                {{ trans('staff.email') }}
+                <span class="text-danger">*</span>
+            </label>
+            <input type="email" name="email" id="email" class="form-control col-sm-5"
                 value="{{ $user->email }}" />
         </div>
 
         <!-- Code Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="code">{{ trans('staff.code') }}</label>
+            <label class="col-sm-5 control-label" for="code">{{ trans('staff.code') }}
+                <span class="text-danger">*</span>
+            </label>
             <input type="text" name="code" id="code" class="form-control col-sm-5"
-                value="{{ $user->code  ?? null}}" />
+                value="{{ $user->code }}" />
         </div>
 
         <!-- Start Date Field -->
@@ -59,9 +66,9 @@
                 </option>
             </select>
         </div>
-        
-         <!-- Submit Field -->
-         <div class="form-group col-sm-5 ">
+
+        <!-- Submit Field -->
+        <div class="form-group col-sm-5 ">
             {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
             <a href="{!! route('manager_staff.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
         </div>
@@ -141,12 +148,16 @@
 
         <!-- Role Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="role">{{ trans('staff.role.name') }}</label>
-            <select name="role" id="role" class="form-control col-sm-5">
-                <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}</option>
-                <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}</option>
-                <option value="3" {{ $user->role == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}</option>
-                <option value="4" {{ $user->role == 4 ? 'selected' : '' }}>{{ trans('staff.role.4') }}</option>
+            <label class="col-sm-5 control-label" for="role_id">{{ trans('staff.role.name') }}</label>
+            <select name="role_id" id="role_id" class="form-control col-sm-5">
+                <option value="1" {{ $user->role_id == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}
+                </option>
+                <option value="2" {{ $user->role_id == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}
+                </option>
+                <option value="3" {{ $user->role_id == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}
+                </option>
+                <option value="4" {{ $user->role_id == 4 ? 'selected' : '' }}>{{ trans('staff.role.4') }}
+                </option>
             </select>
         </div>
     </div>

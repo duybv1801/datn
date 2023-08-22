@@ -53,12 +53,12 @@
 
                     <div class="input-group mb-3">
                         <input type="text" name="code" value="{{ old('code') }}"
-                            placeholder="  {{ trans('staff.code') }}"
+                            placeholder=" {{ trans('staff.code') }}"
                             class="form-control @error('code') is-invalid @enderror">
                         <div class="input-group-append">
                             <div class="input-group-text"><span class="fas fa-envelope"></span></div>
                         </div>
-                        @error('email')
+                        @error('code')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
@@ -95,10 +95,6 @@
 
                 <p class="mb-1">
                     <a href="{{ route('password.request') }}">{{ trans('passwords.login.forgot_password') }}</a>
-                </p>
-                <p class="mb-0">
-                    <a href="{{ route('register') }}"
-                        class="text-center">{{ trans('passwords.login.register_membership') }}</a>
                 </p>
             </div>
             <!-- /.login-card-body -->

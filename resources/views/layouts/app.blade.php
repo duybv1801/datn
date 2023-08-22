@@ -5,11 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ trans('auth.nal_lg') }}</title>
-    <style>
-        .bootstrap-datetimepicker-widget {
-            max-width: 50px;
-        }
-    </style>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -40,6 +35,8 @@
     <!-- tempusdominus -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -69,10 +66,20 @@
             </ul>
         </nav>
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="index3.html" class="brand-link">
-                <img src="https://nal.vn/wp-content/uploads/2022/07/logoNAL-hd.png" alt="homepage"
-                    class="brand-image img-circle elevation-4" style="opacity: .8">
-                <span class="brand-text font-weight-light">{{ trans('auth.nal_lg') }} </span>
+            @php
+                use Illuminate\Support\Facades\Blade;
+            @endphp
+            <a href="{!! route('users.index') !!}" class="brand-link">
+                <div class="text-center">
+                    @if (Auth::user()->avatar)
+                        <img src="{{ Auth::user()->avatar }}" alt="User Avatar"
+                            class="brand-image img-circle elevation-3" style="max-width: 45px; opacity: .8">
+                    @else
+                        <img src="https://ron.nal.vn/api/files/avatar_tungts_human.png" alt="User Avatar"
+                            class="brand-image img-circle elevation-3" style="max-width: 45px; opacity: .8">
+                    @endif
+                </div>
+                <span class="brand-text font-weight-light">{{ Auth::user()->name }}</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
@@ -144,6 +151,7 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js">
     </script>
+
     <script>
         $(function() {
             $('.nav-link[data-widget="fullscreen"]').on('click', function() {
@@ -181,12 +189,98 @@
     <script>
         $(function() {
             //Datemask dd/mm/yyyy
+            $('#datemask').inputmask('dd/mm/yyyy', {
+                'placeholder': 'dd/mm/yyyy'
+            })
+            //Datemask2 mm/dd/yyyy
+            $('#datemask2').inputmask('mm/dd/yyyy', {
+                'placeholder': 'mm/dd/yyyy'
+            })
+
+            //Date picker
+            $('#reservationdate').datetimepicker({
+                format: 'L'
+            });
+
+            //Date and time picker
+            $('#reservationdatetime').datetimepicker({
+                icons: {
+                    time: 'far fa-clock'
+                }
+            });
+
+            //Date range picker
+            $('#reservation').daterangepicker()
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                    format: 'MM/DD/YYYY hh:mm A'
+                }
+            })
+            //Date range as a button
+            $('#daterange-btn').daterangepicker({
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')]
+                },
+                startDate: moment().subtract(29, 'days'),
+                endDate: moment()
+            }, function(start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
+                    'MMMM D, YYYY'))
+            });
+
             //Timepicker
             $('.timepicker').datetimepicker({
                 format: 'HH:mm'
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "{{ trans('Are you sure you want to delete?') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: "{{ trans('Yes, Delete it!') }}",
+                cancelButtonText: "{{ trans('Cancel') }}"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.closest('form').submit();
+                }
+            });
+        }
+    </script>
+    <script>
+        function previewAvatar(event) {
+            var input = event.target;
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var preview = document.getElementById('avatar-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
 </body>
 
 </html>
