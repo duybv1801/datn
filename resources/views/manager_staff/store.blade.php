@@ -37,9 +37,9 @@
             </label>
             <div class="col-sm-8">
                 <select name="role_id" id="role_id" class="form-control">
-                    <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}
-                    </option>
                     <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}
+                    </option>
+                    <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}
                     </option>
                     <option value="3" {{ old('role_id') == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}
                     </option>

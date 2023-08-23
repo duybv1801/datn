@@ -9,6 +9,7 @@ use App\Http\Controllers\InOutForgetController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\RemoteController;
 
 
 /*
@@ -40,6 +41,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('manager_staff/{id}/edit', [ManagerStaffController::class, 'edit'])->name('manager_staff.edit')->middleware('can:update,App\Models\User');
     Route::put('manager_staff/{id}', [ManagerStaffController::class, 'update'])->name('manager_staff.update')->middleware('can:update,App\Models\User');
     Route::delete('manager_staff/{id}', [ManagerStaffController::class, 'destroy'])->name('manager_staff.destroy')->middleware('can:delete,App\Models\User');
+
+    //registration_form
+    Route::get('remote', [RemoteController::class, 'index'])->name('registration.index');
+    Route::get('remote/create', [RemoteController::class, 'create'])->name('registration.create');
+    Route::post('remote', [RemoteController::class, 'store'])->name('registration.store');
+    Route::get('remote/{id}/edit', [RemoteController::class, 'edit'])->name('registration.edit');
+    Route::put('remote/{id}', [RemoteController::class, 'update'])->name('registration.update');
+    Route::delete('remote/{id}', [RemoteController::class, 'destroy'])->name('registration.destroy');
 
     //user
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

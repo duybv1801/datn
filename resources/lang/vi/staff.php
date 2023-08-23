@@ -25,9 +25,9 @@ return [
     ],
     'contract' => [
         'name' => 'Loại Hợp đồng',
-        'fresher' => 'Thử việc',
+        'probationary ' => 'Thử việc',
         'intern' => 'Thực tập',
-        'staff' => 'Chính thức',
+        'staff' => 'Nhân viên',
     ],
     'genders' => [
         'name' => 'Giới tính',

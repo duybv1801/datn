@@ -86,11 +86,11 @@
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="contract">{{ trans('staff.contract.name') }}</label>
             <select name="contract" id="contract" class="form-control col-sm-5">
-                <option value="1" {{ $user->contract == 1 ? 'selected' : '' }}>
-                    {{ trans('staff.contract.fresher') }}
-                </option>
                 <option value="2" {{ $user->contract == 2 ? 'selected' : '' }}>
                     {{ trans('staff.contract.staff') }}
+                </option>
+                <option value="1" {{ $user->contract == 1 ? 'selected' : '' }}>
+                    {{ trans('staff.contract.probationary ') }}
                 </option>
                 <option value="3" {{ $user->contract == 3 ? 'selected' : '' }}>
                     {{ trans('staff.contract.intern') }}
