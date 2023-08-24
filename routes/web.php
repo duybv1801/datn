@@ -9,6 +9,7 @@ use App\Http\Controllers\InOutForgetController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\HolidayController;
 
 
 /*
@@ -48,7 +49,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/change_password/{user}/password', [UserController::class, 'password'])->name('users.password');
     Route::put('/change_password/{user}', [UserController::class, 'change_password'])->name('users.change_password');
 
-
     //in out forgets
     Route::resource('in_out_forgets', InOutForgetController::class);
 
@@ -56,8 +56,17 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('leaves', LeaveController::class);
 
     //setting 
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('can:viewAny,App\Models\Setting');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('can:update,App\Models\Setting');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update')->middleware('can:update,App\Models\Setting');
+
+    //holidays
+    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
+    Route::post('/holidays', [HolidayController::class, 'store'])->name('holidays.store');
+    Route::get('/holidays/{id}/edit', [HolidayController::class, 'edit'])->name('holidays.edit');
+    Route::put('/holidays/{id}', [HolidayController::class, 'update'])->name('holidays.update');
+    Route::post('/holidays/import', [HolidayController::class, 'import'])->name('holidays.import');
+    Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.destroy');
+    Route::post('/holidays/multi_delete', [HolidayController::class, 'delete'])->name('holidays.multi_delete');
 });
 
 //password mail

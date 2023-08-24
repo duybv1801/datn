@@ -36,13 +36,29 @@
     </li>
 @endcan
 
-@can('viewAny', App\Models\Setting::class)
-    <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
-        <a href="{!! route('settings.index') !!}" class="nav-link">
-            <i class="fas fa-cog"></i>
-            <p>
-                {{ trans('Setting') }}
-            </p>
-        </a>
-    </li>
-@endcan
+<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <a href="" class="nav-link">
+        <i class="fas fa-gift"></i>
+        <p>
+            {{ trans('Holidays') }}
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{!! route('holidays.index') !!}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ trans('Manage Holidays') }}</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <a href="{!! route('settings.index') !!}" class="nav-link">
+        <i class="fas fa-cog"></i>
+        <p>
+            {{ trans('Setting') }}
+        </p>
+    </a>
+</li>

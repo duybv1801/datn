@@ -49,7 +49,7 @@ class UserController extends AppBaseController
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
-            Flash::error('validation.crud.erro_user');
+            Flash::error('validation.crud.error_user');
 
             return redirect(route('users.index'));
         }

@@ -10,7 +10,7 @@ return [
     'year' => 'Chọn năm',
     'choose' => 'Chọn file',
     'add_holiday' => 'Thêm ngày nghỉ lễ',
-    'date_range' => 'Khoảng thời gian',
+    'date_range' => 'Chọn ngày',
     'list_holiday' => 'Danh sách ngày lễ',
     'select_option' => 'Chọn cách nhập ngày',
     'option_single_day' => 'Một ngày',

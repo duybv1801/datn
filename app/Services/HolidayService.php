@@ -15,44 +15,70 @@ class HolidayService
         $this->holidayRepository = $holidayRepository;
     }
 
-    public function getAllHolidays()
+    public function getAllHolidays($request)
     {
-        return $this->holidayRepository->getHolidays();
+        $searchParams = [
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+            'sort_by' => $request->input('sort_by', 'asc'),
+            'order_by' => $request->input('order_by', 'date'),
+            'query' => $request->input('query'),
+        ];
+
+        return $this->holidayRepository->searchByConditions($searchParams);
+    }
+
+    public function getHoliday($id)
+    {
+        return $this->holidayRepository->find($id);
     }
 
     public function store($data)
     {
         $title = $data->title;
-        $selectOption = $data->select_option;
+        $dateRange = $data->daterange;
+        list($startDate, $endDate) = explode(' - ', $dateRange);
 
-        if ($selectOption == 1) {
-            $date = Carbon::createFromFormat('m/d/Y', $data->date);
-            $this->holidayRepository->create([
+        $startDateObj = Carbon::createFromFormat('m/d/Y', $startDate);
+        $endDateObj = Carbon::createFromFormat('m/d/Y', $endDate);
+
+        while ($startDateObj <= $endDateObj) {
+            $date = $startDateObj->toDateString();
+            $this->holidayRepository->createHoliday([
                 'date' => $date,
                 'title' => $title,
             ]);
-        } else {
-            $dateRange = $data->daterange;
+            $startDateObj->addDay();
+        }
+    }
+
+    public function update($data, $id)
+    {
+        $input = $data->only('title', 'daterange');
+        if (strpos($input['daterange'], ' - ')) {
+            $this->holidayRepository->delete($id);
+            $title = $input['title'];
+            $dateRange = $input['daterange'];
             list($startDate, $endDate) = explode(' - ', $dateRange);
 
             $startDateObj = Carbon::createFromFormat('m/d/Y', $startDate);
             $endDateObj = Carbon::createFromFormat('m/d/Y', $endDate);
 
             while ($startDateObj <= $endDateObj) {
-                $this->holidayRepository->create([
-                    'date' => $startDateObj,
+                $date = $startDateObj->toDateString();
+                $this->holidayRepository->createHoliday([
+                    'date' => $date,
                     'title' => $title,
                 ]);
                 $startDateObj->addDay();
             }
+        } else {
+            $this->holidayRepository->update($input, $id);
         }
     }
 
-    public function import(UploadedFile $file, $year)
+    public function import(UploadedFile $file)
     {
-        if ($this->holidayRepository->hasHolidaysByYear($year)) {
-            return redirect()->route('holidays.index')->with('error', trans('holiday.import_holidays') . $year);
-        }
         $contents = file_get_contents($file->path());
         $lines = explode("\n", $contents);
 
@@ -63,39 +89,22 @@ class HolidayService
             $dateRange = $data[0];
             $title = $data[1];
 
-            if (strpos($dateRange, '-')) {
-                list($startDate, $endDate) = explode('-', $dateRange);
 
-                $startDateParts = explode('/', trim($startDate));
-                $endDateParts = explode('/', trim($endDate));
+            $dateParts = explode('/', $dateRange);
+            $date = $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
 
-                $startDay = intval($startDateParts[0]);
-                $startMonth = intval($startDateParts[1]);
-                $endDay = intval($endDateParts[0]);
-                $endMonth = intval($endDateParts[1]);
+            $this->holidayRepository->createHoliday([
+                'date' => $date,
+                'title' => $title,
+            ]);
+        }
+    }
 
-                for ($month = $startMonth; $month <= $endMonth; $month++) {
-                    $firstDay = ($month === $startMonth) ? $startDay : 1;
-                    $lastDay = ($month === $endMonth) ? $endDay : Carbon::parse("$year-$month-1")->daysInMonth;
-
-                    for ($day = $firstDay; $day <= $lastDay; $day++) {
-                        $date = $year . '-' . $month . '-' . $day;
-
-                        $this->holidayRepository->create([
-                            'date' => $date,
-                            'title' => $title,
-                        ]);
-                    }
-                }
-            } else {
-                $dateParts = explode('/', $dateRange);
-                $date = $year . '-' . $dateParts[1] . '-' . $dateParts[0];
-
-                $this->holidayRepository->create([
-                    'date' => $date,
-                    'title' => $title,
-                ]);
-            }
+    public function delete($request)
+    {
+        $ids = $request->ids;
+        foreach ($ids as $id) {
+            $this->holidayRepository->delete($id);
         }
     }
 

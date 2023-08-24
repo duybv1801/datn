@@ -17,9 +17,10 @@ return [
         'updated' => 'Cập nhật thành công !',
         'delete' => 'Xóa thành công !',
         'show_error' => 'Không tìm thấy thông tin',
-        'erro_user' => 'Không tồn tại người dùng này'
+        'erro_user' => 'Không tồn tại người dùng này',
+        'imported' => 'Nhập file thành công',
     ],
-
+    'import_holidays' => 'Đã import ngày nghỉ cho năm ',
     'accepted'             => 'Trường :attribute phải được chấp nhận.',
     'accepted_if'          => 'Trường :attribute phải được chấp nhận khi :other là :value.',
     'active_url'           => 'Trường :attribute không phải là một URL hợp lệ.',
