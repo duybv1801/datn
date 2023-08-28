@@ -191,15 +191,6 @@
     </script>
     <script>
         $(function() {
-            //Datemask dd/mm/yyyy
-            // $('#datemask').inputmask('dd/mm/yyyy', {
-            //     'placeholder': 'dd/mm/yyyy'
-            // })
-            //Datemask2 DD/MM/YYYY
-            // $('#datemask2').inputmask('DD/MM/YYYY', {
-            //     'placeholder': 'DD/MM/YYYY'
-            // })
-
             // Date picker
             $('.reservationdate').datetimepicker({
                 format: 'DD/MM/yyyy',
