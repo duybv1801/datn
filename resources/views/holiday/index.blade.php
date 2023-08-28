@@ -8,19 +8,19 @@
             </div>
             <div class="col-md-6">
                 <div class="dropdown">
-                    <button class="btn btn-primary float-right dropdown-toggle" type="button" id="addNewHolidayButton"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ trans('Options') }}
+                    <button class="btn btn-primary float-right" type="button" id="dateOption">
+                        {{ trans('holiday.file') }}
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="addNewHolidayButton">
-                        <a class="dropdown-item" href="#" id="formOption">
-                            {{ trans('holiday.date_range') }}
-                        </a>
-                        <a class="dropdown-item" href="#" id="dateOption">
-                            {{ trans('holiday.file') }}
-                        </a>
-                        {{-- <a class="dropdown-item" href="#">{{ trans('Export') }}</a> --}}
+                    <div>
+                        {!! Form::open(['route' => ['holidays.export'], 'method' => 'get']) !!}
+                        <input type="hidden" name="export_data" value="{{ json_encode($export->toArray()) }}">
+                        <button class="btn btn-success float-right mr-1" type="submit">
+                            {{ trans('holiday.export') }}
+                        </button>
+                        {!! Form::close() !!}
                     </div>
+                    <button class="btn btn-primary float-right mr-1" type="button"
+                        id="formOption">{{ trans('holiday.date_range') }}</button>
                     <div>
                         <div>
                             {!! Form::open(['route' => ['holidays.multi_delete'], 'method' => 'post', 'id' => 'multiDeleteForm']) !!}
@@ -52,19 +52,23 @@
                                 <form action="{!! route('holidays.store') !!}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group">
-                                        <label for="title">{{ trans('holiday.title') }}</label>
+                                        <label for="title">{{ trans('holiday.title') }}
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <input type="text" class="form-control" id="title" name="title" required>
                                     </div>
                                     <div class="form-group" id="dateRangeField">
-                                        <label for="reservation">{{ trans('holiday.date_range') }}</label>
+                                        <label for="reservation_modal">{{ trans('holiday.date_range') }}
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">
                                                     <i class="far fa-calendar-alt"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" class="form-control float-right" id="reservation"
-                                                name="daterange" required>
+                                            <input type="text" class="form-control float-right reservation"
+                                                id="reservation_modal" name="daterange" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -99,7 +103,9 @@
                                 <form action="{!! route('holidays.import') !!}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group">
-                                        <label for="csv_file">{{ trans('holiday.file') }}</label>
+                                        <label for="csv_file">{{ trans('holiday.file') }}
+                                            <span class="text-danger">*</span>
+                                        </label>
                                         <div class="input-group">
                                             <div class="custom-file">
                                                 <input type="file" class="form-control" id="csv_file" name="csv_file"
@@ -132,4 +138,110 @@
             </div>
         </div>
     </div>
+    {{-- Xóa nhiều holiday --}}
+    <script type="text/javascript">
+        document.getElementById("deleteSelectedButton").addEventListener("click", function() {
+            let selectedIds = [];
+            let checkboxes = document.querySelectorAll(".custom-control-input.custom-control-input-danger:checked");
+            checkboxes.forEach(function(checkbox) {
+                selectedIds.push(checkbox.id.replace("customCheckbox", ""));
+            });
+
+            if (selectedIds.length > 0) {
+                Swal.fire({
+                    title: "{{ trans('Are you sure you want to delete?') }}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: "{{ trans('Yes, Delete it!') }}",
+                    cancelButtonText: "{{ trans('Cancel') }}"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let form = document.getElementById('multiDeleteForm');
+                        form.setAttribute('action', "{{ route('holidays.multi_delete') }}");
+
+                        let hiddenField = document.createElement('input');
+                        hiddenField.type = 'hidden';
+                        hiddenField.name = 'ids[]';
+                        selectedIds.forEach(function(id) {
+                            let valueInput = document.createElement('input');
+                            valueInput.type = 'hidden';
+                            valueInput.name = 'ids[]';
+                            valueInput.value = id;
+                            form.appendChild(valueInput);
+                        });
+
+                        form.submit();
+                    }
+                });
+            }
+        });
+    </script>
+    {{-- check all để xóa nhiều --}}
+    <script>
+        document.getElementById('checkAllFunctions').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            var checkAllCheckbox = this;
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = checkAllCheckbox.checked;
+            });
+        });
+        var tbodyCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+        tbodyCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var allChecked = true;
+                tbodyCheckboxes.forEach(function(checkbox) {
+                    if (!checkbox.checked) {
+                        allChecked = false;
+                    }
+                });
+                document.getElementById('checkAllFunctions').checked = allChecked;
+            });
+        });
+    </script>
+    {{-- show modal trong holiday --}}
+    <script>
+        document.getElementById('formOption').addEventListener('click', function() {
+            $('#formModal').modal('show');
+        });
+
+        document.getElementById('dateOption').addEventListener('click', function() {
+            $('#dateModal').modal('show');
+        });
+    </script>
+    {{-- show modal edit holiday --}}
+    <script type="text/javascript">
+        $(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('body').on('click', '#edit_holiday', function() {
+                var id = $(this).data('id');
+
+                $.get('/holidays' + '/' + id + '/edit', function(data) {
+                    $('#modelHeading').html("Edit Post");
+                    $('#editModal').modal('show');
+                    var editForm = $('#editModal').find('form');
+                    editForm.attr('action', editForm.attr('action').replace('__id__', id));
+                    $('#titleHoliday').val(data.title);
+                    var formattedDate = moment(data.date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                    $('#dateHoliday').val(formattedDate);
+                });
+            });
+        });
+    </script>
+    {{-- đổi tên label khi import file --}}
+    <script>
+        document.getElementById('csv_file').addEventListener('change', function(event) {
+            const fileInput = event.target;
+            const fileName = fileInput.files[0].name;
+            const label = fileInput.nextElementSibling;
+            label.innerText = fileName;
+        });
+    </script>
 @endsection

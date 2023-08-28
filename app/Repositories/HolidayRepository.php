@@ -30,7 +30,7 @@ class HolidayRepository extends BaseRepository
 
     public function getHolidays()
     {
-        return Holiday::orderBy('date', 'asc')->paginate(10);
+        return Holiday::orderBy('date', 'asc')->get();
     }
     /**
      * Configure the Model
@@ -46,15 +46,15 @@ class HolidayRepository extends BaseRepository
         $query = $this->model;
 
         if (!isset($search['start_date'])) {
-            $start_date = now()->startOfMonth()->format('Y-m-d');
+            $start_date = now()->startOfYear();
         } else {
-            $start_date = Carbon::createFromFormat('d/m/Y', $search['start_date'])->format('Y-m-d');
+            $start_date = Carbon::createFromFormat('d/m/Y', $search['start_date']);
         }
 
         if (!isset($search['end_date'])) {
-            $end_date = now()->endOfMonth()->format('Y-m-d');
+            $end_date = now()->endOfYear();
         } else {
-            $end_date = Carbon::createFromFormat('d/m/Y', $search['end_date'])->format('Y-m-d');
+            $end_date = Carbon::createFromFormat('d/m/Y', $search['end_date']);
         }
 
         if (isset($search['query'])) {
@@ -67,7 +67,7 @@ class HolidayRepository extends BaseRepository
         }
         $query = $query->where('date', '>=', $start_date)->where('date', '<=', $end_date);
 
-        return $query->paginate(10);
+        return $query;
     }
 
     public function createHoliday($data)

@@ -12,13 +12,13 @@
                         <div class="row">
                             <div class="col-2">
                                 <div class="form-group">
-                                    <label>{{ trans('From Date') }}</label>
+                                    <label for="search_from">{{ trans('From Date') }}</label>
                                     <div class="input-group date reservationdate" id="reservationdate_from"
                                         data-target-input="nearest">
                                         <input type="text" class="form-control datetimepicker-input"
                                             data-target="#reservationdate_from" data-toggle="datetimepicker"
-                                            name="start_date"
-                                            value="{{ request('start_date',now()->startOfMonth()->format('d/m/Y')) }}" />
+                                            name="start_date" id="search_from"
+                                            value="{{ request('start_date',now()->startOfYear()->format('d/m/Y')) }}" />
                                         <div class="input-group-append" data-target="#reservationdate_from"
                                             data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -30,13 +30,13 @@
 
                             <div class="col-2">
                                 <div class="form-group">
-                                    <label>{{ trans('To Date') }}</label>
+                                    <label for="search_to">{{ trans('To Date') }}</label>
                                     <div class="input-group date reservationdate" id="reservationdate_to"
                                         data-target-input="nearest">
                                         <input type="text" class="form-control datetimepicker-input"
                                             data-target="#reservationdate_to" data-toggle="datetimepicker"
-                                            name="end_date"
-                                            value="{{ request('end_date',now()->endOfMonth()->format('d/m/Y')) }}" />
+                                            name="end_date" id="search_to"
+                                            value="{{ request('end_date',now()->endOfYear()->format('d/m/Y')) }}" />
                                         <div class="input-group-append" data-target="#reservationdate_to"
                                             data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -47,34 +47,50 @@
 
                             <div class="col-2">
                                 <div class="form-group">
-                                    <label>{{ trans('Sort by') }}</label>
-                                    <select class="select2 form-control" style="width: 100%;" name="sort_by">
-                                        <option value="asc">{{ trans('ASC') }}</option>
-                                        <option value="desc">{{ trans('DESC') }}</option>
+                                    <label for="sort_by">{{ trans('Sort by') }}</label>
+                                    <select class="select2 form-control" style="width: 100%;" name="sort_by"
+                                        id="sort_by">
+                                        <option value="asc" {{ request('sort_by') === 'asc' ? 'selected' : '' }}>
+                                            {{ trans('ASC') }}</option>
+                                        <option value="desc" {{ request('sort_by') === 'desc' ? 'selected' : '' }}>
+                                            {{ trans('DESC') }}</option>
                                     </select>
                                 </div>
                             </div>
+
                             <div class="col-2">
                                 <div class="form-group">
-                                    <label>{{ trans('Order by') }}</label>
-                                    <select class="select2 form-control" style="width: 100%;" name="order_by">
-                                        <option value="date">{{ trans('holiday.date') }}</option>
-                                        <option value="title">{{ trans('holiday.title') }}</option>
+                                    <label for="order_by">{{ trans('Order by') }}</label>
+                                    <select class="select2 form-control" style="width: 100%;" name="order_by"
+                                        id="order_by">
+                                        <option value="date" {{ request('order_by') === 'date' ? 'selected' : '' }}>
+                                            {{ trans('holiday.date') }}</option>
+                                        <option value="updated_at"
+                                            {{ request('order_by') === 'updated_at' ? 'selected' : '' }}>
+                                            {{ trans('Updated at') }}</option>
+                                        <option value="created_at"
+                                            {{ request('order_by') === 'created_at' ? 'selected' : '' }}>
+                                            {{ trans('Created at') }}</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-1"></div>
                             <div class="col-3">
                                 <div class="form-group">
-                                    <label>{{ trans('Search') }}</label>
+                                    <label for="keywords">{{ trans('Keywords') }}</label>
                                     <div class="input-group">
-                                        <input type="search" class="form-control" placeholder="{{ trans('Search') }}"
-                                            name="query" value="{{ request('query') }} ">
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </div>
+                                        <input type="search" class="form-control"
+                                            placeholder="{{ trans('Keywords') }}" name="query" id="keywords"
+                                            value="{{ request('query') ? request('query') : '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-1">
+                                <div class="form-group">
+                                    <label for="filter">{{ trans('Filter') }}</label>
+                                    <div class="input-group">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -102,6 +118,9 @@
                 </thead>
 
                 <tbody>
+                    @php
+                        $i = $holidays->firstItem();
+                    @endphp
                     @foreach ($holidays as $index => $holiday)
                         <tr>
                             <td>
@@ -113,18 +132,18 @@
                                 </div>
                             </td>
                             <td>
-                                {{ $index + 1 }}
+                                {{ $i++ }}
                             </td>
                             <td>
                                 {!! $holiday->title !!}
                             </td>
                             <td>
-                                {!! $holiday->date->format('d-m-Y') !!}
+                                {!! $holiday->date->format('d/m/Y') !!}
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <button class="btn btn-primary btn-sm mr-2 edit-btn" data-id="{{ $holiday->id }}"
-                                        id="edit_holiday">{{ trans('Edit') }}</button>
+                                    <button class="btn btn-primary btn-sm mr-2 edit-btn"
+                                        data-id="{{ $holiday->id }}" id="edit_holiday">{{ trans('Edit') }}</button>
                                     {!! Form::open(['route' => ['holidays.destroy', $holiday->id], 'method' => 'delete']) !!}
                                     {!! Form::button(trans('Delete'), [
                                         'type' => 'submit',
@@ -139,7 +158,7 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">{{ trans('Edit Holiday') }}</h5>
+                                        <h5 class="modal-title">{{ trans('holiday.edit_holiday') }}</h5>
                                         <button type="button" class="close" data-dismiss="modal"
                                             aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
@@ -150,7 +169,7 @@
                                         <div class="box box-primary">
                                             <div class="box-body">
                                                 {!! Form::model($holiday, [
-                                                    'route' => ['holidays.update', $holiday->id],
+                                                    'route' => ['holidays.update', '__id__'],
                                                     'method' => 'put',
                                                     'enctype' => 'multipart/form-data',
                                                 ]) !!}
@@ -194,7 +213,12 @@
             </table>
 
             <div class="pagination justify-content-center">
-                {{ $holidays->links() }}
+                {{ $holidays->appends([
+                        'start_date' => request()->input('start_date'),
+                        'end_date' => request()->input('end_date'),
+                        'sort_by' => request()->input('sort_by'),
+                        'order_by' => request()->input('order_by'),
+                    ])->links() }}
             </div>
 
 

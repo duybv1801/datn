@@ -17,9 +17,16 @@ class HolidayController extends Controller
 
     public function index(Request $request)
     {
-        $holidays = $this->holidayService->getAllHolidays($request);
+        $holidayData = $this->holidayService->getHolidays($request);
+        $export = $holidayData->get();
+        $holidays = $holidayData->paginate(10);
+        return view('holiday.index', compact('holidays', 'export'));
+    }
 
-        return view('holiday.index', compact('holidays'));
+    public function calendar()
+    {
+        $events = $this->holidayService->getAllHolidays();
+        return view('holiday.calendar', compact('events'));
     }
 
     public function store(Request $request)
@@ -47,6 +54,12 @@ class HolidayController extends Controller
         $this->holidayService->import($file);
 
         return redirect()->route('holidays.index')->with('success', trans('validation.crud.imported'));
+    }
+
+    public function export(Request $request)
+    {
+        $exportData = json_decode($request->input('export_data'), true);
+        return $this->holidayService->export($exportData);
     }
 
     public function edit($id)

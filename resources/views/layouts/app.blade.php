@@ -36,6 +36,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -150,6 +151,10 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js">
     </script>
+    {{-- Calendar --}}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
+
 
     <script>
         $(function() {
@@ -190,15 +195,15 @@
             // $('#datemask').inputmask('dd/mm/yyyy', {
             //     'placeholder': 'dd/mm/yyyy'
             // })
-            //Datemask2 mm/dd/yyyy
-            // $('#datemask2').inputmask('mm/dd/yyyy', {
-            //     'placeholder': 'mm/dd/yyyy'
+            //Datemask2 DD/MM/YYYY
+            // $('#datemask2').inputmask('DD/MM/YYYY', {
+            //     'placeholder': 'DD/MM/YYYY'
             // })
 
-            //Date picker
-            // $('.reservationdate').datetimepicker({
-            //     format: 'L'
-            // });
+            // Date picker
+            $('.reservationdate').datetimepicker({
+                format: 'DD/MM/yyyy',
+            });
 
             //Date and time picker
             $('#reservationdatetime').datetimepicker({
@@ -208,13 +213,18 @@
             });
 
             //Date range picker
-            $('.reservation').daterangepicker()
+            $('.reservation').daterangepicker({
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                }
+            })
             //Date range picker with time picker
             $('#reservationtime').daterangepicker({
                 timePicker: true,
                 timePickerIncrement: 30,
                 locale: {
-                    format: 'MM/DD/YYYY hh:ii'
+                    format: 'DD/MM/YYYY hh:ii'
                 }
             })
             //Date range as a button
@@ -242,7 +252,9 @@
             $('#reservationdate').datetimepicker({
                 format: 'DD/MM/YYYY'
             });
-            $('#reservation').daterangepicker()
+            $('#reservation').daterangepicker({
+                format: 'DD/MM/YYYY',
+            })
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -266,48 +278,30 @@
             });
         }
     </script>
-    {{-- Xóa nhiều holiday --}}
+    {{-- show modal edit holiday --}}
     <script type="text/javascript">
-        document.getElementById("deleteSelectedButton").addEventListener("click", function() {
-            let selectedIds = [];
-            let checkboxes = document.querySelectorAll(".custom-control-input.custom-control-input-danger:checked");
-            checkboxes.forEach(function(checkbox) {
-                selectedIds.push(checkbox.id.replace("customCheckbox", ""));
+        $(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
 
-            if (selectedIds.length > 0) {
-                Swal.fire({
-                    title: "{{ trans('Are you sure you want to delete?') }}",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: "{{ trans('Yes, Delete it!') }}",
-                    cancelButtonText: "{{ trans('Cancel') }}"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let form = document.getElementById('multiDeleteForm');
-                        form.setAttribute('action', "{{ route('holidays.multi_delete') }}");
+            $('body').on('click', '#edit_holiday', function() {
+                var id = $(this).data('id');
 
-                        let hiddenField = document.createElement('input');
-                        hiddenField.type = 'hidden';
-                        hiddenField.name = 'ids[]';
-                        selectedIds.forEach(function(id) {
-                            let valueInput = document.createElement('input');
-                            valueInput.type = 'hidden';
-                            valueInput.name = 'ids[]';
-                            valueInput.value = id;
-                            form.appendChild(valueInput);
-                        });
-
-                        form.submit();
-                    }
+                $.get('/holidays' + '/' + id + '/edit', function(data) {
+                    $('#modelHeading').html("Edit Post");
+                    $('#editModal').modal('show');
+                    var editForm = $('#editModal').find('form');
+                    editForm.attr('action', editForm.attr('action').replace('__id__', id));
+                    $('#titleHoliday').val(data.title);
+                    var formattedDate = moment(data.date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                    $('#dateHoliday').val(formattedDate);
                 });
-            }
+            });
         });
     </script>
-
-
     <script>
         function previewAvatar(event) {
             var input = event.target;
@@ -324,69 +318,6 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-    </script>
-    {{-- check all để xóa nhiều --}}
-    <script>
-        document.getElementById('checkAllFunctions').addEventListener('change', function() {
-            var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-            var checkAllCheckbox = this;
-
-            checkboxes.forEach(function(checkbox) {
-                checkbox.checked = checkAllCheckbox.checked;
-            });
-        });
-        var tbodyCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-        tbodyCheckboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                var allChecked = true;
-                tbodyCheckboxes.forEach(function(checkbox) {
-                    if (!checkbox.checked) {
-                        allChecked = false;
-                    }
-                });
-                document.getElementById('checkAllFunctions').checked = allChecked;
-            });
-        });
-    </script>
-    {{-- show modal trong holiday --}}
-    <script>
-        document.getElementById('formOption').addEventListener('click', function() {
-            $('#formModal').modal('show');
-        });
-
-        document.getElementById('dateOption').addEventListener('click', function() {
-            $('#dateModal').modal('show');
-        });
-    </script>
-    {{-- show modal edit holiday --}}
-    <script type="text/javascript">
-        $(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $('body').on('click', '#edit_holiday', function() {
-                var id = $(this).data('id');
-
-                $.get('/holidays' + '/' + id + '/edit', function(data) {
-                    $('#modelHeading').html("Edit Post");
-                    $('#editModal').modal('show');
-                    $('#titleHoliday').val(data.title);
-                    $('#dateHoliday').val(data.date);
-                });
-            });
-        });
-    </script>
-    {{-- đổi tên label khi import file --}}
-    <script>
-        document.getElementById('csv_file').addEventListener('change', function(event) {
-            const fileInput = event.target;
-            const fileName = fileInput.files[0].name;
-            const label = fileInput.nextElementSibling;
-            label.innerText = fileName;
-        });
     </script>
 </body>
 

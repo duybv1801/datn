@@ -60,13 +60,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update')->middleware('can:update,App\Models\Setting');
 
     //holidays
-    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
-    Route::post('/holidays', [HolidayController::class, 'store'])->name('holidays.store');
-    Route::get('/holidays/{id}/edit', [HolidayController::class, 'edit'])->name('holidays.edit');
-    Route::put('/holidays/{id}', [HolidayController::class, 'update'])->name('holidays.update');
-    Route::post('/holidays/import', [HolidayController::class, 'import'])->name('holidays.import');
-    Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.destroy');
-    Route::post('/holidays/multi_delete', [HolidayController::class, 'delete'])->name('holidays.multi_delete');
+    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index')->middleware('can:update,App\Models\Holiday');
+    Route::post('/holidays', [HolidayController::class, 'store'])->name('holidays.store')->middleware('can:create,App\Models\Holiday');
+    Route::get('/holidays/{id}/edit', [HolidayController::class, 'edit'])->name('holidays.edit')->middleware('can:update,App\Models\Holiday');
+    Route::put('/holidays/{id}', [HolidayController::class, 'update'])->name('holidays.update')->middleware('can:update,App\Models\Holiday');
+    Route::post('/holidays/import', [HolidayController::class, 'import'])->name('holidays.import')->middleware('can:update,App\Models\Holiday');
+    Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.destroy')->middleware('can:delete,App\Models\Holiday');
+    Route::post('/holidays/multi_delete', [HolidayController::class, 'delete'])->name('holidays.multi_delete')->middleware('can:delete,App\Models\Holiday');
+    Route::get('/holidays/export', [HolidayController::class, 'export'])->name('holidays.export')->middleware('can:update,App\Models\Holiday');
+    Route::get('/holidays/calendar', [HolidayController::class, 'calendar'])->name('holidays.calendar')->middleware('can:view,App\Models\Holiday');
 });
 
 //password mail

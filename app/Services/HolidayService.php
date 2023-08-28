@@ -14,8 +14,12 @@ class HolidayService
     {
         $this->holidayRepository = $holidayRepository;
     }
+    public function getAllHolidays()
+    {
+        return $this->holidayRepository->getHolidays();
+    }
 
-    public function getAllHolidays($request)
+    public function getHolidays($request)
     {
         $searchParams = [
             'start_date' => $request->input('start_date'),
@@ -39,8 +43,8 @@ class HolidayService
         $dateRange = $data->daterange;
         list($startDate, $endDate) = explode(' - ', $dateRange);
 
-        $startDateObj = Carbon::createFromFormat('m/d/Y', $startDate);
-        $endDateObj = Carbon::createFromFormat('m/d/Y', $endDate);
+        $startDateObj = Carbon::createFromFormat('d/m/Y', $startDate);
+        $endDateObj = Carbon::createFromFormat('d/m/Y', $endDate);
 
         while ($startDateObj <= $endDateObj) {
             $date = $startDateObj->toDateString();
@@ -61,8 +65,8 @@ class HolidayService
             $dateRange = $input['daterange'];
             list($startDate, $endDate) = explode(' - ', $dateRange);
 
-            $startDateObj = Carbon::createFromFormat('m/d/Y', $startDate);
-            $endDateObj = Carbon::createFromFormat('m/d/Y', $endDate);
+            $startDateObj = Carbon::createFromFormat('d/m/Y', $startDate);
+            $endDateObj = Carbon::createFromFormat('d/m/Y', $endDate);
 
             while ($startDateObj <= $endDateObj) {
                 $date = $startDateObj->toDateString();
@@ -85,20 +89,56 @@ class HolidayService
         array_shift($lines);
 
         foreach ($lines as $line) {
-            $data = str_getcsv($line);
-            $dateRange = $data[0];
-            $title = $data[1];
-
-
-            $dateParts = explode('/', $dateRange);
-            $date = $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
-
-            $this->holidayRepository->createHoliday([
-                'date' => $date,
-                'title' => $title,
-            ]);
+            $line = trim($line);
+            if (!empty($line)) {
+                $data = str_getcsv($line);
+                $date = $data[0];
+                $title = $data[1];
+                $this->holidayRepository->createHoliday([
+                    'date' => $date,
+                    'title' => $title,
+                ]);
+            }
         }
     }
+
+
+    public function export(array $exportData)
+    {
+        if (empty($exportData)) {
+            $sampleCsvPath = public_path('sample_csv.csv');
+            return response()->download($sampleCsvPath, 'sample.csv');
+        }
+
+        $csvData = [
+            [trans('holiday.date'), trans('holiday.title')]
+        ];
+
+        foreach ($exportData as $item) {
+            $csvData[] = [$item['date'], $item['title']];
+        }
+
+        $output = fopen('php://output', 'w');
+
+        fputs($output, "\xEF\xBB\xBF");
+
+        foreach ($csvData as $row) {
+            fputcsv($output, $row, ',', '"');
+        }
+
+        fclose($output);
+
+        $headers = [
+            "Content-type" => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=holidays.csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        return response('', 200, $headers);
+    }
+
 
     public function delete($request)
     {
