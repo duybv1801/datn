@@ -141,16 +141,16 @@
                                 {!! $holiday->date->format(config('define.date_show')) !!}
                             </td>
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <button class="btn btn-primary btn-sm mr-2 edit-btn"
-                                        data-id="{{ $holiday->id }}" id="edit_holiday">{{ trans('Edit') }}</button>
-                                    {!! Form::open(['route' => ['holidays.destroy', $holiday->id], 'method' => 'delete']) !!}
-                                    {!! Form::button(trans('Delete'), [
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-danger btn-sm',
-                                        'onclick' => 'confirmDelete(event)',
-                                    ]) !!}
-                                    {!! Form::close() !!}
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-sm" data-id="{{ $holiday->id }}"
+                                        id="edit_holiday">{{ trans('Edit') }}</button>
+                                    <form action="{{ route('holidays.destroy', $holiday->id) }}" method="POST"
+                                        class="btn btn-danger btn-sm">
+                                        @csrf
+                                        @method('DELETE')
+                                        <a type="submit" onclick="return confirmDelete(event)" class="text-white"
+                                            href="">{{ trans('Delete') }}</a>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
