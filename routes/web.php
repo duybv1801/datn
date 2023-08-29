@@ -67,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/holidays/import', [HolidayController::class, 'import'])->name('holidays.import')->middleware('can:update,App\Models\Holiday');
     Route::delete('/holidays/{id}', [HolidayController::class, 'destroy'])->name('holidays.destroy')->middleware('can:delete,App\Models\Holiday');
     Route::post('/holidays/multi_delete', [HolidayController::class, 'delete'])->name('holidays.multi_delete')->middleware('can:delete,App\Models\Holiday');
-    Route::get('/holidays/export', [HolidayController::class, 'export'])->name('holidays.export')->middleware('can:update,App\Models\Holiday');
+    Route::post('/holidays/export', [HolidayController::class, 'export'])->name('holidays.export')->middleware('can:update,App\Models\Holiday');
     Route::get('/holidays/calendar', [HolidayController::class, 'calendar'])->name('holidays.calendar')->middleware('can:view,App\Models\Holiday');
 });
 

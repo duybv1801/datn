@@ -12,12 +12,17 @@
                         {{ trans('holiday.file') }}
                     </button>
                     <div>
-                        {!! Form::open(['route' => ['holidays.export'], 'method' => 'get']) !!}
-                        <input type="hidden" name="export_data" value="{{ json_encode($export->toArray()) }}">
+                        {!! Form::open(['route' => ['holidays.export'], 'method' => 'post']) !!}
+                        {!! Form::hidden('start_date', request()->input('start_date')) !!}
+                        {!! Form::hidden('end_date', request()->input('end_date')) !!}
+                        {!! Form::hidden('sort_by', request()->input('sort_by')) !!}
+                        {!! Form::hidden('order_by', request()->input('order_by')) !!}
+
                         <button class="btn btn-success float-right mr-1" type="submit">
                             {{ trans('holiday.export') }}
                         </button>
                         {!! Form::close() !!}
+
                     </div>
                     <button class="btn btn-primary float-right mr-1" type="button"
                         id="formOption">{{ trans('holiday.date_range') }}</button>
@@ -35,7 +40,7 @@
         </div>
     </section>
     <div class="content">
-        <!-- Modal nhập form -->
+        <!-- Modal input form -->
         <div class="modal" id="formModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -138,7 +143,7 @@
             </div>
         </div>
     </div>
-    {{-- Xóa nhiều holiday --}}
+    {{-- Multi delete holiday --}}
     <script type="text/javascript">
         document.getElementById("deleteSelectedButton").addEventListener("click", function() {
             let selectedIds = [];
@@ -178,7 +183,7 @@
             }
         });
     </script>
-    {{-- check all để xóa nhiều --}}
+    {{-- check all to multi delete --}}
     <script>
         document.getElementById('checkAllFunctions').addEventListener('change', function() {
             var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
@@ -201,7 +206,7 @@
             });
         });
     </script>
-    {{-- show modal trong holiday --}}
+    {{-- show modal in holiday --}}
     <script>
         document.getElementById('formOption').addEventListener('click', function() {
             $('#formModal').modal('show');
@@ -211,31 +216,8 @@
             $('#dateModal').modal('show');
         });
     </script>
-    {{-- show modal edit holiday --}}
-    <script type="text/javascript">
-        $(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
 
-            $('body').on('click', '#edit_holiday', function() {
-                var id = $(this).data('id');
-
-                $.get('/holidays' + '/' + id + '/edit', function(data) {
-                    $('#modelHeading').html("Edit Post");
-                    $('#editModal').modal('show');
-                    var editForm = $('#editModal').find('form');
-                    editForm.attr('action', editForm.attr('action').replace('__id__', id));
-                    $('#titleHoliday').val(data.title);
-                    var formattedDate = moment(data.date, 'YYYY-MM-DD').format('DD/MM/YYYY');
-                    $('#dateHoliday').val(formattedDate);
-                });
-            });
-        });
-    </script>
-    {{-- đổi tên label khi import file --}}
+    {{-- change label name when import file --}}
     <script>
         document.getElementById('csv_file').addEventListener('change', function(event) {
             const fileInput = event.target;

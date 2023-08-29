@@ -28,8 +28,7 @@ class HolidayService
             'order_by' => $request->input('order_by', 'date'),
             'query' => $request->input('query'),
         ];
-
-        return $this->holidayRepository->searchByConditions($searchParams);
+        return $this->holidayRepository->searchByConditions($searchParams)->paginate(config('define.paginate'));
     }
 
     public function getHoliday($id)
@@ -43,18 +42,22 @@ class HolidayService
         $dateRange = $data->daterange;
         list($startDate, $endDate) = explode(' - ', $dateRange);
 
-        $startDateObj = Carbon::createFromFormat('d/m/Y', $startDate);
-        $endDateObj = Carbon::createFromFormat('d/m/Y', $endDate);
+        $startDateObj = Carbon::createFromFormat(config('define.date_show'), $startDate);
+        $endDateObj = Carbon::createFromFormat(config('define.date_show'), $endDate);
+        $holidayData = [];
 
         while ($startDateObj <= $endDateObj) {
             $date = $startDateObj->toDateString();
-            $this->holidayRepository->createHoliday([
+            $holidayData[] = [
                 'date' => $date,
                 'title' => $title,
-            ]);
+            ];
             $startDateObj->addDay();
         }
+
+        $this->holidayRepository->createHoliday($holidayData);
     }
+
 
     public function update($data, $id)
     {
@@ -65,67 +68,79 @@ class HolidayService
             $dateRange = $input['daterange'];
             list($startDate, $endDate) = explode(' - ', $dateRange);
 
-            $startDateObj = Carbon::createFromFormat('d/m/Y', $startDate);
-            $endDateObj = Carbon::createFromFormat('d/m/Y', $endDate);
+            $startDateObj = Carbon::createFromFormat(config('define.date_show'), $startDate);
+            $endDateObj = Carbon::createFromFormat(config('define.date_show'), $endDate);
+
+            $holidayData = [];
 
             while ($startDateObj <= $endDateObj) {
                 $date = $startDateObj->toDateString();
-                $this->holidayRepository->createHoliday([
+                $holidayData[] = [
                     'date' => $date,
                     'title' => $title,
-                ]);
+                ];
                 $startDateObj->addDay();
             }
+
+            $this->holidayRepository->createHoliday($holidayData);
         } else {
             $this->holidayRepository->update($input, $id);
         }
     }
 
+
+
     public function import(UploadedFile $file)
     {
         $contents = file_get_contents($file->path());
         $lines = explode("\n", $contents);
-
         array_shift($lines);
-
         foreach ($lines as $line) {
             $line = trim($line);
             if (!empty($line)) {
                 $data = str_getcsv($line);
-                $date = $data[0];
+                $date = Carbon::createFromFormat(config('define.date_show'), $data[0])->format(config('define.date_search'));
                 $title = $data[1];
-                $this->holidayRepository->createHoliday([
+                $holidayData[] = [
                     'date' => $date,
                     'title' => $title,
-                ]);
+                ];
             }
         }
+        $this->holidayRepository->createHoliday($holidayData);
     }
 
 
-    public function export(array $exportData)
+    public function export($request)
     {
+        $searchParams = [
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+            'sort_by' => $request->input('sort_by', 'asc'),
+            'order_by' => $request->input('order_by', 'date'),
+            'query' => $request->input('query'),
+        ];
+        $exportData = $this->holidayRepository->searchByConditions($searchParams)->get();
         if (empty($exportData)) {
             $sampleCsvPath = public_path('sample_csv.csv');
             return response()->download($sampleCsvPath, 'sample.csv');
         }
-
         $csvData = [
             [trans('holiday.date'), trans('holiday.title')]
         ];
 
         foreach ($exportData as $item) {
-            $csvData[] = [$item['date'], $item['title']];
+            $csvData[] = [
+                $item['date']->format(config('define.date_show')),
+                $item['title']
+            ];
         }
 
         $output = fopen('php://output', 'w');
-
         fputs($output, "\xEF\xBB\xBF");
-
         foreach ($csvData as $row) {
             fputcsv($output, $row, ',', '"');
         }
-
         fclose($output);
 
         $headers = [

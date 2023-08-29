@@ -9,11 +9,11 @@
     </section>
     <div class="content">
         <div class="row justify-content-center">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="card card-primary">
                     <div class="card-body p-1">
                         <!-- THE CALENDAR -->
-                        <div id="calendar" class="mx-auto"></div>
+                        <div id="calendar" class="mx-auto col-md-9"></div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -21,6 +21,7 @@
             </div>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var holidays = <?php echo json_encode($events); ?>;
@@ -38,9 +39,14 @@
                 locale: 'vi',
                 customButtons: {
                     today: {
-                        text: 'Hôm nay'
+                        text: "{{ trans('Today') }}",
+                        click: function() {
+                            var currentDate = new Date();
+                            calendar.gotoDate(currentDate);
+                        }
                     },
                 },
+
                 events: events
             });
             calendar.render();

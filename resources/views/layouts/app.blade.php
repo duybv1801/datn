@@ -249,7 +249,7 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- Xóa 1 --}}
+    {{-- Delete 1 --}}
     <script>
         function confirmDelete(event) {
             event.preventDefault();

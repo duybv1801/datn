@@ -18,7 +18,7 @@
                                         <input type="text" class="form-control datetimepicker-input"
                                             data-target="#reservationdate_from" data-toggle="datetimepicker"
                                             name="start_date" id="search_from"
-                                            value="{{ request('start_date',now()->startOfYear()->format('d/m/Y')) }}" />
+                                            value="{{ request('start_date',now()->startOfYear()->format(config('define.date_show'))) }}" />
                                         <div class="input-group-append" data-target="#reservationdate_from"
                                             data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -36,7 +36,7 @@
                                         <input type="text" class="form-control datetimepicker-input"
                                             data-target="#reservationdate_to" data-toggle="datetimepicker"
                                             name="end_date" id="search_to"
-                                            value="{{ request('end_date',now()->endOfYear()->format('d/m/Y')) }}" />
+                                            value="{{ request('end_date',now()->endOfYear()->format(config('define.date_show'))) }}" />
                                         <div class="input-group-append" data-target="#reservationdate_to"
                                             data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -138,7 +138,7 @@
                                 {!! $holiday->title !!}
                             </td>
                             <td>
-                                {!! $holiday->date->format('d/m/Y') !!}
+                                {!! $holiday->date->format(config('define.date_show')) !!}
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
