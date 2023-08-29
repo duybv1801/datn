@@ -40,6 +40,15 @@
         </div>
     </section>
     <div class="content">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <!-- Modal input form -->
         <div class="modal" id="formModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -51,7 +60,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        @include('adminlte-templates::common.errors')
                         <div class="box box-primary">
                             <div class="box-body">
                                 <form action="{!! route('holidays.store') !!}" method="POST" enctype="multipart/form-data">
@@ -102,7 +110,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        @include('adminlte-templates::common.errors')
                         <div class="box box-primary">
                             <div class="box-body">
                                 <form action="{!! route('holidays.import') !!}" method="POST" enctype="multipart/form-data">

@@ -121,7 +121,7 @@
                     @php
                         $i = $holidays->firstItem();
                     @endphp
-                    @foreach ($holidays as $index => $holiday)
+                    @foreach ($holidays as $holiday)
                         <tr>
                             <td>
                                 <div class="custom-control custom-checkbox">
