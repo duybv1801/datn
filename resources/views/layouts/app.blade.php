@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ trans('auth.nal_lg') }}</title>
-
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -39,9 +38,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
-    {{-- <!-- CSS Bootstrap -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet"> --}}
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -164,6 +160,10 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js">
     </script>
+    {{-- Calendar --}}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
+
 
     <script>
         $(function() {
@@ -198,32 +198,27 @@
             });
         });
     </script>
-    <!-- Page specific script -->
     <script>
         $(function() {
-            //Datemask dd/mm/yyyy
-            $('#datemask').inputmask('dd/mm/yyyy', {
-                'placeholder': 'dd/mm/yyyy'
-            })
-            //Datemask2 mm/dd/yyyy
-            $('#datemask2').inputmask('mm/dd/yyyy', {
-                'placeholder': 'mm/dd/yyyy'
-            })
-
-            //Date picker
-            $('#reservationdate').datetimepicker({
-                format: 'L'
+            // Date picker
+            $('.reservationdate').datetimepicker({
+                format: 'DD/MM/yyyy',
             });
 
 
             //Date range picker
-            $('#reservation').daterangepicker()
+            $('.reservation').daterangepicker({
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                }
+            })
             //Date range picker with time picker
             $('#reservationtime').daterangepicker({
                 timePicker: true,
                 timePickerIncrement: 30,
                 locale: {
-                    format: 'MM/DD/YYYY hh:mm A'
+                    format: 'DD/MM/YYYY hh:ii'
                 }
             })
             //Date range as a button
@@ -248,12 +243,19 @@
             $('.timepicker').datetimepicker({
                 format: 'HH:mm'
             });
+            $('#reservationdate').datetimepicker({
+                format: 'DD/MM/YYYY'
+            });
+            $('#reservation').daterangepicker({
+                format: 'DD/MM/YYYY',
+            })
         });
     </script>
 
 
     {{-- delete arlert modal --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- Delete 1 --}}
     <script>
         function confirmDelete(event) {
             event.preventDefault();
@@ -273,8 +275,7 @@
             });
         }
     </script>
-
-    <script>
+    <<<<<<< HEAD <script>
         function confirmCancel(event) {
             event.preventDefault();
 
@@ -296,6 +297,32 @@
 
 
     {{-- avatar --}}
+    =======
+    {{-- show modal edit holiday --}}
+    <script type="text/javascript">
+        $(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('body').on('click', '#edit_holiday', function() {
+                var id = $(this).data('id');
+
+                $.get('/holidays' + '/' + id + '/edit', function(data) {
+                    $('#modelHeading').html("Edit Post");
+                    $('#editModal').modal('show');
+                    var editForm = $('#editModal').find('form');
+                    editForm.attr('action', editForm.attr('action').replace('__id__', id));
+                    $('#titleHoliday').val(data.title);
+                    var formattedDate = moment(data.date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+                    $('#dateHoliday').val(formattedDate);
+                });
+            });
+        });
+    </script>
+    >>>>>>> 675355a8671c5c0b2f5377db5ae57a9bca3a1207
     <script>
         function previewAvatar(event) {
             var input = event.target;
@@ -313,41 +340,41 @@
             }
         }
     </script>
+    <<<<<<< HEAD {{-- multy choice cc --}} <!-- Include the Select2 library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
-    {{-- multy choice cc --}}
-    <!-- Include the Select2 library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('#cc').select2();
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datetimepicker@4.17.47/build/js/bootstrap-datetimepicker.min.js">
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $('.datetime_24h').datetimepicker({
-                format: 'DD/MM/YYYY HH:mm',
-                icons: {
-                    time: 'fa fa-clock',
-                    date: 'fa fa-calendar',
-                    up: 'fa fa-chevron-up',
-                    down: 'fa fa-chevron-down',
-                    previous: 'fa fa-chevron-left',
-                    next: 'fa fa-chevron-right',
-                    today: 'fa fa-calendar-check',
-                    clear: 'fa fa-trash',
-                    close: 'fa fa-times'
-                }
+        <script>
+            $(document).ready(function() {
+                $('#cc').select2();
             });
-        });
-    </script>
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-datetimepicker@4.17.47/build/js/bootstrap-datetimepicker.min.js">
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                $('.datetime_24h').datetimepicker({
+                    format: 'DD/MM/YYYY HH:mm',
+                    icons: {
+                        time: 'fa fa-clock',
+                        date: 'fa fa-calendar',
+                        up: 'fa fa-chevron-up',
+                        down: 'fa fa-chevron-down',
+                        previous: 'fa fa-chevron-left',
+                        next: 'fa fa-chevron-right',
+                        today: 'fa fa-calendar-check',
+                        clear: 'fa fa-trash',
+                        close: 'fa fa-times'
+                    }
+                });
+            });
+        </script>
 
 
+        =======
+        >>>>>>> 675355a8671c5c0b2f5377db5ae57a9bca3a1207
 </body>
 
 </html>
