@@ -8,7 +8,7 @@
             </div>
 
             <div class="col-md-6">
-                <a class="btn btn-primary float-right" href="{!! route('registration.create') !!}">{{ trans('Add New') }}</a>
+                <a class="btn btn-primary float-right" href="{!! route('remote.create') !!}">{{ trans('Add New') }}</a>
             </div>
 
         </div>
@@ -17,7 +17,7 @@
         @include('flash::message')
         <div class="box box-primary">
             <div class="box-body">
-                @include('registration_form.registration.table')
+                @include('remote.registration.table')
             </div>
         </div>
     </div>

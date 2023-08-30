@@ -15,9 +15,11 @@ return [
     'crud' => [
         'created' => 'Thêm mới thành công !',
         'updated' => 'Cập nhật thành công !',
+        'approve' => 'Đã kiểm duyệt thành công !',
         'delete' => 'Xóa thành công !',
         'show_error' => 'Không tìm thấy thông tin',
-        'erro_user' => 'Không tồn tại người dùng này'
+        'erro_user' => 'Không tồn tại người dùng này',
+        'cancel' => 'Hủy thành công'
     ],
 
     'accepted'             => 'Trường :attribute phải được chấp nhận.',
@@ -170,5 +172,7 @@ return [
         'title'                 => 'tiêu đề',
         'username'              => 'tên đăng nhập',
         'year'                  => 'năm',
+        'from_datetime'         => 'Từ',
+        'to_datetime'           => 'Đến',
     ],
 ];

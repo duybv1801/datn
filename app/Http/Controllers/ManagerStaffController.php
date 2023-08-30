@@ -8,6 +8,7 @@ use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Mail\VerifyEmail;
 use App\Models\Role;
+use App\Models\Team;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Laracasts\Flash\Flash;
@@ -99,6 +100,7 @@ class ManagerStaffController extends AppBaseController
             return redirect()->back();
         }
         $user = $this->userRepository->find($id);
+        $teams = Team::pluck('name', 'id');
 
         if (empty($user)) {
             Flash::error(trans('validation.crud.show_error'));
@@ -106,7 +108,7 @@ class ManagerStaffController extends AppBaseController
             return redirect(route('manager_staff.index'));
         }
 
-        return view('manager_staff.edit')->with('user', $user);
+        return view('manager_staff.edit', compact('user', 'teams'));
     }
 
     /**
@@ -131,6 +133,10 @@ class ManagerStaffController extends AppBaseController
         $input =  $request->all();
         $role_id = $request->input('role_id');
         $role = Role::where('id', $role_id)->first();
+        $team_id = $request->input('team_id');
+        $team = Team::where('id', $team_id)->first();
+        $input['team_id'] = $team->id;
+
         $user = $this->userRepository->update($input, $id);
         $user->roles()->sync($role);
         Flash::success(trans('validation.crud.updated'));

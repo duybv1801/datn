@@ -37,6 +37,11 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    {{-- <!-- CSS Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet"> --}}
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -49,6 +54,10 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+                {{-- Notifications Dropdown Menu --}}
+                @include('layouts.notifi')
+                {{-- full screen --}}
+
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>
@@ -79,7 +88,7 @@
                             class="brand-image img-circle elevation-3" style="max-width: 45px; opacity: .8">
                     @endif
                 </div>
-                <span class="brand-text font-weight-light">{{ Auth::user()->name }}</span>
+                <span class="brand-text font-weight-light">{{ Auth::user()->code }}</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
@@ -105,6 +114,10 @@
             <footer class="footer"> {{ trans('auth.nal') }}<a href="#">
             </footer>
     </div>
+
+
+    <!-- JavaScript Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <!-- ./wrapper -->
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -202,12 +215,6 @@
                 format: 'L'
             });
 
-            //Date and time picker
-            $('#reservationdatetime').datetimepicker({
-                icons: {
-                    time: 'far fa-clock'
-                }
-            });
 
             //Date range picker
             $('#reservation').daterangepicker()
@@ -237,12 +244,15 @@
                     'MMMM D, YYYY'))
             });
 
-            //Timepicker
+            //Timepicker        
             $('.timepicker').datetimepicker({
                 format: 'HH:mm'
             });
         });
     </script>
+
+
+    {{-- delete arlert modal --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmDelete(event) {
@@ -263,6 +273,29 @@
             });
         }
     </script>
+
+    <script>
+        function confirmCancel(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "{{ trans('Are you sure you want to cancel?') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: "{{ trans('Yes, Cancel it!') }}",
+                cancelButtonText: "{{ trans('Cancel') }}"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.closest('form').submit();
+                }
+            });
+        }
+    </script>
+
+
+    {{-- avatar --}}
     <script>
         function previewAvatar(event) {
             var input = event.target;
@@ -280,6 +313,40 @@
             }
         }
     </script>
+
+    {{-- multy choice cc --}}
+    <!-- Include the Select2 library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#cc').select2();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datetimepicker@4.17.47/build/js/bootstrap-datetimepicker.min.js">
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.datetime_24h').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
+                icons: {
+                    time: 'fa fa-clock',
+                    date: 'fa fa-calendar',
+                    up: 'fa fa-chevron-up',
+                    down: 'fa fa-chevron-down',
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-calendar-check',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times'
+                }
+            });
+        });
+    </script>
+
 
 </body>
 

@@ -6,16 +6,18 @@ return [
     'from' => 'Từ',
     'to' => 'Đến',
     'reason' => 'Lí do',
+    'options' => 'Lựa chọn chức năng',
+    'comment' => 'Phản hồi',
     'total_hours' => 'Số giờ',
-    'envident' => 'Chứng cứ xác minh',
+    'evident' => 'Chứng cứ xác minh',
     'cc' => 'CC',
     'approver' => 'Người xét duyệt',
     'status' => [
         'name' => 'Trạng thái',
-        '1' => 'Đăng ký remote',
-        '2' => 'Duyệt đăng ký',
-        '3' => 'Không cho phép',
-        '4' => 'Hủy'
+        'regist' => 'Chưa được duyệt',
+        'approve' => 'Duyệt đăng ký',
+        'ban' => 'Không cho phép',
+        'cancel' => 'Hủy'
     ],
 
 ];

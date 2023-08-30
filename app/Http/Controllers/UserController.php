@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 

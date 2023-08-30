@@ -11,10 +11,13 @@
                                 <th>{{ Form::label('name', trans('staff.name.name')) }}</th>
                                 <th>{{ Form::label('email', trans('staff.email')) }}</th>
                                 <th>{{ Form::label('code', trans('staff.code')) }}</th>
+                                <th>{{ Form::label('role', trans('staff.role.name')) }}</th>
                                 <th>{{ Form::label('gender', trans('staff.genders.name')) }} </th>
                                 <th>{{ Form::label('birthday', trans('staff.birthday')) }}</th>
                                 <th>{{ Form::label('phone', trans('staff.phone')) }} </th>
-                                <th>{{ Form::label('funtions', trans('Funtions')) }}</th>
+                                @can('update', App\Models\User::class)
+                                    <th>{{ Form::label('funtions', trans('Funtions')) }}</th>
+                                @endcan
                             </tr>
                         </thead>
 
@@ -33,13 +36,24 @@
                                         <p>{!! $user->code !!}</p>
                                     </td>
                                     <td>
+                                        {{ $user->role_id == 1
+                                            ? trans('staff.role.admin')
+                                            : ($user->role_id == 2
+                                                ? trans('staff.role.member')
+                                                : ($user->role_id == 3
+                                                    ? trans('staff.role.accounter')
+                                                    : ($user->role_id == 4
+                                                        ? trans('staff.role.hr')
+                                                        : ''))) }}
+                                    </td>
+                                    <td>
                                         <p>
                                             {{ $user->gender == 1 ? trans('staff.genders.male') : trans('staff.genders.female') }}
                                         </p>
                                     </td>
                                     <td>
                                         <p>
-                                            {!! $user->birthday !!}
+                                            {!! (new \DateTime($user->birthday))->format('d/m/Y') !!}
                                         </p>
                                     </td>
                                     <td>

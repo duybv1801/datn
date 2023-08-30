@@ -23,13 +23,14 @@
                 value="{{ $user->last_name }}" />
         </div>
 
+        {{-- email --}}
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="email">
                 {{ trans('staff.email') }}
                 <span class="text-danger">*</span>
             </label>
             <input type="email" name="email" id="email" class="form-control col-sm-5"
-                value="{{ $user->email }}" />
+                value="{{ $user->email }}" readonly />
         </div>
 
         <!-- Code Field -->
@@ -38,7 +39,7 @@
                 <span class="text-danger">*</span>
             </label>
             <input type="text" name="code" id="code" class="form-control col-sm-5"
-                value="{{ $user->code }}" />
+                value="{{ $user->code }}" readonly />
         </div>
 
         <!-- Start Date Field -->
@@ -84,13 +85,14 @@
 
         <!-- Contract Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="contract">{{ trans('staff.contract.name') }}</label>
+            <label class="col-sm-5 control-label" for="contract">{{ trans('staff.contract.name') }}
+                <span class="text-danger">*</span></label>
             <select name="contract" id="contract" class="form-control col-sm-5">
                 <option value="2" {{ $user->contract == 2 ? 'selected' : '' }}>
                     {{ trans('staff.contract.staff') }}
                 </option>
                 <option value="1" {{ $user->contract == 1 ? 'selected' : '' }}>
-                    {{ trans('staff.contract.probationary ') }}
+                    {{ trans('staff.contract.probationary') }}
                 </option>
                 <option value="3" {{ $user->contract == 3 ? 'selected' : '' }}>
                     {{ trans('staff.contract.intern') }}
@@ -107,7 +109,8 @@
 
         <!-- Phone Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="phone">{{ trans('staff.phone') }}</label>
+            <label class="col-sm-5 control-label" for="phone">{{ trans('staff.phone') }}
+                <span class="text-danger">*</span></label>
             <input type="number" name="phone" id="phone" class="form-control col-sm-5"
                 value="{{ $user->phone }}" />
         </div>
@@ -126,37 +129,55 @@
 
         <!-- Position Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="position">{{ trans('staff.position.name') }}</label>
+            <label class="col-sm-5 control-label" for="position">{{ trans('staff.position.name') }}
+                <span class="text-danger">*</span></label>
             <select name="position" id="position" class="form-control col-sm-5">
-                <option value="1" {{ $user->position == 1 ? 'selected' : '' }}>{{ trans('staff.position.1') }}
+                <option value="1" {{ $user->position == 1 ? 'selected' : '' }}>
+                    {{ trans('staff.position.staff') }}
                 </option>
-                <option value="2" {{ $user->position == 2 ? 'selected' : '' }}>{{ trans('staff.position.2') }}
+                <option value="2" {{ $user->position == 2 ? 'selected' : '' }}>{{ trans('staff.position.po') }}
                 </option>
-                <option value="3" {{ $user->position == 3 ? 'selected' : '' }}>{{ trans('staff.position.3') }}
+                <option value="3" {{ $user->position == 3 ? 'selected' : '' }}>
+                    {{ trans('staff.position.lead') }}
                 </option>
-                <option value="4" {{ $user->position == 4 ? 'selected' : '' }}>{{ trans('staff.position.4') }}
+                <option value="4" {{ $user->position == 4 ? 'selected' : '' }}>
+                    {{ trans('staff.position.culi') }}
                 </option>
             </select>
         </div>
 
-        <!-- Avatar Field -->
+        <!-- Team Field -->
+
+
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="avatar">{{ trans('staff.avatar') }}</label>
-            <input type="text" name="avatar" id="avatar" class="form-control col-sm-5"
-                value="{{ $user->avatar }}" />
+            <label class="col-sm-5 control-label" for="team_id">{{ trans('staff.team') }}
+                <span class="text-danger">*</span>
+            </label>
+            <select name="team_id" id="team_id" class="form-control col-sm-5">
+                @foreach ($teams as $teamId => $teamName)
+                    <option value="{{ $teamId }}" {{ $user->team_id == $teamId ? 'selected' : '' }}>
+                        {{ $teamName }}
+                    </option>
+                @endforeach
+            </select>
         </div>
+
+        <!-- Trường ẩn để lưu giá trị team_id -->
+        <input type="hidden" name="original_team_id" value="{{ $user->team_id }}">
 
         <!-- Role Field -->
         <div class="form-group row">
-            <label class="col-sm-5 control-label" for="role_id">{{ trans('staff.role.name') }}</label>
+            <label class="col-sm-5 control-label" for="role_id">{{ trans('staff.role.name') }}
+                <span class="text-danger">*</span></label>
             <select name="role_id" id="role_id" class="form-control col-sm-5">
-                <option value="1" {{ $user->role_id == 1 ? 'selected' : '' }}>{{ trans('staff.role.1') }}
+                <option value="1" {{ $user->role_id == 1 ? 'selected' : '' }}>{{ trans('staff.role.admin') }}
                 </option>
-                <option value="2" {{ $user->role_id == 2 ? 'selected' : '' }}>{{ trans('staff.role.2') }}
+                <option value="2" {{ $user->role_id == 2 ? 'selected' : '' }}>{{ trans('staff.role.member') }}
                 </option>
-                <option value="3" {{ $user->role_id == 3 ? 'selected' : '' }}>{{ trans('staff.role.3') }}
+                <option value="3" {{ $user->role_id == 3 ? 'selected' : '' }}>
+                    {{ trans('staff.role.accounter') }}
                 </option>
-                <option value="4" {{ $user->role_id == 4 ? 'selected' : '' }}>{{ trans('staff.role.4') }}
+                <option value="4" {{ $user->role_id == 4 ? 'selected' : '' }}>{{ trans('staff.role.hr') }}
                 </option>
             </select>
         </div>

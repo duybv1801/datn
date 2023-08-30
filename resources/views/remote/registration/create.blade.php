@@ -16,9 +16,9 @@
                             <div class="box box-primary">
 
                                 <div class="box-body">
-                                    {!! Form::open(['route' => 'registration.store']) !!}
+                                    {!! Form::open(['route' => ['remote.store'], 'method' => 'post', 'files' => true]) !!}
 
-                                    @include('registration_form.registration.store')
+                                    @include('remote.registration.store')
 
                                     {!! Form::close() !!}
                                 </div>

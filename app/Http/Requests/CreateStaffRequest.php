@@ -25,7 +25,7 @@ class CreateStaffRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name'                  => 'required',
+            'name'                  => 'required|max:225',
             'email'                 => 'required|email|unique:users,email',
             'password'              => 'required|confirmed',
             'code'    => 'required|unique:users,code'

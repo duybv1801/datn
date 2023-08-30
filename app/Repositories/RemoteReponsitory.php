@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use Carbon\Carbon;
 use App\Models\Remote;
 use App\Repositories\BaseRepository;
 
@@ -44,5 +45,37 @@ class RemoteReponsitory extends BaseRepository
     public function model()
     {
         return Remote::class;
+    }
+    public function findByUserId($userId)
+    {
+        return Remote::where('user_id', $userId)->get();
+    }
+    public function searchByConditions($search)
+    {
+        $query = $this->model;
+
+        if (!isset($search['start_date'])) {
+            $start_date = now()->startOfYear()->format('Y-m-d');
+        } else {
+            $start_date = Carbon::createFromFormat('d/m/Y', $search['start_date'])->format('Y-m-d');
+        }
+
+        if (!isset($search['end_date'])) {
+            $end_date = now()->endOfYear()->format('Y-m-d');
+        } else {
+            $end_date = Carbon::createFromFormat('d/m/Y', $search['end_date'])->format('Y-m-d');
+        }
+
+        if (isset($search['query'])) {
+            $query = $query->where('title', 'like', '%' . $search['query'] . '%');
+        }
+
+        if (isset($search['sort_by']) && in_array($search['sort_by'], ['asc', 'desc'])) {
+            $sortField = isset($search['order_by']) ? $search['order_by'] : 'date';
+            $query = $query->orderBy($sortField, $search['sort_by']);
+        }
+        $query = $query->where('date', '>=', $start_date)->where('date', '<=', $end_date);
+
+        return $query->paginate(10);
     }
 }

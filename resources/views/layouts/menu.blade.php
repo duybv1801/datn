@@ -6,9 +6,12 @@
             {{ trans('Home') }}
         </p>
     </a>
-</li>
 
-{{-- Account manager --}}
+    {{-- notification --}}
+    <a type="hidden" name="user_id" href="{!! route('home') !!}">
+
+
+        {{-- Account manager --}}
 <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
     <a href="#" class="nav-link">
         <i class="	far fa-address-card"></i>
@@ -50,27 +53,30 @@
     </li>
 @endcan
 
-{{-- Registration form --}}
+{{-- Registration Remote --}}
 <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
     <a href="#" class="nav-link">
         <i class="fab fa-twitch"></i>
         <p>
-            {{ trans('Remote, On leave, OT') }}
+            {{ trans('Remote') }}
             <i class="fas fa-angle-left right"></i>
         </p>
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{!! route('registration.index') !!}" class="nav-link">
+            <a href="{!! route('remote.index') !!}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p> {{ trans('Registration') }}</p>
             </a>
         </li>
-        <li class="nav-item">
-            <a href="{!! route('users.index') !!}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('Manager') }}</p>
-            </a>
-        </li>
+
+        @can('viewAny', App\Models\Remote::class)
+            <li class="nav-item">
+                <a href="{!! route('manager_remote.index') !!}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('Manager') }}</p>
+                </a>
+            </li>
+        @endcan
     </ul>
 </li>
