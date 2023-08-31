@@ -37,9 +37,13 @@ class ManagerStaffController extends AppBaseController
         if (!$request->user()->hasPermission('read')) {
             return redirect()->back();
         }
+        $searchParams = [
+            'query' => $request->input('query'),
+        ];
 
-        $users = $this->userRepository->all();
-        $users = $this->userRepository->paginate(10);
+        $users = $this->userRepository->searchByConditions($searchParams)
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
         return view('manager_staff.index')->with('users', $users);
     }

@@ -6,14 +6,14 @@
 
         <!-- from_datetime Field -->
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label" for="from_datetime">{{ trans('remote.from') }}
+            <label class="col-sm-4 col-form-label" for="from_datetimenew">{{ trans('remote.from') }}
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">
                 <div class="input-group date datetime_24h" id="from_datetime" data-target-input="nearest">
-                    <input type="text" name="from_datetime" class="form-control datetimepicker-input"
-                        data-target="#from_datetime"
-                        value="{{ (new \DateTime($remote->from_datetime))->format('d/m/Y H:i') }}"
+                    <input type="text" name="from_datetime"id="from_datetimenew"
+                        class="form-control datetimepicker-input" data-target="#from_datetime"
+                        value="{{ (new \DateTime($remote->from_datetime))->format(config('define.date_time')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -24,14 +24,15 @@
 
         <!-- to_datetime Field -->
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label" for="to_datetime">{{ trans('remote.to') }}
+            <label class="col-sm-4 col-form-label" for="to_datetimenew">{{ trans('remote.to') }}
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">
                 <div class="input-group date datetime_24h" id="to_datetime" data-target-input="nearest">
-                    <input type="text" name="to_datetime" class="form-control datetimepicker-input"
-                        data-target="#from_datetime"
-                        value="{{ (new \DateTime($remote->to_datetime))->format('d/m/Y H:i') }}" required="required" />
+                    <input type="text" name="to_datetime" id="to_datetimenew"
+                        class="form-control datetimepicker-input" data-target="#from_datetime"
+                        value="{{ (new \DateTime($remote->to_datetime))->format(config('define.date_time')) }}"
+                        required="required" />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>

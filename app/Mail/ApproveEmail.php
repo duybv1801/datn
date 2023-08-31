@@ -26,9 +26,9 @@ class ApproveEmail extends Mailable
 
 
         if ($status === 'Approve') {
-            $subject = 'Bạn đã được đồng ý';
+            $subject = trans('mail.mail.mail_approved');
         } elseif ($status === 'Reject') {
-            $subject = 'Bạn đã bị từ chối';
+            $subject = trans('mail.mail.mail_rejected');
         }
 
         return $this->view('mail.approve')

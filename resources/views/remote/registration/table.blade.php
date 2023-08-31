@@ -3,6 +3,62 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
+                {{-- search --}}
+                <form action="{!! route('remote.index') !!}" method="GET" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-10 offset-md-1">
+                            <div class="row">
+                                {{-- from date --}}
+                                <div class="col-2">
+                                    <div class="form-group">
+                                        <label for="search_from">{{ trans('From Date') }}</label>
+                                        <div class="input-group date reservationdate" id="reservationdate_from"
+                                            data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input"
+                                                data-target="#reservationdate_from" data-toggle="datetimepicker"
+                                                name="start_date" id="search_from"
+                                                value="{{ request('start_date',now()->startOfYear()->format(config('define.date_show'))) }}" />
+                                            <div class="input-group-append" data-target="#reservationdate_from"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- todate --}}
+                                <div class="col-2">
+                                    <div class="form-group">
+                                        <label for="search_to">{{ trans('To Date') }}</label>
+                                        <div class="input-group date reservationdate" id="reservationdate_to"
+                                            data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input"
+                                                data-target="#reservationdate_to" data-toggle="datetimepicker"
+                                                name="end_date" id="search_to"
+                                                value="{{ request('end_date',now()->endOfYear()->format(config('define.date_show'))) }}" />
+                                            <div class="input-group-append" data-target="#reservationdate_to"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- search --}}
+                                <div class="col-1">
+                                    <div class="form-group">
+                                        <label for="filter">{{ trans('Filter') }}</label>
+                                        <div class="input-group">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
                 <div class="table-responsive">
                     <table class="table user-table">
                         <thead>
@@ -17,10 +73,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($remotes as $index => $remote)
+                            <?php $i = $remotes->firstItem(); ?>
+                            @foreach ($remotes as $remote)
                                 @if ($remote->user_id == Auth::id())
                                     <tr>
-                                        <td> {{ $index + 1 }}</td>
+                                        <td> {{ $i++ }}</td>
                                         <td>{{ $remote->from_datetime->format('d/m/Y H:i') }}</td>
                                         <td>{{ $remote->to_datetime->format('d/m/Y H:i') }}</td>
                                         <td>{{ $remote->total_hours }}</td>
@@ -66,9 +123,14 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{-- <div class="pagination justify-content-center">
-                        {{ $remotes->appends(['start_date' => request()->input('start_date'), 'end_date' => request()->input('end_date')])->links() }}
-                    </div> --}}
+                    <div class="pagination justify-content-center">
+                        {{ $remotes->appends([
+                                'start_date' => request()->input('start_date'),
+                                'end_date' => request()->input('end_date'),
+                                'sort_by' => request()->input('sort_by'),
+                                'order_by' => request()->input('order_by'),
+                            ])->links() }}
+                    </div>
                 </div>
             </div>
         </div>

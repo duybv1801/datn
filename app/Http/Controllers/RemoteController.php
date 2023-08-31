@@ -23,8 +23,17 @@ class RemoteController  extends AppBaseController
 
     public function index(Request $request)
     {
+        $searchParams = [
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+            'query' => $request->input('query'),
+        ];
         $userId = $request->user()->id;
-        $remotes = $this->remoteReponsitory->findByUserId($userId);
+        $remotes = $this->remoteReponsitory->searchByConditions($searchParams)
+            ->where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
         foreach ($remotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
             $remote->to_datetime = Carbon::parse($remote->to_datetime);

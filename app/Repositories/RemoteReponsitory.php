@@ -48,7 +48,11 @@ class RemoteReponsitory extends BaseRepository
     }
     public function findByUserId($userId)
     {
-        return Remote::where('user_id', $userId)->get();
+        return Remote::where('user_id', $userId);
+    }
+    public function remoteshow()
+    {
+        return Remote::orderByDesc('created_at');
     }
     public function searchByConditions($search)
     {
@@ -57,25 +61,17 @@ class RemoteReponsitory extends BaseRepository
         if (!isset($search['start_date'])) {
             $start_date = now()->startOfYear()->format('Y-m-d');
         } else {
-            $start_date = Carbon::createFromFormat('d/m/Y', $search['start_date'])->format('Y-m-d');
+            $start_date = Carbon::createFromFormat('d/m/Y', $search['start_date'])->format(config('define.datetime_db'));
         }
 
         if (!isset($search['end_date'])) {
             $end_date = now()->endOfYear()->format('Y-m-d');
         } else {
-            $end_date = Carbon::createFromFormat('d/m/Y', $search['end_date'])->format('Y-m-d');
+            $end_date = Carbon::createFromFormat('d/m/Y', $search['end_date'])->format(config('define.datetime_db'));
         }
 
-        if (isset($search['query'])) {
-            $query = $query->where('title', 'like', '%' . $search['query'] . '%');
-        }
+        $query = $query->where('from_datetime', '>=', $start_date)->where('to_datetime', '<=', $end_date);
 
-        if (isset($search['sort_by']) && in_array($search['sort_by'], ['asc', 'desc'])) {
-            $sortField = isset($search['order_by']) ? $search['order_by'] : 'date';
-            $query = $query->orderBy($sortField, $search['sort_by']);
-        }
-        $query = $query->where('date', '>=', $start_date)->where('date', '<=', $end_date);
-
-        return $query->paginate(10);
+        return $query;
     }
 }

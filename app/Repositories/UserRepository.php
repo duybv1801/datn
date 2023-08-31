@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use Carbon\Carbon;
 
 /**
  * Class UserRepository
@@ -56,5 +57,14 @@ class UserRepository extends BaseRepository
     public function model()
     {
         return User::class;
+    }
+
+    public function searchByConditions($search)
+    {
+        $query = $this->model;
+        if (isset($search['query'])) {
+            $query = $query->where('code', 'like', '%' . $search['query'] . '%');
+        }
+        return $query;
     }
 }

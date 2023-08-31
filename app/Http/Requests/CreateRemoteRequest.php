@@ -24,7 +24,6 @@ class CreateRemoteRequest extends FormRequest
             $fromDatetime = Carbon::createFromFormat('d/m/Y H:i', $this->input('from_datetime'));
             $toDatetime = Carbon::createFromFormat('d/m/Y H:i', $this->input('to_datetime'));
 
-
             $startSetting = Setting::where('key', 'check_in_time')->value('value');
             $endSetting = Setting::where('key', 'check_out_time')->value('value');
 
@@ -38,11 +37,11 @@ class CreateRemoteRequest extends FormRequest
             $breakEndTime = Carbon::createFromFormat('H:i', $breakEndTimeSetting);
 
             if ($fromDatetime->format('H:i') < $startTime->format('H:i') || $fromDatetime->format('H:i') > $endTime->format('H:i')) {
-                $validator->errors()->add('from_datetime', 'Thời gian bắt đầu không hợp lệ.');
+                $validator->errors()->add('from_datetime', trans('validation.crud.beggintime_false'));
             }
 
             if ($toDatetime->format('H:i') < $startTime->format('H:i') || $toDatetime->format('H:i') > $endTime->format('H:i')) {
-                $validator->errors()->add('to_datetime', 'Thời gian kết thúc không hợp lệ.');
+                $validator->errors()->add('to_datetime', trans('validation.crud.endtime_false'));
             }
 
             $totalDuration = $toDatetime->diffInHours($fromDatetime);
@@ -52,14 +51,14 @@ class CreateRemoteRequest extends FormRequest
             }
 
             if ($totalDuration > 8) {
-                $validator->errors()->add('to_datetime', 'Thời gian làm việc không được vượt quá 8 giờ trong một ngày.');
+                $validator->errors()->add('to_datetime', trans('validation.crud.overtime_false'));
             }
 
             if (!$validator->errors()->any()) {
                 $this->merge([
                     'total_hours' => $totalDuration,
-                    'from_datetime' => $fromDatetime->format('Y/m/d H:i'),
-                    'to_datetime' => $toDatetime->format('Y/m/d H:i')
+                    'from_datetime' => $fromDatetime->format(config('define.datetime_db')),
+                    'to_datetime' => $toDatetime->format(config('define.datetime_db'))
                 ]);
             }
         });

@@ -3,6 +3,38 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
+                {{-- search --}}
+                <form action="{!! route('manager_staff.index') !!}" method="GET" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-10 offset-md-1">
+                            <div class="row">
+                                {{-- code --}}
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="code">{{ trans('Codes') }}</label>
+                                        <div class="input-group">
+                                            <input type="search" class="form-control"
+                                                placeholder="{{ trans('Codes') }}" name="query" id="code"
+                                                value="{{ request('query') ? request('query') : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- search --}}
+                                <div class="col-1">
+                                    <div class="form-group">
+                                        <label for="filter">{{ trans('Filter') }}</label>
+                                        <div class="input-group">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 <div class="table-responsive">
                     <table class="table user-table">
                         <thead>

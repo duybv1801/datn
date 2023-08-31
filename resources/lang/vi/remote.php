@@ -3,8 +3,8 @@
 return [
     'remote' => 'Làm việc từ xa',
     'creator' => 'Người tạo',
-    'from' => 'Từ',
-    'to' => 'Đến',
+    'from' => 'Từ ngày',
+    'to' => 'Đến ngày',
     'reason' => 'Lí do',
     'options' => 'Lựa chọn chức năng',
     'comment' => 'Phản hồi',

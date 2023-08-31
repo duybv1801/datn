@@ -21,6 +21,9 @@ return [
         'erro_user' => 'Không tồn tại người dùng này',
         'cancel' => 'Hủy thành công',
         'imported' => 'Nhập file thành công',
+        'endtime_false' => 'Thời gian kết thúc không hợp lệ !',
+        'beggintime_false' => 'Thời gian bắt đầu không hợp lệ !',
+        'overtime_false' => 'Thời gian đã quá 8 tiếng trên ngày'
     ],
     'import_holidays' => 'Đã import ngày nghỉ cho năm ',
     'accepted'             => 'Trường :attribute phải được chấp nhận.',

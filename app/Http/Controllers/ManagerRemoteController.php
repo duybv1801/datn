@@ -30,9 +30,14 @@ class ManagerRemoteController  extends AppBaseController
         if (!$request->user()->hasPermission('read')) {
             return redirect()->back();
         }
-
-        $manager_remotes = $this->remoteReponsitory->all();
-        $manager_remotes = $this->remoteReponsitory->paginate(10);
+        $searchParams = [
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+            'query' => $request->input('query'),
+        ];
+        $manager_remotes = $this->remoteReponsitory->searchByConditions($searchParams)
+            ->orderByDesc('created_at')
+            ->paginate(10);
         foreach ($manager_remotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
             $remote->to_datetime = Carbon::parse($remote->to_datetime);
