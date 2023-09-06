@@ -10,7 +10,7 @@
                 <div class="input-group date datetime_24h" id="from_datetime" data-target-input="nearest">
                     <input type="text" name="from_datetime" class="form-control datetimepicker-input"
                         data-target="#from_datetime"
-                        value="{{ (new \DateTime($managerRemotes->from_datetime))->format('d/m/Y H:i') }}"
+                        value="{{ \Carbon\Carbon::parse($managerRemotes->from_datetime)->format(config('define.datetime')) }}"
                         required="required" readonly />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -26,7 +26,7 @@
                 <div class="input-group date datetime_24h" id="to_datetime" data-target-input="nearest">
                     <input type="text" name="to_datetime" class="form-control datetimepicker-input"
                         data-target="#from_datetime"
-                        value="{{ (new \DateTime($managerRemotes->to_datetime))->format('d/m/Y H:i') }}"
+                        value="{{ \Carbon\Carbon::parse($managerRemotes->to_datetime)->format(config('define.datetime')) }}"
                         required="required" readonly />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>

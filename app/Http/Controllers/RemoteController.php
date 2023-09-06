@@ -98,9 +98,9 @@ class RemoteController  extends AppBaseController
             $input['evident'] = $imageUrl;
         }
         if ($remotes->evident) {
-            $old_image_path = str_replace('/storage', 'public', $remotes->evident);
-            if (Storage::exists($old_image_path)) {
-                Storage::delete($old_image_path);
+            $oldImagePath = str_replace('/storage', 'public', $remotes->evident);
+            if (Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
             }
         }
 
