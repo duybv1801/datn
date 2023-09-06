@@ -4,7 +4,9 @@
         <div class="card">
             <div class="card-body">
                 {{-- search --}}
-                <form action="{!! route('manager_remote.index') !!}" method="GET" enctype="multipart/form-data">
+                <form
+                    action="{{ Request::url() !== route('manager_remote.index') ? Request::url() : route('manager_remote.index') }}"
+                    method="GET">
                     <div class="row">
                         <div class="col-md-10 offset-md-1">
                             <div class="row">
@@ -42,10 +44,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                {{-- user_id --}}
+                                <div class="col-3">
+                                    <div class="form-group">
+                                        <label for="creator">{{ trans('Creator') }}</label>
+                                        <div class="input-group">
+                                            <input type="search" class="form-control"
+                                                placeholder="{{ trans('Creator') }}" name="query" id="creator"
+                                                value="{{ request('query') ? request('query') : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
                                 {{-- search --}}
                                 <div class="col-1">
                                     <div class="form-group">
-                                        <label for="filter">{{ trans('Filter') }}</label>
+                                        <label for="filter">&nbsp;</label>
                                         <div class="input-group">
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fa fa-search"></i>
@@ -62,7 +75,7 @@
                     <table class="table user-table">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>{{ Form::label('name', '#') }}</th>
                                 <th>{{ Form::label('name', trans('remote.creator')) }}</th>
                                 <th>{{ Form::label('from', trans('remote.from')) }}</th>
                                 <th>{{ Form::label('to', trans('remote.to')) }}</th>
@@ -73,55 +86,56 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = $manager_remotes->firstItem(); ?>
-                            @foreach ($manager_remotes as $manager_remote)
+                            <?php $i = $managerRemotes->firstItem(); ?>
+                            @foreach ($managerRemotes as $managerRemote)
                                 <tr>
                                     <td> {{ $i++ }}</td>
-                                    <td>{{ $manager_remote->getName() }}</td>
-                                    <td>{{ $manager_remote->from_datetime->format(config('define.datetime')) }}</td>
-                                    <td>{{ $manager_remote->to_datetime->format(config('define.datetime')) }}</td>
-                                    <td>{{ $manager_remote->total_hours }}</td>
-                                    <td>{{ $manager_remote->getApprove() }}</td>
+                                    <td>{{ $managerRemote->getName() }}</td>
+                                    <td>{{ $managerRemote->from_datetime->format(config('define.datetime')) }}</td>
+                                    <td>{{ $managerRemote->to_datetime->format(config('define.datetime')) }}</td>
+                                    <td>{{ $managerRemote->total_hours }}</td>
+                                    <td>{{ $managerRemote->getApprove() }}</td>
                                     <td>
                                         @php
                                             $statusClasses = [
-                                                1 => 'badge badge-primary',
-                                                2 => 'badge badge-success',
-                                                3 => 'badge badge-danger',
-                                                4 => 'badge badge-warning',
+                                                config('define.remotes.pending') => 'badge badge-primary',
+                                                config('define.remotes.approved') => 'badge badge-success',
+                                                config('define.remotes.rejected') => 'badge badge-danger',
+                                                config('define.remotes.cancelled') => 'badge badge-warning',
                                             ];
-                                            $statusClass = $statusClasses[$manager_remote->status] ?? '';
+                                            $statusClass = $statusClasses[$managerRemote->status] ?? '';
                                         @endphp
                                         <span class="{{ $statusClass }}">
-                                            {{ $manager_remote->status == 1
+                                            {{ $managerRemote->status == config('define.remotes.pending')
                                                 ? trans('remote.status.regist')
-                                                : ($manager_remote->status == 2
+                                                : ($managerRemote->status == config('define.remotes.approved')
                                                     ? trans('remote.status.approve')
-                                                    : ($manager_remote->status == 3
+                                                    : ($managerRemote->status == config('define.remotes.rejected')
                                                         ? trans('remote.status.ban')
-                                                        : ($manager_remote->status == 4
+                                                        : ($managerRemote->status == config('define.remotes.cancelled')
                                                             ? trans('remote.status.cancel')
                                                             : ''))) }}
                                         </span>
                                     </td>
                                     <td>
-                                        {!! Form::open(['route' => ['manager_remote.cancel', $manager_remote->id], 'method' => 'put']) !!}
+                                        {!! Form::open(['route' => ['manager_remote.edit', $managerRemote->id], 'method' => 'put']) !!}
                                         <div class="btn-group">
-                                            <a href="{!! route('manager_remote.edit', [$manager_remote->id]) !!}" class="btn btn-primary btn-sm">
-                                                <i class="glyphicon glyphicon-edit"></i>{{ trans('Approve') }}
-                                            </a>
-                                            {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Reject'), [
-                                                'type' => 'submit',
-                                                'class' => 'btn btn-danger btn-sm',
-                                                'onclick' => 'confirmCancel(event)',
-                                            ]) !!}
+                                            @if ($managerRemote->status == config('define.remotes.pending'))
+                                                <a href="{!! route('manager_remote.edit', [$managerRemote->id]) !!}" class="btn btn-primary btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Approve') }}
+                                                </a>
+
+                                                <a href="{!! route('manager_remote.edit', [$managerRemote->id]) !!}" class="btn btn-danger btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Reject') }}
+                                                </a>
+                                            @endif
                                         </div>
                                         {!! Form::close() !!}
                             @endforeach
                         </tbody>
                     </table>
                     <div class="pagination justify-content-center">
-                        {{ $manager_remotes->appends([
+                        {{ $managerRemotes->appends([
                                 'start_date' => request()->input('start_date'),
                                 'end_date' => request()->input('end_date'),
                                 'sort_by' => request()->input('sort_by'),

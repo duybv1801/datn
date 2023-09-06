@@ -13,7 +13,7 @@
                 <div class="input-group date datetime_24h" id="from_datetime" data-target-input="nearest">
                     <input type="text" name="from_datetime"id="from_datetimenew"
                         class="form-control datetimepicker-input" data-target="#from_datetime"
-                        value="{{ (new \DateTime($remote->from_datetime))->format(config('define.date_time')) }}"
+                        value="{{ (new \DateTime($remote->from_datetime))->format(config('define.datetime')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -31,7 +31,7 @@
                 <div class="input-group date datetime_24h" id="to_datetime" data-target-input="nearest">
                     <input type="text" name="to_datetime" id="to_datetimenew"
                         class="form-control datetimepicker-input" data-target="#from_datetime"
-                        value="{{ (new \DateTime($remote->to_datetime))->format(config('define.date_time')) }}"
+                        value="{{ (new \DateTime($remote->to_datetime))->format(config('define.datetime')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -40,15 +40,13 @@
             </div>
         </div>
 
-
         <!-- resason Field -->
         <div class="form-group row">
             <label class="col-sm-4 col-form-label" for="reason">{{ trans('remote.reason') }}
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">
-                <input type="text" name="reason" id="reason" class="form-control" value="{{ $remote->reason }}"
-                    required="required" />
+                <textarea name="reason" id="reason" class="form-control" required="required">{{ $remote->reason }}</textarea>
             </div>
         </div>
 
@@ -63,7 +61,7 @@
             </label>
             <div class="col-sm-8">
                 <select name="approver_id" id="approver_id" class="form-control">
-                    @foreach (\App\Models\User::whereIn('role_id', [1, 4])->get() as $user)
+                    @foreach ($users as $user)
                         <option value="{{ $user->id }}" {{ $remote->approver_id == $user->id ? 'selected' : '' }}>
                             {{ $user->code }}
                         </option>
@@ -77,9 +75,9 @@
             <label class="col-sm-4 col-form-label" for="cc">{{ trans('remote.cc') }}</label>
             <div class="col-sm-8">
                 <select id="cc" class="form-control" name="cc[]" multiple>
-                    @foreach (\App\Models\Team::distinct('manager')->get(['manager']) as $team)
+                    @foreach ($teams as $team)
                         <optgroup label="{{ $team->manager }}">
-                            @foreach (\App\Models\Team::where('manager', $team->manager)->get() as $subTeam)
+                            @foreach ($teams as $subTeam)
                                 <option value="{{ $subTeam->id }}"
                                     {{ in_array($subTeam->id, old('cc', [])) ? 'selected' : '' }}>
                                     {{ $subTeam->name }}
@@ -90,6 +88,7 @@
                 </select>
             </div>
         </div>
+
 
 
         <!-- evident Field -->

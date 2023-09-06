@@ -70,6 +70,12 @@ class RemoteReponsitory extends BaseRepository
             $end_date = Carbon::createFromFormat('d/m/Y', $search['end_date'])->format(config('define.datetime_db'));
         }
 
+        if (isset($search['query'])) {
+            $query = $query->whereHas('user', function ($subQuery) use ($search) {
+                $subQuery->where('code', 'like', '%' . $search['query'] . '%');
+            });
+        }
+
         $query = $query->where('from_datetime', '>=', $start_date)->where('to_datetime', '<=', $end_date);
 
         return $query;

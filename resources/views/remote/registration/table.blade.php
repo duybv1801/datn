@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- search --}}
-                <form action="{!! route('remote.index') !!}" method="GET" enctype="multipart/form-data">
+                <form action="{!! route('remote.index') !!}" method="GET">
                     <div class="row">
                         <div class="col-md-10 offset-md-1">
                             <div class="row">
@@ -45,7 +45,7 @@
                                 {{-- search --}}
                                 <div class="col-1">
                                     <div class="form-group">
-                                        <label for="filter">{{ trans('Filter') }}</label>
+                                        <label for="filter">&nbsp;</label>
                                         <div class="input-group">
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fa fa-search"></i>
@@ -63,7 +63,7 @@
                     <table class="table user-table">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>{{ Form::label('name', '#') }}</th>
                                 <th>{{ Form::label('from', trans('remote.from')) }}</th>
                                 <th>{{ Form::label('to', trans('remote.to')) }}</th>
                                 <th>{{ Form::label('total_hours', trans('remote.total_hours')) }}</th>
@@ -78,28 +78,28 @@
                                 @if ($remote->user_id == Auth::id())
                                     <tr>
                                         <td> {{ $i++ }}</td>
-                                        <td>{{ $remote->from_datetime->format('d/m/Y H:i') }}</td>
-                                        <td>{{ $remote->to_datetime->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $remote->from_datetime->format(config('define.datetime')) }}</td>
+                                        <td>{{ $remote->to_datetime->format(config('define.datetime')) }}</td>
                                         <td>{{ $remote->total_hours }}</td>
                                         <td>{{ $remote->getApprove() }}</td>
                                         <td>
                                             @php
                                                 $statusClasses = [
-                                                    1 => 'badge badge-primary',
-                                                    2 => 'badge badge-success',
-                                                    3 => 'badge badge-danger',
-                                                    4 => 'badge badge-warning',
+                                                    config('define.remotes.pending') => 'badge badge-primary',
+                                                    config('define.remotes.approved') => 'badge badge-success',
+                                                    config('define.remotes.rejected') => 'badge badge-danger',
+                                                    config('define.remotes.cancelled') => 'badge badge-warning',
                                                 ];
                                                 $statusClass = $statusClasses[$remote->status] ?? '';
                                             @endphp
                                             <span class="{{ $statusClass }}">
-                                                {{ $remote->status == 1
+                                                {{ $remote->status == config('define.remotes.pending')
                                                     ? trans('remote.status.regist')
-                                                    : ($remote->status == 2
+                                                    : ($remote->status == config('define.remotes.approved')
                                                         ? trans('remote.status.approve')
-                                                        : ($remote->status == 3
+                                                        : ($remote->status == config('define.remotes.rejected')
                                                             ? trans('remote.status.ban')
-                                                            : ($remote->status == 4
+                                                            : ($remote->status == config('define.remotes.cancelled')
                                                                 ? trans('remote.status.cancel')
                                                                 : ''))) }}
                                             </span>
@@ -107,14 +107,20 @@
                                         <td>
                                             {!! Form::open(['route' => ['remote.cancel', $remote->id], 'method' => 'put']) !!}
                                             <div class="btn-group">
-                                                <a href="{!! route('remote.edit', [$remote->id]) !!}" class="btn btn-primary btn-sm">
-                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
-                                                </a>
-                                                {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Cancel'), [
-                                                    'type' => 'submit',
-                                                    'class' => 'btn btn-danger btn-sm',
-                                                    'onclick' => 'confirmCancel(event)',
-                                                ]) !!}
+                                                @php
+                                                    $currentTime = now();
+                                                    $registrationTime = $remote->from_datetime;
+                                                @endphp
+                                                @if ($remote->status == config('define.remotes.pending') && !$currentTime->greaterThanOrEqualTo($registrationTime))
+                                                    <a href="{!! route('remote.edit', [$remote->id]) !!}" class="btn btn-primary btn-sm">
+                                                        <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
+                                                    </a>
+                                                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Cancel'), [
+                                                        'type' => 'submit',
+                                                        'class' => 'btn btn-danger btn-sm',
+                                                        'onclick' => 'confirmCancel(event)',
+                                                    ]) !!}
+                                                @endif
                                             </div>
                                             {!! Form::close() !!}
                                         </td>

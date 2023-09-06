@@ -10,17 +10,11 @@ class RemotePolicy
 {
     use HandlesAuthorization, HasPermission;
 
-
-    public function before(User $user)
-    {
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-    }
     public function viewAny(User $user)
     {
-        return $user->hasAnyRole(['admin', 'hr']);
+        return $user->hasAnyRole(['admin', 'hr']) || $user->position == 2;
     }
+
 
     public function view(User $user)
     {
@@ -35,7 +29,7 @@ class RemotePolicy
     public function update(User $user)
     {
 
-        return $user->hasAnyRole(['admin',  'hr']);
+        return $user->hasAnyRole(['admin',  'hr']) || $user->position == 2;
     }
 
     public function delete(User $user)

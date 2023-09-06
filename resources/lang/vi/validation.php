@@ -142,6 +142,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'total_hours' => [
+            'min' => 'Trường :attribute phải làm ít nhất 1 giờ.',
+        ],
     ],
     'attributes'           => [
         'address'               => 'địa chỉ',
@@ -197,5 +200,6 @@ return [
         'ot_day_holiday'        => 'Hệ số OT ban ngày ngày lễ',
         'ot_night_holiday'      => 'Hệ số OT ban đêm ngày lễ',
         'max_working_minutes_everyday_day' => 'Thời gian làm việc tối đa trong ngày',
+        'total_hours' => 'Số giờ'
     ],
 ];

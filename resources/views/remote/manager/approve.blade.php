@@ -5,12 +5,12 @@
 
         <!-- from_datetime Field -->
         <div class="form-group row">
-            <label class="col-sm-5 col-form-label" for="from_datetime">{{ trans('remote.from') }}</label>
-            <div class="col-sm-5">
+            <label class="col-sm-4 col-form-label" for="from_datetime">{{ trans('remote.from') }}</label>
+            <div class="col-sm-8">
                 <div class="input-group date datetime_24h" id="from_datetime" data-target-input="nearest">
                     <input type="text" name="from_datetime" class="form-control datetimepicker-input"
                         data-target="#from_datetime"
-                        value="{{ (new \DateTime($manager_remotes->from_datetime))->format('d/m/Y H:i') }}"
+                        value="{{ (new \DateTime($managerRemotes->from_datetime))->format('d/m/Y H:i') }}"
                         required="required" readonly />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -21,12 +21,12 @@
 
         <!-- to_datetime Field -->
         <div class="form-group row">
-            <label class="col-sm-5 col-form-label" for="to_datetime">{{ trans('remote.to') }}</label>
-            <div class="col-sm-5">
+            <label class="col-sm-4 col-form-label" for="to_datetime">{{ trans('remote.to') }}</label>
+            <div class="col-sm-8">
                 <div class="input-group date datetime_24h" id="to_datetime" data-target-input="nearest">
                     <input type="text" name="to_datetime" class="form-control datetimepicker-input"
                         data-target="#from_datetime"
-                        value="{{ (new \DateTime($manager_remotes->to_datetime))->format('d/m/Y H:i') }}"
+                        value="{{ (new \DateTime($managerRemotes->to_datetime))->format('d/m/Y H:i') }}"
                         required="required" readonly />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -34,52 +34,53 @@
                 </div>
             </div>
         </div>
-
+        <!-- total Field -->
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label" for="total">{{ trans('remote.total_hours') }}</label>
+            <div class="col-sm-8">
+                <input type="text" id="total" name="total" value="{{ $managerRemotes->total_hours }}"
+                    class="form-control" readonly />
+            </div>
+        </div>
 
         <!-- evident Field -->
         <div class="form-group row">
-            <label class="col-sm-5 col-form-label" for="evident">{{ trans('remote.evident') }}</label>
-            <div class="col-sm-5">
-                <img id="avatar-preview" src="{{ $manager_remotes->evident }}" alt="Preview" style="max-width: 100px">
+            <label class="col-sm-4 col-form-label" for="evident">{{ trans('remote.evident') }}</label>
+            <div class="col-sm-8">
+                <a data-fancybox="gallery" href="{{ $managerRemotes->evident }}">
+                    <img class="img-thumbnail" src="{{ $managerRemotes->evident }}" alt="Preview">
+                </a>
             </div>
         </div>
-
         <!-- resason Field -->
         <div class="form-group row">
-            <label class="col-sm-5 col-form-label" for="reason">{{ trans('remote.reason') }}
+            <label class="col-sm-4 col-form-label" for="reason">{{ trans('remote.reason') }}
             </label>
-            <div class="col-sm-5">
-                <input type="text" name="reason" id="reason" class="form-control"
-                    value="{{ $manager_remotes->reason }}" required="required" readonly />
+            <div class="col-sm-8">
+                <textarea name="reason" id="reason" class="form-control" required="required" readonly>{{ $managerRemotes->reason }}</textarea>
             </div>
         </div>
 
-
-        <!-- Submit Field -->
-        <div class="form-group col-sm-5 ">
-            {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
-            <a href="{!! route('manager_remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
-        </div>
-
-    </div>
-
-    <div class="col-md-5 mx-auto">
         <!-- Dependent Approve Field -->
         <div class="form-group row">
             <label class="col-sm-5 col-form-label" for="status">{{ trans('remote.options') }}
                 <span class="text-danger">*</span>
             </label>
-            <div class="col-sm-5">
+            <div class="col-md-3">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="approveRadio" value="1"
-                        {{ $manager_remotes->status == 1 ? 'checked' : '' }}>
+                    <input class="form-check-input" type="radio" name="status" id="approveRadio"
+                        value="{{ config('define.remotes.approved') }}"
+                        {{ $managerRemotes->status == config('define.remotes.approved') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="approveRadio">
                         {{ trans('Approve') }}
                     </label>
                 </div>
+            </div>
+            <div class="col-md-3 ">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="rejectRadio" value="3"
-                        {{ $manager_remotes->status == 3 ? 'checked' : '' }}>
+                    <input class="form-check-input" type="radio" name="status" id="rejectRadio"
+                        value="{{ config('define.remotes.rejected') }}"
+                        {{ $managerRemotes->status == config('define.remotes.rejected') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="rejectRadio">
                         {{ trans('Reject') }}
                     </label>
@@ -87,20 +88,23 @@
             </div>
         </div>
 
-
         <!-- comment Field -->
         <div class="form-group row">
-            <label class="col-sm-5 col-form-label" for="comment">{{ trans('remote.comment') }}
+            <label class="col-sm-4 col-form-label" for="comment">{{ trans('remote.comment') }}
                 <span class="text-danger">*</span>
             </label>
-            <div class="col-sm-5">
-                <input type="text" name="comment" id="comment" class="form-control"
-                    value="{{ $manager_remotes->comment }}" />
+            <div class="col-sm-8">
+                <textarea name="comment" id="comment" required="required" class="form-control">{{ old('comment') }}</textarea>
             </div>
         </div>
 
 
-    </div>
+        <!-- Submit Field -->
+        <div class="form-group col-sm-4 ">
+            {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
+            <a href="{!! route('manager_remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+        </div>
 
+    </div>
 
 </div>

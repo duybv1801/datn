@@ -43,7 +43,7 @@ class ManagerStaffController extends AppBaseController
 
         $users = $this->userRepository->searchByConditions($searchParams)
             ->orderByDesc('created_at')
-            ->paginate(10);
+            ->paginate(config('define.paginate'));
 
         return view('manager_staff.index')->with('users', $users);
     }

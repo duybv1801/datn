@@ -54,9 +54,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('remote/cancle/{id}', [RemoteController::class, 'cancel'])->name('remote.cancel');
     //manager remote
     Route::get('manager_remote', [ManagerRemoteController::class, 'index'])->name('manager_remote.index')->middleware('can:viewAny,App\Models\Remote');
+    Route::get('manager_remote_po', [ManagerRemoteController::class, 'indexPO'])->name('manager_remote_po.index')->middleware('can:viewAny,App\Models\Remote');
     Route::get('manager_remote/{id}/edit', [ManagerRemoteController::class, 'edit'])->name('manager_remote.edit')->middleware('can:update,App\Models\Remote');
     Route::put('manager_remote/approve/{id}', [ManagerRemoteController::class, 'approve'])->name('manager_remote.approve')->middleware('can:update,App\Models\Remote');
-    Route::put('manager_remote/cancel/{id}', [ManagerRemoteController::class, 'cancel'])->name('manager_remote.cancel')->middleware('can:delete,App\Models\Remote');
 
     //user
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

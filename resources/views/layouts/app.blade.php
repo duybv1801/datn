@@ -38,6 +38,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -163,6 +165,7 @@
     {{-- Calendar --}}
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
 
     <script>
@@ -369,6 +372,40 @@
             });
         });
     </script>
+
+
+    <script>
+        function calculateTotalHours() {
+            var from_datetime = document.getElementById('from_datetimenew').value;
+            var to_datetime = document.getElementById('to_datetimenew').value;
+
+            var fromDate = moment(from_datetime, 'DD/MM/YYYY HH:mm');
+            var toDate = moment(to_datetime, 'DD/MM/YYYY HH:mm');
+
+            // Trừ đi khoảng thời gian nghỉ trưa
+            var lunchBreakStart = moment('11:30', 'HH:mm');
+            var lunchBreakEnd = moment('13:00', 'HH:mm');
+
+            var totalDuration = moment.duration(toDate.diff(fromDate));
+
+            if (fromDate.isBefore(lunchBreakStart) && toDate.isAfter(lunchBreakEnd)) {
+                var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
+                totalDuration.subtract(lunchBreakDuration);
+            } else if (fromDate.isBetween(lunchBreakStart, lunchBreakEnd) || toDate.isBetween(lunchBreakStart,
+                    lunchBreakEnd)) {
+                var overlapStart = moment.max(fromDate, lunchBreakStart);
+                var overlapEnd = moment.min(toDate, lunchBreakEnd);
+                var overlapDuration = moment.duration(overlapEnd.diff(overlapStart));
+                totalDuration.subtract(overlapDuration);
+            }
+
+            var totalHours = totalDuration.asHours().toFixed(2);
+
+            document.getElementById('total').value = totalHours;
+        }
+    </script>
+
+
 </body>
 
 </html>

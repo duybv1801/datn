@@ -97,9 +97,17 @@
 
         @can('viewAny', App\Models\Remote::class)
             <li class="nav-item">
-                <a href="{!! route('manager_remote.index') !!}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p> {{ trans('Manager') }}</p>
+                @if ($position == 2)
+                    <a href="{!! route('manager_remote_po.index') !!}" class="nav-link">
+                    @else
+                        <a href="{!! route('manager_remote.index') !!}" class="nav-link">
+                @endif
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ trans('Approve') }}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $unreadNotifications }}
+                    </span>
+                </p>
                 </a>
             </li>
         @endcan

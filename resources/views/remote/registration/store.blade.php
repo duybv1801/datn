@@ -10,7 +10,8 @@
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">
-                <div class="input-group date datetime_24h" id="from_datetime" data-target-input="nearest">
+                <div class="input-group date datetime_24h" id="from_datetime"
+                    data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="from_datetimenew" name="from_datetime"
                         class="form-control datetimepicker-input" data-target="#from_datetime"
                         value="{{ old('from_datetime') }}" required="required" />
@@ -27,7 +28,8 @@
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">
-                <div class="input-group date datetime_24h" id="to_datetime" data-target-input="nearest">
+                <div class="input-group date datetime_24h" id="to_datetime"
+                    data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="to_datetimenew" name="to_datetime"
                         class="form-control datetimepicker-input" data-target="#to_datetime"
                         value="{{ old('to_datetime') }}" required="required" />
@@ -38,13 +40,21 @@
             </div>
         </div>
 
+        <!-- total Field -->
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label" for="total">{{ trans('remote.total_hours') }}</label>
+            <div class="col-sm-8">
+                <input type="text" id="total" name="total" class="form-control" readonly />
+            </div>
+        </div>
+
         <!-- resason Field -->
         <div class="form-group row">
             <label class="col-sm-4 col-form-label" for="reason">{{ trans('remote.reason') }}
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">
-                <input type="text" name="reason" id="reason" class="form-control" value="{{ old('reason') }}" />
+                <textarea name="reason" id="reason" class="form-control" required="required">{{ old('reason') }}</textarea>
             </div>
         </div>
 
@@ -59,7 +69,7 @@
             </label>
             <div class="col-sm-8">
                 <select name="approver_id" id="approver_id" class="form-control">
-                    @foreach (\App\Models\User::whereIn('role_id', [1, 4])->get() as $user)
+                    @foreach ($users as $user)
                         <option value="{{ $user->id }}" {{ old('approver_id') == $user->id ? 'selected' : '' }}>
                             {{ $user->code }}
                         </option>
@@ -73,9 +83,9 @@
             <label class="col-sm-4 col-form-label" for="cc">{{ trans('remote.cc') }}</label>
             <div class="col-sm-8">
                 <select id="cc" class="form-control" name="cc[]" multiple>
-                    @foreach (\App\Models\Team::distinct('manager')->get(['manager']) as $team)
+                    @foreach ($teams as $team)
                         <optgroup label="{{ $team->manager }}">
-                            @foreach (\App\Models\Team::where('manager', $team->manager)->get() as $subTeam)
+                            @foreach ($teams as $subTeam)
                                 <option value="{{ $subTeam->id }}"
                                     {{ in_array($subTeam->id, old('cc', [])) ? 'selected' : '' }}>
                                     {{ $subTeam->name }}
@@ -111,5 +121,6 @@
                 <a href="{!! route('remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
             </div>
         </div>
+
     </div>
 </div>

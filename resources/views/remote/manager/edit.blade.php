@@ -13,8 +13,8 @@
                     @include('adminlte-templates::common.errors')
                     <div class="box box-primary">
                         <div class="box-body">
-                            {!! Form::model($manager_remotes, [
-                                'route' => ['manager_remote.approve', $manager_remotes->id],
+                            {!! Form::model($managerRemotes, [
+                                'route' => ['manager_remote.approve', $managerRemotes->id],
                                 'method' => 'put',
                                 'enctype' => 'multipart/form-data',
                             ]) !!}

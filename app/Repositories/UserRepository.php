@@ -67,4 +67,8 @@ class UserRepository extends BaseRepository
         }
         return $query;
     }
+    public function getUsersByPosition($position)
+    {
+        return $this->model->where('position', $position)->get();
+    }
 }

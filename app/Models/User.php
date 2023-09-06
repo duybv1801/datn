@@ -11,7 +11,7 @@ use App\Traits\HasPermission;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class User extends Authenticatable
+class   User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasPermission, SoftDeletes;
 
@@ -69,5 +69,9 @@ class User extends Authenticatable
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+    public function remotes()
+    {
+        return $this->hasMany(Remote::class);
     }
 }

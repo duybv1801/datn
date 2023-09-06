@@ -4,10 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Remote;
-use Carbon\Carbon;
-
 
 class NotifiProvider extends ServiceProvider
 {
@@ -34,6 +32,20 @@ class NotifiProvider extends ServiceProvider
             $unreadNotifications = count($notifications);
 
             $view->with([
+                'notifications' => $notifications,
+                'unreadNotifications' => $unreadNotifications
+            ]);
+        });
+
+        View::composer('layouts.menu', function ($view) {
+            $remotes = Remote::where('status', 1)->get();
+            $user = Auth::user();
+            $position = $user->position;
+            $notifications = collect($remotes)->sortByDesc('created_at');
+            $unreadNotifications = count($notifications);
+
+            $view->with([
+                'position' => $position,
                 'notifications' => $notifications,
                 'unreadNotifications' => $unreadNotifications
             ]);

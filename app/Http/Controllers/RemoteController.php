@@ -6,6 +6,8 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Traits\HasPermission;
 use App\Repositories\RemoteReponsitory;
+use App\Repositories\UserRepository;
+use App\Repositories\TeamRepository;
 use App\Http\Requests\CreateRemoteRequest;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Storage;
@@ -15,10 +17,13 @@ use Carbon\Carbon;
 class RemoteController  extends AppBaseController
 {
     use HasPermission;
-    private $remoteReponsitory;
-    public function __construct(RemoteReponsitory $remoteRepo)
+
+    private $remoteReponsitory, $userReponsitory, $teamRepository;
+    public function __construct(RemoteReponsitory $remoteRepo, UserRepository $userRepo, TeamRepository $teamRepo)
     {
         $this->remoteReponsitory = $remoteRepo;
+        $this->userReponsitory = $userRepo;
+        $this->teamRepository = $teamRepo;
     }
 
     public function index(Request $request)
@@ -31,8 +36,9 @@ class RemoteController  extends AppBaseController
         $userId = $request->user()->id;
         $remotes = $this->remoteReponsitory->searchByConditions($searchParams)
             ->where('user_id', $userId)
+            ->orderBy('status')
             ->orderByDesc('created_at')
-            ->paginate(10);
+            ->paginate(config('define.paginate'));
 
         foreach ($remotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
@@ -41,10 +47,14 @@ class RemoteController  extends AppBaseController
 
         return view('remote.registration.index', compact('remotes'));
     }
-    public function create(Request $request)
+
+    public function create()
     {
-        return view('remote.registration.create');
+        $users = $this->userReponsitory->getUsersByPosition(2);
+        $teams = $this->teamRepository->getTeam();
+        return view('remote.registration.create', compact('users', 'teams'));
     }
+
 
     public function store(CreateRemoteRequest $request)
     {
@@ -53,11 +63,11 @@ class RemoteController  extends AppBaseController
         $totalHours = $request->total_hours;
         $avatar = $request->file('evident');
         if ($avatar) {
-            $path = 'public/upload/' . date('Y/m/d');
-            $filename = Str::random(10) . '.' . $avatar->getClientOriginalExtension();
-            $image_path = $avatar->storeAs($path, $filename);
-            $image_url = Storage::url($image_path);
-            $input['evident'] = $image_url;
+            $path = 'public/upload/' . date(config('define.date_img'));
+            $filename = Str::random(10) . '.' . $avatar->extension();
+            $imagePath = $avatar->storeAs($path, $filename);
+            $imageUrl = Storage::url($imagePath);
+            $input['evident'] = $imageUrl;
         }
         $input['total_hours'] = $totalHours;
         $this->remoteReponsitory->create($input);
@@ -69,17 +79,9 @@ class RemoteController  extends AppBaseController
     public function edit($id)
     {
         $remote = $this->remoteReponsitory->find($id);
-
-        $currentTime = now();
-        $registrationTime = $remote->from_datetime;
-        $status = $remote->status;
-
-        if ($currentTime->greaterThanOrEqualTo($registrationTime) || $status === 2 || $status === 3 || $status === 4) {
-            Flash::error(trans('Cannot Edit'));
-            return redirect(route('remote.index'));
-        }
-
-        return view('remote.registration.edit')->with('remote', $remote);
+        $users = $this->userReponsitory->getUsersByPosition(2);
+        $teams = $this->teamRepository->getTeam();
+        return view('remote.registration.edit', compact('remote', 'users', 'teams'));
     }
 
 
@@ -94,11 +96,11 @@ class RemoteController  extends AppBaseController
         }
         $avatar = $request->file('evident');
         if ($avatar) {
-            $path = 'public/upload/' . date('Y/m/d');
-            $filename = Str::random(10) . '.' . $avatar->getClientOriginalExtension();
-            $image_path = $avatar->storeAs($path, $filename);
-            $image_url = Storage::url($image_path);
-            $input['evident'] = $image_url;
+            $path = 'public/upload/' . date(config('define.date_img'));
+            $filename = Str::random(10) . '.' . $avatar->extension();
+            $imagePath = $avatar->storeAs($path, $filename);
+            $imageUrl = Storage::url($imagePath);
+            $input['evident'] = $imageUrl;
         }
         if ($remotes->evident) {
             $old_image_path = str_replace('/storage', 'public', $remotes->evident);
@@ -116,19 +118,8 @@ class RemoteController  extends AppBaseController
     public function cancel($id)
     {
         $remote = $this->remoteReponsitory->find($id);
-
-        $currentTime = now();
-        $registrationTime = $remote->from_datetime;
-        $status = $remote->status;
-
-        if ($currentTime->greaterThanOrEqualTo($registrationTime) || $status === 2 || $status === 3 || $status === 4) {
-            Flash::error(trans('Cannot cancel'));
-            return redirect(route('remote.index'));
-        }
-
-        $remote->status = 4;
+        $remote->status = config('define.remotes.cancelled');
         $remote->save();
-
         Flash::success(trans('validation.crud.cancel'));
 
         return redirect(route('remote.index'));
