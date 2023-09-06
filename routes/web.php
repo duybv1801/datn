@@ -10,7 +10,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HolidayController;
-
+use App\Http\Controllers\OvertimeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +69,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/holidays/multi_delete', [HolidayController::class, 'delete'])->name('holidays.multi_delete')->middleware('can:delete,App\Models\Holiday');
     Route::post('/holidays/export', [HolidayController::class, 'export'])->name('holidays.export')->middleware('can:update,App\Models\Holiday');
     Route::get('/holidays/calendar', [HolidayController::class, 'calendar'])->name('holidays.calendar')->middleware('can:view,App\Models\Holiday');
+
+    //overtimes
+    Route::get('/overtimes', [OvertimeController::class, 'index'])->name('overtimes.index');
+    Route::get('/overtimes/create', [OvertimeController::class, 'create'])->name('overtimes.create');
+    Route::post('/overtimes', [OvertimeController::class, 'store'])->name('overtimes.store');
+    Route::put('/overtimes/cancel/{id}', [OvertimeController::class, 'cancel'])->name('overtimes.cancel');
+    Route::get('/overtimes/edit/{id}', [OvertimeController::class, 'edit'])->name('overtimes.edit');
+    Route::put('/overtimes/update/{id}', [OvertimeController::class, 'update'])->name('overtimes.update');
+    Route::get('/overtimes/manage', [OvertimeController::class, 'manage'])->name('overtimes.manage');
 });
 
 //password mail

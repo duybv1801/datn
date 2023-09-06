@@ -197,7 +197,8 @@
             });
 
             //Date and time picker
-            $('#reservationdatetime').datetimepicker({
+            $('.reservationdatetime').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
                 icons: {
                     time: 'far fa-clock'
                 }

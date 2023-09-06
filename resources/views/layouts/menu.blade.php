@@ -36,7 +36,33 @@
     </li>
 @endcan
 
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('doadboard*') ? 'active menu-open' : '' }}">
+    <a href="" class="nav-link">
+        <i class="far fa-clock"></i>
+        <p>
+            {{ trans('Overtimes') }}
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{!! route('overtimes.index') !!}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ trans('overtime.register') }}</p>
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{!! route('overtimes.manage') !!}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ trans('Manage Overtimes') }}</p>
+            </a>
+        </li>
+    </ul>
+</li>
+
+<li class="nav-item {{ Request::is('doadboard*') ? 'active menu-open' : '' }}">
     @can('update', App\Models\Holiday::class)
         <a href="" class="nav-link">
             <i class="fas fa-gift"></i>
@@ -70,6 +96,7 @@
         </a>
     @endcan
 </li>
+
 
 
 @can('update', App\Models\Setting::class)
