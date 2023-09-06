@@ -42,7 +42,6 @@ class ManagerStaffController extends AppBaseController
         ];
 
         $users = $this->userRepository->searchByConditions($searchParams)
-            ->orderByDesc('created_at')
             ->paginate(config('define.paginate'));
 
         return view('manager_staff.index')->with('users', $users);
@@ -75,7 +74,7 @@ class ManagerStaffController extends AppBaseController
         $input['password'] = Hash::make($input['password']);
 
         $role_id = $request->input('role_id');
-        $role = Role::where('id', $role_id)->first();
+        $role = $this->userRepository->getRoleById($role_id);
         $user = $this->userRepository->create($input);
         $user->roles()->sync($role);
         $expirationTime = Carbon::now()->addMinutes(10);

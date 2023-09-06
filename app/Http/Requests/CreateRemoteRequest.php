@@ -24,17 +24,12 @@ class CreateRemoteRequest extends FormRequest
             $fromDatetime = Carbon::createFromFormat(config('define.datetime'), $this->input('from_datetime'));
             $toDatetime = Carbon::createFromFormat(config('define.datetime'), $this->input('to_datetime'));
 
-            $startSetting = Setting::where('key', 'check_in_time')->value('value');
-            $endSetting = Setting::where('key', 'check_out_time')->value('value');
+            $settings = Setting::whereIn('key', ['check_in_time', 'check_out_time', 'lunch_time_start', 'lunch_time_end'])->pluck('value', 'key');
 
-            $startTime = Carbon::createFromFormat(config('define.time'), $startSetting);
-            $endTime = Carbon::createFromFormat(config('define.time'), $endSetting);
-
-            $breakStartTimeSetting = Setting::where('key', 'lunch_time_start')->value('value');
-            $breakEndTimeSetting = Setting::where('key', 'lunch_time_end')->value('value');
-
-            $breakStartTime = Carbon::createFromFormat(config('define.time'), $breakStartTimeSetting);
-            $breakEndTime = Carbon::createFromFormat(config('define.time'), $breakEndTimeSetting);
+            $startTime = Carbon::createFromFormat(config('define.time'), $settings['check_in_time']);
+            $endTime = Carbon::createFromFormat(config('define.time'), $settings['check_out_time']);
+            $breakStartTime = Carbon::createFromFormat(config('define.time'), $settings['lunch_time_start']);
+            $breakEndTime = Carbon::createFromFormat(config('define.time'), $settings['lunch_time_end']);
 
             if ($fromDatetime->format(config('define.time')) < $startTime->format(config('define.time')) || $fromDatetime->format(config('define.time')) > $endTime->format(config('define.time'))) {
                 $validator->errors()->add('from_datetime', trans('validation.crud.beggintime_false'));
@@ -68,8 +63,8 @@ class CreateRemoteRequest extends FormRequest
 
         return [
             'reason' => 'required',
-            'from_datetime' => 'required|date_format:d/m/Y H:i',
-            'to_datetime' => 'required|date_format:d/m/Y H:i|after:from_datetime',
+            'from_datetime' => 'required|date_format:' . config('define.datetime'),
+            'to_datetime' => 'required|date_format:' . config('define.datetime'),
         ];
     }
 }

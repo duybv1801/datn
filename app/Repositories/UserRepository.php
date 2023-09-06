@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use App\Models\Role;
 use App\Repositories\BaseRepository;
 use Carbon\Carbon;
 
@@ -65,10 +66,16 @@ class UserRepository extends BaseRepository
         if (isset($search['query'])) {
             $query = $query->where('code', 'like', '%' . $search['query'] . '%');
         }
+        $query = $query->orderBy('created_at', 'DESC');
         return $query;
     }
     public function getUsersByPosition($position)
     {
         return $this->model->where('position', $position)->get();
+    }
+
+    public function getRoleById($roleId)
+    {
+        return Role::where('id', $roleId)->first();
     }
 }

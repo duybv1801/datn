@@ -33,8 +33,6 @@ class ManagerRemoteController  extends AppBaseController
             'query' => $request->input('query'),
         ];
         $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams)
-            ->orderBy('status')
-            ->orderByDesc('created_at')
             ->paginate(config('define.paginate'));
         foreach ($managerRemotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
@@ -90,14 +88,14 @@ class ManagerRemoteController  extends AppBaseController
         $user = User::where('id', $managerRemotes->user_id)->first();
         $email = $user->email;
         $status = $request->input('status');
-        $reason = $request->input('comment')  ?? '';
+        $comment = $request->input('comment')  ?? '';
 
         if ($status === config('define.remotes.approved')) {
-            Mail::to($email)->send(new ApproveEmail('approved', $reason));
+            Mail::to($email)->send(new ApproveEmail('approved', $comment));
             $managerRemotes->status = 2;
             $managerRemotes->save();
         } elseif ($status === config('define.remotes.rejected')) {
-            Mail::to($email)->send(new ApproveEmail('Reject', $reason));
+            Mail::to($email)->send(new ApproveEmail('Reject', $comment));
             $managerRemotes->status = 3;
             $managerRemotes->save();
         } else {

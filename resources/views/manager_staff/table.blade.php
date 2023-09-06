@@ -22,7 +22,7 @@
                                 {{-- search --}}
                                 <div class="col-1">
                                     <div class="form-group">
-                                        <label for="filter">{{ trans('Filter') }}</label>
+                                        <label for="filter">&nbsp;</label>
                                         <div class="input-group">
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fa fa-search"></i>

@@ -37,14 +37,21 @@
             </label>
             <div class="col-sm-8">
                 <select name="role_id" id="role_id" class="form-control">
-                    <option value="2" {{ old('role_id') == 2 ? 'selected' : '' }}>{{ trans('staff.role.member') }}
+                    <option value="{{ config('define.role.admin') }}"
+                        {{ old('role_id') == config('define.role.admin') ? 'selected' : '' }}>
+                        {{ trans('staff.role.admin') }}
                     </option>
-                    <option value="1" {{ old('role_id') == 1 ? 'selected' : '' }}>{{ trans('staff.role.admin') }}
+                    <option value="{{ config('define.role.member') }}"
+                        {{ old('role_id') == config('define.role.member') ? 'selected' : '' }}>
+                        {{ trans('staff.role.member') }}
                     </option>
-                    <option value="3" {{ old('role_id') == 3 ? 'selected' : '' }}>
+                    <option value="{{ config('define.role.accounter') }}"
+                        {{ old('role_id') == config('define.role.accounter') ? 'selected' : '' }}>
                         {{ trans('staff.role.accounter') }}
                     </option>
-                    <option value="4" {{ old('role_id') == 4 ? 'selected' : '' }}>{{ trans('staff.role.hr') }}
+                    <option value="{{ config('define.role.hr') }}"
+                        {{ old('role_id') == config('define.role.hr') ? 'selected' : '' }}>
+                        {{ trans('staff.role.hr') }}
                     </option>
                 </select>
             </div>
