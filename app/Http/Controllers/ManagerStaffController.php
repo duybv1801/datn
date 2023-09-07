@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateStaffRequest;
 use App\Http\Requests\CreateStaffRequest;
 use App\Repositories\UserRepository;
+use App\Repositories\TeamRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Mail\VerifyEmail;
 use App\Models\Role;
@@ -21,10 +22,11 @@ use Illuminate\Http\Request;
 class ManagerStaffController extends AppBaseController
 {
     use HasPermission;
-    private $userRepository;
-    public function __construct(UserRepository $userRepo)
+    private $userRepository, $teamRepository;
+    public function __construct(UserRepository $userRepo, TeamRepository $teamRepo)
     {
         $this->userRepository = $userRepo;
+        $this->teamRepository = $teamRepo;
     }
 
     /**
@@ -73,11 +75,11 @@ class ManagerStaffController extends AppBaseController
 
         $input['password'] = Hash::make($input['password']);
 
-        $role_id = $request->input('role_id');
-        $role = $this->userRepository->getRoleById($role_id);
+        $roleId = $request->input('roleId');
+        $role = $this->userRepository->getRoleById($roleId);
         $user = $this->userRepository->create($input);
         $user->roles()->sync($role);
-        $expirationTime = Carbon::now()->addMinutes(10);
+        $expirationTime = Carbon::now()->addMinutes(config('define.add_minutes'));
         $token = app('auth.password.broker')->createToken($user);
         $urlWithExpiration = URL::temporarySignedRoute(
             'password.reset',
@@ -103,7 +105,7 @@ class ManagerStaffController extends AppBaseController
             return redirect()->back();
         }
         $user = $this->userRepository->find($id);
-        $teams = Team::pluck('name', 'id');
+        $teams = $this->teamRepository->getTeamList();
 
         if (empty($user)) {
             Flash::error(trans('validation.crud.show_error'));
@@ -134,11 +136,11 @@ class ManagerStaffController extends AppBaseController
             return redirect(route('manager_staff.index'));
         }
         $input =  $request->all();
-        $role_id = $request->input('role_id');
-        $role = Role::where('id', $role_id)->first();
-        $team_id = $request->input('team_id');
-        $team = Team::where('id', $team_id)->first();
-        $input['team_id'] = $team->id;
+        $roleId = $request->input('role_id');
+        $role = $this->userRepository->getRoleById($roleId);
+        $teamId = $request->input('team_id');
+        $team = $this->teamRepository->findTeamById($teamId);
+        $input['teamId'] = $team->id;
 
         $user = $this->userRepository->update($input, $id);
         $user->roles()->sync($role);

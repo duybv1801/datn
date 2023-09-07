@@ -33,7 +33,7 @@ class RemoteController  extends AppBaseController
             'end_date' => $request->input('end_date'),
             'query' => $request->input('query'),
         ];
-        $remotes = $this->remoteReponsitory->searchByConditions($searchParams)->paginate(config('define.paginate'));
+        $remotes = $this->remoteReponsitory->searchByConditionsRemote($searchParams)->paginate(config('define.paginate'));
 
         foreach ($remotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
@@ -59,7 +59,7 @@ class RemoteController  extends AppBaseController
         $avatar = $request->file('evident');
         if ($avatar) {
             $path = 'public/upload/' . date(config('define.date_img'));
-            $filename = Str::random(10) . '.' . $avatar->extension();
+            $filename = Str::random(config('define.random')) . '.' . $avatar->extension();
             $imagePath = $avatar->storeAs($path, $filename);
             $imageUrl = Storage::url($imagePath);
             $input['evident'] = $imageUrl;
@@ -74,7 +74,7 @@ class RemoteController  extends AppBaseController
     public function edit($id)
     {
         $remote = $this->remoteReponsitory->find($id);
-        $users = $this->userReponsitory->getUsersByPosition(2);
+        $users = $this->userReponsitory->getUsersByPosition(config('define.position.po'));
         $teams = $this->teamRepository->getTeam();
         return view('remote.registration.edit', compact('remote', 'users', 'teams'));
     }
@@ -92,7 +92,7 @@ class RemoteController  extends AppBaseController
         $avatar = $request->file('evident');
         if ($avatar) {
             $path = 'public/upload/' . date(config('define.date_img'));
-            $filename = Str::random(10) . '.' . $avatar->extension();
+            $filename = Str::random(config('define.random')) . '.' . $avatar->extension();
             $imagePath = $avatar->storeAs($path, $filename);
             $imageUrl = Storage::url($imagePath);
             $input['evident'] = $imageUrl;

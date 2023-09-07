@@ -66,9 +66,9 @@
             <label class="col-sm-5 col-form-label" for="status">{{ trans('remote.options') }}
                 <span class="text-danger">*</span>
             </label>
-            <div class="col-md-3">
+            <div class="col-3 mt-2">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="approveRadio"
+                    <input required="required" class="form-check-input" type="radio" name="status" id="approveRadio"
                         value="{{ config('define.remotes.approved') }}"
                         {{ $managerRemotes->status == config('define.remotes.approved') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="approveRadio">
@@ -76,9 +76,9 @@
                     </label>
                 </div>
             </div>
-            <div class="col-md-3 ">
+            <div class="col-3 mt-2 ">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="status" id="rejectRadio"
+                    <input required="required" class="form-check-input" type="radio" name="status" id="rejectRadio"
                         value="{{ config('define.remotes.rejected') }}"
                         {{ $managerRemotes->status == config('define.remotes.rejected') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="rejectRadio">
@@ -102,8 +102,13 @@
         <!-- Submit Field -->
         <div class="form-group col-sm-4 ">
             {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
-            <a href="{!! route('manager_remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+            @if ($position == config('define.position.po'))
+                <a href="{!! route('manager_remote_po.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+            @else
+                <a href="{!! route('manager_remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+            @endif
         </div>
+
 
     </div>
 

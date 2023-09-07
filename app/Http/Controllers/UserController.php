@@ -104,20 +104,18 @@ class UserController extends AppBaseController
         }
 
         $input = $request->only(['first_name', 'last_name']);
-
-        if ($request->file('avatar')) {
-            $avatar = $request->file('avatar');
-            $path = 'public/upload/' . date('Y/m/d');
-            $filename = Str::random(10) . '.' . $avatar->getClientOriginalExtension();
-
-            $image_path = $avatar->storeAs($path, $filename);
-            $image_url = Storage::url($image_path);
-            $input['avatar'] = $image_url;
+        $avatar = $request->file('avatar');
+        if ($avatar) {
+            $path = 'public/upload/' . date(config('define.date_img'));
+            $filename = Str::random(config('define.random')) . '.' . $avatar->extension();
+            $imagePath = $avatar->storeAs($path, $filename);
+            $imageUrl = Storage::url($imagePath);
+            $input['avatar'] = $imageUrl;
 
             if ($user->avatar) {
-                $old_image_path = str_replace('/storage', 'public', $user->avatar);
-                if (Storage::exists($old_image_path)) {
-                    Storage::delete($old_image_path);
+                $oldImagePath = str_replace('/storage', 'public', $user->avatar);
+                if (Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
                 }
             }
         }

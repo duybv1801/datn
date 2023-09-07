@@ -38,4 +38,6 @@ return [
         'accounter' => '3',
         'hr' => '4',
     ],
+    'add_minutes' => '10',
+    'random' => '10',
 ];

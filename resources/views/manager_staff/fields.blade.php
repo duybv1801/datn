@@ -150,9 +150,9 @@
                     {{ $user->position == config('define.position.po') ? 'selected' : '' }}>
                     {{ trans('staff.position.po') }}
                 </option>
-                <option value="{{ config('define.position.admin') }}"
-                    {{ $user->position == config('define.position.admin') ? 'selected' : '' }}>
-                    {{ trans('staff.position.admin') }}
+                <option value="{{ config('define.position.lead') }}"
+                    {{ $user->position == config('define.position.lead') ? 'selected' : '' }}>
+                    {{ trans('staff.position.lead') }}
                 </option>
                 <option value="{{ config('define.position.culi') }}"
                     {{ $user->position == config('define.position.culi') ? 'selected' : '' }}>

@@ -8,7 +8,8 @@
                 </span>
             </button>
         </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; overflow-y: auto;">
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
+            style="max-height: 400px; overflow-y: auto;width:300px">
             <span class="dropdown-item dropdown-header">{{ $unreadNotifications }}
                 {{ trans('Notifications') }}</span>
             <div class="dropdown-divider"></div>
@@ -20,7 +21,7 @@
                 <a href="{{ $route }}" class="dropdown-item">
                     <i class="fab fa-twitch"></i> {{ $notification->getName() }}
                     {{ trans('Registered Remote') }}
-                    <span class="float-right text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
+                    <span class="float-left text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
                 </a>
                 <div class="dropdown-divider"></div>
             @endforeach

@@ -40,4 +40,12 @@ class TeamRepository extends BaseRepository
     {
         return $this->model->distinct()->get(['manager']);
     }
+    public function getTeamList()
+    {
+        return $this->model->pluck('name', 'id');
+    }
+    public function findTeamById($id)
+    {
+        return Team::where('id', $id)->first();
+    }
 }

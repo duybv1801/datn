@@ -6,6 +6,7 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Traits\HasPermission;
 use App\Repositories\RemoteReponsitory;
+use App\Repositories\UserRepository;
 use Laracasts\Flash\Flash;
 use App\Mail\ApproveEmail;
 use Illuminate\Support\Facades\Mail;
@@ -16,10 +17,11 @@ use Illuminate\Support\Facades\Auth;
 class ManagerRemoteController  extends AppBaseController
 {
     use HasPermission;
-    private $remoteReponsitory;
-    public function __construct(RemoteReponsitory $remoteRepo)
+    private $remoteReponsitory, $userReponsitory;
+    public function __construct(RemoteReponsitory $remoteRepo, UserRepository $userRepo)
     {
         $this->remoteReponsitory = $remoteRepo;
+        $this->userReponsitory = $userRepo;
     }
 
     public function index(Request $request)
@@ -32,8 +34,7 @@ class ManagerRemoteController  extends AppBaseController
             'end_date' => $request->input('end_date'),
             'query' => $request->input('query'),
         ];
-        $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams)
-            ->paginate(config('define.paginate'));
+        $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams)->paginate(config('define.paginate'));
         foreach ($managerRemotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
             $remote->to_datetime = Carbon::parse($remote->to_datetime);
@@ -53,12 +54,7 @@ class ManagerRemoteController  extends AppBaseController
             'query' => $request->input('query'),
         ];
 
-        $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams)
-            ->orderByDesc('created_at')
-            ->whereHas('user', function ($query) {
-                $query->where('approver_id', Auth::id());
-            })
-            ->paginate(config('define.paginate'));
+        $managerRemotes = $this->remoteReponsitory->searchByConditionsPO($searchParams)->paginate(config('define.paginate'));
 
         foreach ($managerRemotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
@@ -85,18 +81,18 @@ class ManagerRemoteController  extends AppBaseController
             return redirect()->back();
         }
         $managerRemotes = $this->remoteReponsitory->find($id);
-        $user = User::where('id', $managerRemotes->user_id)->first();
+        $user = $this->userReponsitory->find($managerRemotes->user_id);
         $email = $user->email;
         $status = $request->input('status');
         $comment = $request->input('comment')  ?? '';
 
         if ($status === config('define.remotes.approved')) {
             Mail::to($email)->send(new ApproveEmail('approved', $comment));
-            $managerRemotes->status = 2;
+            $managerRemotes->status = config('define.remotes.approved');
             $managerRemotes->save();
         } elseif ($status === config('define.remotes.rejected')) {
             Mail::to($email)->send(new ApproveEmail('Reject', $comment));
-            $managerRemotes->status = 3;
+            $managerRemotes->status = config('define.remotes.rejected');
             $managerRemotes->save();
         } else {
             Flash::error(trans('validation.crud.erro_user'));

@@ -27,7 +27,14 @@ class NotifiProvider extends ServiceProvider
     public function boot()
     {
         View::composer('layouts.notifi', function ($view) {
-            $remotes = Remote::where('status', 1)->get();
+            $user = Auth::user();
+            if ($user->position == config('define.position.po')) {
+                $remotes = Remote::where('status',  config('define.remotes.pending'))
+                    ->where('approver_id', $user->id)
+                    ->get();
+            } else {
+                $remotes = Remote::where('status',  config('define.remotes.pending'))->get();
+            }
             $notifications = collect($remotes)->sortByDesc('created_at');
             $unreadNotifications = count($notifications);
 
@@ -38,16 +45,39 @@ class NotifiProvider extends ServiceProvider
         });
 
         View::composer('layouts.menu', function ($view) {
-            $remotes = Remote::where('status', 1)->get();
             $user = Auth::user();
+            $remotes = Remote::where('status',  config('define.remotes.pending'))
+                ->where('approver_id', $user->id)
+                ->get();
             $position = $user->position;
-            $notifications = collect($remotes)->sortByDesc('created_at');
+            $notifications = collect($remotes);
             $unreadNotifications = count($notifications);
 
             $view->with([
                 'position' => $position,
                 'notifications' => $notifications,
                 'unreadNotifications' => $unreadNotifications
+            ]);
+        });
+        View::composer('layouts.menu', function ($view) {
+            $user = Auth::user();
+            $remotes = Remote::where('status',  config('define.remotes.pending'))
+                ->where('user_id', $user->id)
+                ->get();
+            $notifications = collect($remotes);
+            $register = count($notifications);
+
+            $view->with([
+                'register' => $register
+            ]);
+        });
+
+        View::composer('remote.manager.approve', function ($view) {
+            $user = Auth::user();
+            $position = $user->position;
+
+            $view->with([
+                'position' => $position,
             ]);
         });
     }
