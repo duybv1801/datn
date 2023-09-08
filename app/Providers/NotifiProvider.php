@@ -28,12 +28,12 @@ class NotifiProvider extends ServiceProvider
     {
         View::composer('layouts.notifi', function ($view) {
             $user = Auth::user();
-            if ($user->position == config('define.position.po')) {
-                $remotes = Remote::where('status',  config('define.remotes.pending'))
+            if ($user->position == config('database.position.po')) {
+                $remotes = Remote::where('status',  config('database.remotes.pending'))
                     ->where('approver_id', $user->id)
                     ->get();
             } else {
-                $remotes = Remote::where('status',  config('define.remotes.pending'))->get();
+                $remotes = Remote::where('status',  config('database.remotes.pending'))->get();
             }
             $notifications = collect($remotes)->sortByDesc('created_at');
             $unreadNotifications = count($notifications);
@@ -46,7 +46,7 @@ class NotifiProvider extends ServiceProvider
 
         View::composer('layouts.menu', function ($view) {
             $user = Auth::user();
-            $remotes = Remote::where('status',  config('define.remotes.pending'))
+            $remotes = Remote::where('status',  config('database.remotes.pending'))
                 ->where('approver_id', $user->id)
                 ->get();
             $position = $user->position;
@@ -61,7 +61,7 @@ class NotifiProvider extends ServiceProvider
         });
         View::composer('layouts.menu', function ($view) {
             $user = Auth::user();
-            $remotes = Remote::where('status',  config('define.remotes.pending'))
+            $remotes = Remote::where('status',  config('database.remotes.pending'))
                 ->where('user_id', $user->id)
                 ->get();
             $notifications = collect($remotes);

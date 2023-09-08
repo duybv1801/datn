@@ -67,7 +67,7 @@ class UserRepository extends BaseRepository
             $query = $query->where('code', 'like', '%' . $search['query'] . '%');
         }
         $query = $query->orderBy('created_at', 'DESC');
-        return $query;
+        return $query->paginate(config('define.paginate'));
     }
     public function getUsersByPosition($position)
     {

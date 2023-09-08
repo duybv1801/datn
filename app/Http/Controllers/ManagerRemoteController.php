@@ -11,7 +11,6 @@ use Laracasts\Flash\Flash;
 use App\Mail\ApproveEmail;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class ManagerRemoteController  extends AppBaseController
@@ -34,7 +33,7 @@ class ManagerRemoteController  extends AppBaseController
             'end_date' => $request->input('end_date'),
             'query' => $request->input('query'),
         ];
-        $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams)->paginate(config('define.paginate'));
+        $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams);
         foreach ($managerRemotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
             $remote->to_datetime = Carbon::parse($remote->to_datetime);
@@ -54,7 +53,7 @@ class ManagerRemoteController  extends AppBaseController
             'query' => $request->input('query'),
         ];
 
-        $managerRemotes = $this->remoteReponsitory->searchByConditionsPO($searchParams)->paginate(config('define.paginate'));
+        $managerRemotes = $this->remoteReponsitory->searchByConditionPO($searchParams);
 
         foreach ($managerRemotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
@@ -86,13 +85,13 @@ class ManagerRemoteController  extends AppBaseController
         $status = $request->input('status');
         $comment = $request->input('comment')  ?? '';
 
-        if ($status === config('define.remotes.approved')) {
+        if ($status === config('database.remotes.approved')) {
             Mail::to($email)->send(new ApproveEmail('approved', $comment));
-            $managerRemotes->status = config('define.remotes.approved');
+            $managerRemotes->status = config('database.remotes.approved');
             $managerRemotes->save();
-        } elseif ($status === config('define.remotes.rejected')) {
+        } elseif ($status === config('database.remotes.rejected')) {
             Mail::to($email)->send(new ApproveEmail('Reject', $comment));
-            $managerRemotes->status = config('define.remotes.rejected');
+            $managerRemotes->status = config('database.remotes.rejected');
             $managerRemotes->save();
         } else {
             Flash::error(trans('validation.crud.erro_user'));
@@ -101,6 +100,10 @@ class ManagerRemoteController  extends AppBaseController
 
         Flash::success(trans('validation.crud.approve'));
 
-        return redirect(route('manager_remote.index'));
+        if (Auth::user()->position == config('database.position.po')) {
+            return redirect(route('manager_remote_po.index'));
+        } else {
+            return redirect(route('manager_remote.index'));
+        }
     }
 }

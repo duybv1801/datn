@@ -12,7 +12,7 @@ class RemotePolicy
 
     public function viewAny(User $user)
     {
-        return $user->hasAnyRole(['admin', 'hr']) || $user->position == 2;
+        return $user->hasAnyRole(['admin', 'hr']) || $user->position == config('database.position.po');
     }
 
 
@@ -29,7 +29,7 @@ class RemotePolicy
     public function update(User $user)
     {
 
-        return $user->hasAnyRole(['admin',  'hr']) || $user->position == 2;
+        return $user->hasAnyRole(['admin',  'hr']) || $user->position == config('database.position.po');
     }
 
     public function delete(User $user)

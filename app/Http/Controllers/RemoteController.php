@@ -33,7 +33,7 @@ class RemoteController  extends AppBaseController
             'end_date' => $request->input('end_date'),
             'query' => $request->input('query'),
         ];
-        $remotes = $this->remoteReponsitory->searchByConditionsRemote($searchParams)->paginate(config('define.paginate'));
+        $remotes = $this->remoteReponsitory->searchByConditionsRemote($searchParams);
 
         foreach ($remotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
@@ -45,8 +45,10 @@ class RemoteController  extends AppBaseController
 
     public function create()
     {
-        $users = $this->userReponsitory->getUsersByPosition(Config('define.position.po'));
+        $users = $this->userReponsitory->getUsersByPosition(Config('database.position.po'));
         $teams = $this->teamRepository->getTeam();
+        $remotes = $this->remoteReponsitory->model();
+
         return view('remote.registration.create', compact('users', 'teams'));
     }
 
@@ -74,7 +76,7 @@ class RemoteController  extends AppBaseController
     public function edit($id)
     {
         $remote = $this->remoteReponsitory->find($id);
-        $users = $this->userReponsitory->getUsersByPosition(config('define.position.po'));
+        $users = $this->userReponsitory->getUsersByPosition(config('database.position.po'));
         $teams = $this->teamRepository->getTeam();
         return view('remote.registration.edit', compact('remote', 'users', 'teams'));
     }

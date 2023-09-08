@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- search --}}
-                <form action="{!! route('manager_staff.index') !!}" method="GET" enctype="multipart/form-data">
+                <form action="{!! route('manager_staff.index') !!}" method="GET">
                     <div class="row">
                         <div class="col-md-10 offset-md-1">
                             <div class="row">
@@ -68,24 +68,24 @@
                                         <p>{!! $user->code !!}</p>
                                     </td>
                                     <td>
-                                        {{ $user->role_id == 1
+                                        {{ $user->role_id == config('database.role.admin')
                                             ? trans('staff.role.admin')
-                                            : ($user->role_id == 2
+                                            : ($user->role_id == config('database.role.member')
                                                 ? trans('staff.role.member')
-                                                : ($user->role_id == 3
+                                                : ($user->role_id == config('database.role.accounter')
                                                     ? trans('staff.role.accounter')
-                                                    : ($user->role_id == 4
+                                                    : ($user->role_id == config('database.role.hr')
                                                         ? trans('staff.role.hr')
                                                         : ''))) }}
                                     </td>
                                     <td>
                                         <p>
-                                            {{ $user->gender == 1 ? trans('staff.genders.male') : trans('staff.genders.female') }}
+                                            {{ $user->gender == config('database.gender.male') ? trans('staff.genders.male') : trans('staff.genders.female') }}
                                         </p>
                                     </td>
                                     <td>
                                         <p>
-                                            {!! (new \DateTime($user->birthday))->format('d/m/Y') !!}
+                                            {!! \Carbon\Carbon::parse($user->birthday)->format(config('define.date_show')) !!}
                                         </p>
                                     </td>
                                     <td>

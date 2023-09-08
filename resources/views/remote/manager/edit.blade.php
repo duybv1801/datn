@@ -16,7 +16,6 @@
                             {!! Form::model($managerRemotes, [
                                 'route' => ['manager_remote.approve', $managerRemotes->id],
                                 'method' => 'put',
-                                'enctype' => 'multipart/form-data',
                             ]) !!}
 
                             @include('remote.manager.approve')

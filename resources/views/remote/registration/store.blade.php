@@ -14,7 +14,8 @@
                     data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="from_datetimenew" name="from_datetime"
                         class="form-control datetimepicker-input" data-target="#from_datetime"
-                        value="{{ old('from_datetime') }}" required="required" />
+                        value="{{ \Carbon\Carbon::now(old('from_datetime'))->format(config('define.datetime')) }}"
+                        required="required" />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -32,7 +33,8 @@
                     data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="to_datetimenew" name="to_datetime"
                         class="form-control datetimepicker-input" data-target="#to_datetime"
-                        value="{{ old('to_datetime') }}" required="required" />
+                        value="{{ \Carbon\Carbon::now(old('to_datetime'))->format(config('define.datetime')) }}"
+                        required="required" />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>

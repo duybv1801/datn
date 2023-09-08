@@ -54,80 +54,44 @@ class RemoteReponsitory extends BaseRepository
 
     public function searchByConditionsRemote($search)
     {
-        $query = $this->model;
+        $query = $this->model->where('user_id', Auth::user()->id);
 
-        if (!isset($search['start_date'])) {
-            $startDate = now()->startOfYear()->format(config('define.date_search'));
-        } else {
-            $startDate = Carbon::createFromFormat(config('define.date_show'), $search['start_date'])->format(config('define.datetime_db'));
-        }
-        if (!isset($search['end_date'])) {
-            $endDate = now()->endOfYear()->format(config('define.date_search'));
-        } else {
-            $endDate = Carbon::createFromFormat(config('define.date_show'), $search['end_date'])->format(config('define.datetime_db'));
-        }
+        $query = $this->applySearchConditions($query, $search);
 
-        if (isset($search['query'])) {
-            $query = $query->whereHas('user', function ($subQuery) use ($search) {
-                $subQuery->where('code', 'like', '%' . $search['query'] . '%');
-            });
-        }
-        $query = $query->where('user_id', Auth::user()->id);
-        $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
-        $query = $query->where('from_datetime', '>=', $startDate)->where('to_datetime', '<=', $endDate);
-
-        return $query;
+        return $query->paginate(config('define.paginate'));
     }
     public function searchByConditions($search)
     {
-        $query = $this->model;
+        $query = $this->model->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
 
-        if (!isset($search['start_date'])) {
-            $startDate = now()->startOfYear()->format(config('define.date_search'));
-        } else {
-            $startDate = Carbon::createFromFormat(config('define.date_show'), $search['start_date'])->format(config('define.datetime_db'));
-        }
+        $query = $this->applySearchConditions($query, $search);
 
-        if (!isset($search['end_date'])) {
-            $endDate = now()->endOfYear()->format(config('define.date_search'));
-        } else {
-            $endDate = Carbon::createFromFormat(config('define.date_show'), $search['end_date'])->format(config('define.datetime_db'));
-        }
-
-        if (isset($search['query'])) {
-            $query = $query->whereHas('user', function ($subQuery) use ($search) {
-                $subQuery->where('code', 'like', '%' . $search['query'] . '%');
-            });
-        }
-        $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
-        $query = $query->where('from_datetime', '>=', $startDate)->where('to_datetime', '<=', $endDate);
-
-        return $query;
+        return $query->paginate(config('define.paginate'));
     }
-    public function searchByConditionsPO($search)
+    public function searchByConditionPO($search)
     {
-        $query = $this->model;
+        $query = $this->model->where('approver_id', Auth::user()->id);
 
-        if (!isset($search['start_date'])) {
-            $startDate = now()->startOfYear()->format(config('define.date_search'));
-        } else {
-            $startDate = Carbon::createFromFormat(config('define.date_show'), $search['start_date'])->format(config('define.datetime_db'));
-        }
+        $query = $this->applySearchConditions($query, $search);
 
-        if (!isset($search['end_date'])) {
-            $endDate = now()->endOfYear()->format(config('define.date_search'));
-        } else {
-            $endDate = Carbon::createFromFormat(config('define.date_show'), $search['end_date'])->format(config('define.datetime_db'));
-        }
+        return $query->paginate(config('define.paginate'));
+    }
+
+    private function applySearchConditions($query, $search)
+    {
+        $startDate = isset($search['start_date']) ? Carbon::createFromFormat(config('define.date_show'), $search['start_date'])->format(config('define.datetime_db')) : now()->startOfYear()->format(config('define.date_search'));
+        $endDate = isset($search['end_date']) ? Carbon::createFromFormat(config('define.date_show'), $search['end_date'])->format(config('define.datetime_db')) : now()->endOfYear()->format(config('define.date_search'));
+
+        $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC')
+            ->where('from_datetime', '>=', $startDate)
+            ->where('to_datetime', '<=', $endDate);
 
         if (isset($search['query'])) {
-            $query = $query->whereHas('user', function ($subQuery) use ($search) {
+            $query->whereHas('user', function ($subQuery) use ($search) {
                 $subQuery->where('code', 'like', '%' . $search['query'] . '%');
             });
         }
-        $query = $query->where('approver_id', Auth::user()->id);
-        $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
-        $query = $query->where('from_datetime', '>=', $startDate)->where('to_datetime', '<=', $endDate);
+
         return $query;
     }
 }

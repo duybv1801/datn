@@ -85,21 +85,21 @@
                                         <td>
                                             @php
                                                 $statusClasses = [
-                                                    config('define.remotes.pending') => 'badge badge-primary',
-                                                    config('define.remotes.approved') => 'badge badge-success',
-                                                    config('define.remotes.rejected') => 'badge badge-danger',
-                                                    config('define.remotes.cancelled') => 'badge badge-warning',
+                                                    config('database.remotes.pending') => 'badge badge-primary',
+                                                    config('database.remotes.approved') => 'badge badge-success',
+                                                    config('database.remotes.rejected') => 'badge badge-danger',
+                                                    config('database.remotes.cancelled') => 'badge badge-warning',
                                                 ];
                                                 $statusClass = $statusClasses[$remote->status] ?? '';
                                             @endphp
                                             <span class="{{ $statusClass }}">
-                                                {{ $remote->status == config('define.remotes.pending')
+                                                {{ $remote->status == config('database.remotes.pending')
                                                     ? trans('remote.status.regist')
-                                                    : ($remote->status == config('define.remotes.approved')
+                                                    : ($remote->status == config('database.remotes.approved')
                                                         ? trans('remote.status.approve')
-                                                        : ($remote->status == config('define.remotes.rejected')
+                                                        : ($remote->status == config('database.remotes.rejected')
                                                             ? trans('remote.status.ban')
-                                                            : ($remote->status == config('define.remotes.cancelled')
+                                                            : ($remote->status == config('database.remotes.cancelled')
                                                                 ? trans('remote.status.cancel')
                                                                 : ''))) }}
                                             </span>
@@ -111,7 +111,7 @@
                                                     $currentTime = now();
                                                     $registrationTime = $remote->from_datetime;
                                                 @endphp
-                                                @if ($remote->status == config('define.remotes.pending') && !$currentTime->greaterThanOrEqualTo($registrationTime))
+                                                @if ($remote->status == config('database.remotes.pending') && !$currentTime->greaterThanOrEqualTo($registrationTime))
                                                     <a href="{!! route('remote.edit', [$remote->id]) !!}" class="btn btn-primary btn-sm">
                                                         <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
                                                     </a>
