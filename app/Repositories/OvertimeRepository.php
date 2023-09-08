@@ -41,21 +41,36 @@ class OvertimeRepository extends BaseRepository
     {
         $query = $this->model;
 
-        if (!isset($search['start_date'])) {
-            $start_date = now()->startOfMonth();
+        if (!isset($search['startDate'])) {
+            $startDate = now()->startOfMonth();
         } else {
-            $start_date = Carbon::createFromFormat(config('define.date_show'), $search['start_date'])->format(config('define.date_search'));
+            $startDate = Carbon::createFromFormat(config('define.date_show'), $search['startDate'])->format(config('define.date_search'));
         }
-        if (!isset($search['end_date'])) {
-            $end_date = now()->endOfMonth();
+        if (!isset($search['endDate'])) {
+            $endDate = now()->endOfMonth();
         } else {
-            $end_date = Carbon::createFromFormat(config('define.date_show'), $search['end_date'])->format(config('define.date_search'));
+            $endDate = Carbon::createFromFormat(config('define.date_show'), $search['endDate'])->format(config('define.date_search'));
+        }
+        if (isset($search['query'])) {
+            $query = $query->where('title', 'like', '%' . $search['query'] . '%');
         }
 
         $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
-        $query = $query->where('from_datetime', '>=', $start_date)->where('to_datetime', '<=', $end_date);
+        $query = $query->where('from_datetime', '>=', $startDate)->where('to_datetime', '<=', $endDate);
         $query = $query->with('approver:id,code');
 
+        return $query;
+    }
+
+    public function poQuery($query, $id)
+    {
+        $query = $query->where('approver_id', $id);
+        return $query;
+    }
+
+    public function userQuery($query, $id)
+    {
+        $query = $query->where('user_id', $id)->paginate(config('define.paginate'));
         return $query;
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\OvertimeController;
+use App\Models\Overtime;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,10 +75,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/overtimes', [OvertimeController::class, 'index'])->name('overtimes.index');
     Route::get('/overtimes/create', [OvertimeController::class, 'create'])->name('overtimes.create');
     Route::post('/overtimes', [OvertimeController::class, 'store'])->name('overtimes.store');
-    Route::put('/overtimes/cancel/{id}', [OvertimeController::class, 'cancel'])->name('overtimes.cancel');
-    Route::get('/overtimes/edit/{id}', [OvertimeController::class, 'edit'])->name('overtimes.edit');
-    Route::put('/overtimes/update/{id}', [OvertimeController::class, 'update'])->name('overtimes.update');
-    Route::get('/overtimes/manage', [OvertimeController::class, 'manage'])->name('overtimes.manage');
+    Route::put('/overtimes/cancel/{id}', [OvertimeController::class, 'cancel'])->name('overtimes.cancel')->middleware('can:delete,App\Models\Overtime,id');
+    Route::get('/overtimes/edit/{id}', [OvertimeController::class, 'edit'])->name('overtimes.edit')->middleware('can:update,App\Models\Overtime,id');
+    Route::put('/overtimes/update/{id}', [OvertimeController::class, 'update'])->name('overtimes.update')->middleware('can:update,App\Models\Overtime,id');
+    Route::get('/overtimes/manage', [OvertimeController::class, 'manage'])->name('overtimes.manage')->middleware('can:viewAny,App\Models\Overtime');
+    Route::get('/overtimes/approve/{id}', [OvertimeController::class, 'approve'])->name('overtimes.approve')->middleware('can:approve,App\Models\Overtime');
+    Route::put('/overtimes/approve/{id}', [OvertimeController::class, 'approveAction'])->name('overtimes.approveAction')->middleware('can:approve,App\Models\Overtime');
 });
 
 //password mail

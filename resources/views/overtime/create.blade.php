@@ -14,7 +14,6 @@
                         <div class="content">
                             @include('adminlte-templates::common.errors')
                             <div class="box box-primary">
-
                                 <div class="box-body">
                                     {!! Form::open(['route' => ['overtimes.store'], 'method' => 'post', 'files' => true]) !!}
                                     <div class="row">
@@ -29,7 +28,8 @@
                                                     data-target-input="nearest">
                                                     <input type="text" id="from_datetime"
                                                         class="form-control datetimepicker-input" data-target="#from_date"
-                                                        data-toggle="datetimepicker" name="from_datetime" />
+                                                        data-toggle="datetimepicker" name="from_datetime"
+                                                        value="{{ now()->format(config('define.datetime')) }}" />
                                                     <div class="input-group-append" data-target="#from_date"
                                                         data-toggle="datetimepicker">
                                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -58,39 +58,46 @@
                                             <!-- resason Field -->
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label"
-                                                    for="reason">{{ trans('overtime.reason') }}
-                                                    <span class="text-danger">*</span>
-                                                </label>
+                                                    for="reason">{{ trans('overtime.reason') }} <span
+                                                        class="text-danger">*</span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="reason" id="reason" class="form-control"
-                                                        value="{{ old('reason') }}" />
+                                                    <textarea name="reason" id="reason" class="form-control">{{ old('reason') }}</textarea>
                                                 </div>
                                             </div>
 
-                                            <!-- approver_id Field -->
+                                            <!-- Form Group for Approver -->
                                             <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label"
-                                                    for="approver_id">{{ trans('overtime.approver') }}
-                                                    <span class="text-danger">*</span>
-                                                </label>
+                                                    for="approver_id">{{ trans('overtime.approver') }} <span
+                                                        class="text-danger">*</span></label>
                                                 <div class="col-sm-8">
                                                     <select name="approver_id" id="approver_id" class="form-control">
-                                                        <option>1</option>
+                                                        @foreach ($teamInfo['managers'] as $teamName => $manager)
+                                                            @if (!empty($manager))
+                                                                <option value="{{ $manager['id'] }}">
+                                                                    {{ $manager['code'] }}
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
 
-                                            <!-- cc Field -->
-                                            <div class="form-group row">
+                                            <!-- Form Group for CC -->
+                                            {{-- <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label"
                                                     for="cc">{{ trans('overtime.cc') }}</label>
                                                 <div class="col-sm-8">
-                                                    <select id="cc" class="form-control" name="cc[]" multiple>
-
+                                                    <select id="cc" class="form-control select2" name="cc[]"
+                                                        multiple>
+                                                        @foreach ($teamInfo['otherUsers'] as $otherMember)
+                                                            <option value="{{ $otherMember['id'] }}">
+                                                                {{ $otherMember['code'] }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
-
+                                            </div> --}}
 
                                             <!-- evident Field -->
                                             <div class="form-group row">
@@ -130,4 +137,9 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function() {
+            $('.js-example-basic-multiple').select2();
+        });
+    </script>
 @endsection

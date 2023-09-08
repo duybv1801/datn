@@ -190,5 +190,7 @@ return [
         'ot_day_holiday'        => 'Hệ số OT ban ngày ngày lễ',
         'ot_night_holiday'      => 'Hệ số OT ban đêm ngày lễ',
         'max_working_minutes_everyday_day' => 'Thời gian làm việc tối đa trong ngày',
+        'to_datetime'           => 'Đến',
+        'from_datetime'         => 'Từ',
     ],
 ];

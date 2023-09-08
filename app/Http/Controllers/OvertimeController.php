@@ -10,34 +10,54 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CreateOTRequest;
 use App\Repositories\HolidayRepository;
 use App\Repositories\SettingRepository;
+use App\Repositories\TeamRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use App\Mail\ApproveOT;
+use Illuminate\Support\Facades\Mail;
 
 class OvertimeController extends Controller
 {
     private $otRepository;
     private $holidayRepository;
     private $settingRepository;
+    private $teamRepository;
+    private $userRepository;
+    private $statusData;
 
     public function __construct(
         OvertimeRepository $otRepo,
         HolidayRepository $holidayRepo,
-        SettingRepository $settingRepo
+        SettingRepository $settingRepo,
+        TeamRepository $teamRepo,
+        UserRepository $userRepo
     ) {
         $this->otRepository = $otRepo;
         $this->holidayRepository = $holidayRepo;
         $this->settingRepository = $settingRepo;
+        $this->teamRepository = $teamRepo;
+        $this->userRepository = $userRepo;
+        $this->statusData = [
+            config('define.overtime.registered') => ['label' => trans('overtime.registered'), 'class' => 'badge badge-primary'],
+            config('define.overtime.approved') => ['label' => trans('overtime.approved'), 'class' => 'badge badge-success'],
+            config('define.overtime.confirm') => ['label' => trans('overtime.confirm'), 'class' => 'badge badge-info'],
+            config('define.overtime.confirmed') => ['label' => trans('overtime.confirmed'), 'class' => 'badge badge-secondary'],
+            config('define.overtime.rejected') => ['label' => trans('overtime.rejected'), 'class' => 'badge badge-warning'],
+            config('define.overtime.cancel') => ['label' => trans('overtime.cancel'), 'class' => 'badge badge-danger'],
+        ];
     }
 
     public function index(Request $request)
     {
         $searchParams = [
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'startDate' => $request->start_date,
+            'endDate' => $request->end_date,
         ];
-        $overtimes = $this->otRepository->searchByConditions($searchParams)
-            ->where('user_id', Auth::id())->paginate(config('define.paginate'));
-
+        $allOvertimes = $this->otRepository->searchByConditions($searchParams);
+        $overtimes = $this->otRepository->userQuery($allOvertimes, Auth::id());
         $overtimes->getCollection()->transform(function ($item) {
             $item->total_hours = round($item->total_hours / 60, 1);
             $item->salary_hours = round($item->salary_hours / 60, 1);
@@ -47,14 +67,7 @@ class OvertimeController extends Controller
             return $item;
         });
 
-        $statusData = [
-            1 => ['label' => trans('overtime.registered'), 'class' => 'badge badge-primary'],
-            2 => ['label' => trans('overtime.approved'), 'class' => 'badge badge-success'],
-            3 => ['label' => trans('overtime.confirm'), 'class' => 'badge badge-info'],
-            4 => ['label' => trans('overtime.confirmed'), 'class' => 'badge badge-secondary'],
-            5 => ['label' => trans('overtime.rejected'), 'class' => 'badge badge-warning'],
-            6 => ['label' => trans('overtime.cancel'), 'class' => 'badge badge-danger'],
-        ];
+        $statusData = $this->statusData;
 
         return view('overtime.index', compact('overtimes', 'statusData'));
     }
@@ -65,33 +78,43 @@ class OvertimeController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
         ];
-        $overtimes = $this->otRepository->searchByConditions($searchParams)
-            ->paginate(config('define.paginate'));
+        $userPosition = Auth::user()->position;
+        $overtimesQuery = $this->otRepository->searchByConditions($searchParams);
+        if ($userPosition == config('define.position.po')) {
+            $overtimesQuery = $this->otRepository->poQuery($overtimesQuery, Auth::id());
+        }
 
-        $overtimes->getCollection()->transform(function ($item) {
+        $allOvertimes = $overtimesQuery->get();
+        $overtimes = new Collection();
+        foreach ($allOvertimes as $item) {
             $item->total_hours = round($item->total_hours / 60, 1);
             $item->salary_hours = round($item->salary_hours / 60, 1);
             $item->from_datetime = Carbon::parse($item->from_datetime);
             $item->to_datetime = Carbon::parse($item->to_datetime);
-            $item->approver_id = $item->approver->code;
-            return $item;
-        });
+            $item->user_id = $item->user->code;
+            if (!$request->filled('query') || strpos($item->user_id, $request->query('query')) !== false) {
+                $overtimes->add($item);
+            }
+        }
+        $statusData = $this->statusData;
 
-        $statusData = [
-            1 => ['label' => trans('overtime.registered'), 'class' => 'badge badge-primary'],
-            2 => ['label' => trans('overtime.approved'), 'class' => 'badge badge-success'],
-            3 => ['label' => trans('overtime.confirm'), 'class' => 'badge badge-info'],
-            4 => ['label' => trans('overtime.confirmed'), 'class' => 'badge badge-secondary'],
-            5 => ['label' => trans('overtime.rejected'), 'class' => 'badge badge-warning'],
-            6 => ['label' => trans('overtime.cancel'), 'class' => 'badge badge-danger'],
-        ];
-
+        $perPage = config('define.paginate');
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $overtimes = new LengthAwarePaginator(
+            $overtimes->forPage($currentPage, $perPage),
+            $overtimes->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
         return view('overtime.manage', compact('overtimes', 'statusData'));
     }
 
     public function create()
     {
-        return view('overtime.create');
+        $userId = Auth::id();
+        $teamInfo = $this->teamRepository->getTeamInfo($userId);
+        return view('overtime.create', compact('teamInfo'));
     }
 
     public function store(CreateOTRequest $request)
@@ -100,7 +123,7 @@ class OvertimeController extends Controller
         $input['reason'] = $request->reason;
         $input['approver_id'] = $request->approver_id;
         $input['comment'] = $request->comment;
-        $input['status'] = 1;
+        $input['status'] = config('define.overtime.registered');
         $avatar = $request->file('evident');
         $path = 'public/upload/' . date('Y/m/d');
         $filename = Str::random(10) . '.' . $avatar->extension();
@@ -122,15 +145,14 @@ class OvertimeController extends Controller
             [$input['from_datetime'], $input['to_datetime']]
         ];
         $result = $this->calculateDayNightMinutes($dateRanges, $holidays);
-        $dayCoefficient = $this->settingRepository->findByKey('day_time_ot')->value;
-        $nightCoefficient = $this->settingRepository->findByKey('night_time_ot')->value;
-        $dayCoefficientWeekend = $this->settingRepository->findByKey('ot_day_dayoff')->value;
-        $nightCoefficientWeekend = $this->settingRepository->findByKey('ot_night_dayoff')->value;
-        $dayCoefficientHoliday = $this->settingRepository->findByKey('ot_day_holiday')->value;
-        $nightCoefficientHoliday = $this->settingRepository->findByKey('ot_night_holiday')->value;
-        $input['salary_hours'] = ($dayCoefficient * $result['dayMinutes'] + $nightCoefficient * $result['nightMinutes']
-            + $dayCoefficientWeekend * $result['dayMinutesWeekend'] + $nightCoefficientWeekend * $result['nightMinutesWeekend']
-            + $dayCoefficientHoliday * $result['dayMinutesHolidays'] + $nightCoefficientHoliday * $result['nightMinutesHolidays']) / 100;
+        $coefficients = $this->settingRepository->getCoefficients();
+
+        $input['salary_hours'] = ($coefficients['day_time_ot'] * $result['dayMinutes']
+            + $coefficients['night_time_ot'] * $result['nightMinutes']
+            + $coefficients['ot_day_dayoff'] * $result['dayMinutesWeekend']
+            + $coefficients['ot_night_dayoff'] * $result['nightMinutesWeekend']
+            + $coefficients['ot_day_holiday'] * $result['dayMinutesHolidays']
+            + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / 100;
 
         $this->otRepository->create($input);
         return redirect()->route('overtimes.index')->with('success', trans('validation.crud.created'));
@@ -141,8 +163,32 @@ class OvertimeController extends Controller
         $overtime = $this->otRepository->find($id);
         $overtime->from_datetime = Carbon::parse($overtime->from_datetime);
         $overtime->to_datetime = Carbon::parse($overtime->to_datetime);
+        $userId = Auth::id();
+        $teamInfo = $this->teamRepository->getTeamInfo($userId);
+        return view('overtime.edit', compact('overtime', 'teamInfo'));
+    }
 
-        return view('overtime.edit', compact('overtime'));
+    public function approve($id)
+    {
+        $overtime = $this->otRepository->find($id);
+        $overtime->from_datetime = Carbon::parse($overtime->from_datetime);
+        $overtime->to_datetime = Carbon::parse($overtime->to_datetime);
+        $userId = Auth::id();
+        $teamInfo = $this->teamRepository->getTeamInfo($userId);
+        return view('overtime.approve', compact('overtime', 'teamInfo'));
+    }
+
+    public function approveAction(Request $request, $id)
+    {
+        $overtime = $this->otRepository->find($id);
+        $user = $this->userRepository->find($overtime->user_id);
+        $email = $user->email;
+        $input['status'] = $request->status;
+        $input['comment'] = $request->comment;
+        $this->otRepository->update($input, $id);
+        Mail::to($email)->send(new ApproveOT($input));
+        Flash::success(trans('validation.crud.updated'));
+        return redirect()->route('overtimes.manage')->with('success', trans('validation.crud.created'));
     }
 
     public function update(Request $request, $id)
@@ -176,15 +222,14 @@ class OvertimeController extends Controller
             [$input['from_datetime'], $input['to_datetime']]
         ];
         $result = $this->calculateDayNightMinutes($dateRanges, $holidays);
-        $dayCoefficient = $this->settingRepository->findByKey('day_time_ot')->value;
-        $nightCoefficient = $this->settingRepository->findByKey('night_time_ot')->value;
-        $dayCoefficientWeekend = $this->settingRepository->findByKey('ot_day_dayoff')->value;
-        $nightCoefficientWeekend = $this->settingRepository->findByKey('ot_night_dayoff')->value;
-        $dayCoefficientHoliday = $this->settingRepository->findByKey('ot_day_holiday')->value;
-        $nightCoefficientHoliday = $this->settingRepository->findByKey('ot_night_holiday')->value;
-        $input['salary_hours'] = ($dayCoefficient * $result['dayMinutes'] + $nightCoefficient * $result['nightMinutes']
-            + $dayCoefficientWeekend * $result['dayMinutesWeekend'] + $nightCoefficientWeekend * $result['nightMinutesWeekend']
-            + $dayCoefficientHoliday * $result['dayMinutesHolidays'] + $nightCoefficientHoliday * $result['nightMinutesHolidays']) / 100;
+        $coefficients = $this->settingRepository->getCoefficients();
+
+        $input['salary_hours'] = ($coefficients['day_time_ot'] * $result['dayMinutes']
+            + $coefficients['night_time_ot'] * $result['nightMinutes']
+            + $coefficients['ot_day_dayoff'] * $result['dayMinutesWeekend']
+            + $coefficients['ot_night_dayoff'] * $result['nightMinutesWeekend']
+            + $coefficients['ot_day_holiday'] * $result['dayMinutesHolidays']
+            + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / 100;
 
         $this->otRepository->update($input, $id);
         Flash::success(trans('validation.crud.updated'));
@@ -203,7 +248,7 @@ class OvertimeController extends Controller
             return redirect(route('overtimes.index'));
         }
 
-        $overtime->status = 6;
+        $overtime->status = config('define.overtime.cancel');
         $overtime->save();
 
         Flash::success(trans('validation.crud.cancel'));
