@@ -36,16 +36,20 @@ class TeamRepository extends BaseRepository
         $manager = null;
         $teamIds = $user->teams->pluck('id')->toArray();
         $managers = [];
-
-        foreach ($teamIds as $teamId) {
-            $team = $this->team->find($teamId);
-            $members = $team->users()->select('users.id', 'users.code')->get();
-            $managerId = $team->manager_id;
-            $manager = $members->where('id', $managerId)->first();
-            $teamName = $team->name;
-            $managers[$teamName] = $manager;
+        if ($user->hasRole('po')) {
+            $adminUsers = $this->user->whereHas('roles', function ($query) {
+                $query->where('name', 'admin');
+            })->select('id', 'code', 'email')->get();
+            $managers = $adminUsers->toArray();
+        } else {
+            foreach ($teamIds as $teamId) {
+                $team = $this->team->find($teamId);
+                $members = $team->users()->select('users.id', 'users.code', 'users.email')->get();
+                $managerId = $team->manager_id;
+                $manager = $members->where('id', $managerId)->first();
+                array_push($managers, $manager);
+            }
         }
-
         $otherUsers = $this->user->select('id', 'code', 'name')
             ->where('id', '!=', $userId)
             ->get();

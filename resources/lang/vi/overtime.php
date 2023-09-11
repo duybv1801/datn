@@ -13,6 +13,7 @@ return [
     'evident' => 'Chứng cứ xác minh',
     'registered' => 'Chờ kiểm duyệt',
     'approve' => 'Xét duyệt',
+    'admin_approve' => 'Chờ admin duyệt',
     'approved' => 'Đã duyệt',
     'confirm' => 'Chờ xác nhận',
     'confirmed' => 'Đã xác nhận',
@@ -22,4 +23,7 @@ return [
     'options' => 'Lựa chọn chức năng',
     'comment' => 'Phản hồi',
     'Approval' => 'Phê duyệt làm thêm giờ',
+    'admin_approve' => 'Chờ admin duyệt',
+    'cancel_modal' => 'Hủy đơn OT',
+    'cancel_reason' => 'Lý do hủy đơn',
 ];

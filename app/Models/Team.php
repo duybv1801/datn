@@ -10,8 +10,8 @@ class Team extends Model
     use HasFactory;
 
     protected $fillable = [
-        'key',
-        'value'
+        'name',
+        'manager_id'
     ];
 
     public function users()

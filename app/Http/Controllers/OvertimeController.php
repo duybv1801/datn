@@ -18,6 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use App\Mail\ApproveOT;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\SearchRequest;
 
 class OvertimeController extends Controller
 {
@@ -41,16 +42,16 @@ class OvertimeController extends Controller
         $this->teamRepository = $teamRepo;
         $this->userRepository = $userRepo;
         $this->statusData = [
+            config('define.overtime.admin_approve') => ['label' => trans('overtime.admin_approve'), 'class' => 'badge badge-info'],
             config('define.overtime.registered') => ['label' => trans('overtime.registered'), 'class' => 'badge badge-primary'],
             config('define.overtime.approved') => ['label' => trans('overtime.approved'), 'class' => 'badge badge-success'],
-            config('define.overtime.confirm') => ['label' => trans('overtime.confirm'), 'class' => 'badge badge-info'],
             config('define.overtime.confirmed') => ['label' => trans('overtime.confirmed'), 'class' => 'badge badge-secondary'],
             config('define.overtime.rejected') => ['label' => trans('overtime.rejected'), 'class' => 'badge badge-warning'],
             config('define.overtime.cancel') => ['label' => trans('overtime.cancel'), 'class' => 'badge badge-danger'],
         ];
     }
 
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $searchParams = [
             'startDate' => $request->start_date,
@@ -72,15 +73,14 @@ class OvertimeController extends Controller
         return view('overtime.index', compact('overtimes', 'statusData'));
     }
 
-    public function manage(Request $request)
+    public function manage(SearchRequest $request)
     {
         $searchParams = [
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'startDate' => $request->start_date,
+            'endDate' => $request->end_date,
         ];
-        $userPosition = Auth::user()->position;
         $overtimesQuery = $this->otRepository->searchByConditions($searchParams);
-        if ($userPosition == config('define.position.po')) {
+        if ($request->user()->hasRole('po')) {
             $overtimesQuery = $this->otRepository->poQuery($overtimesQuery, Auth::id());
         }
 
@@ -168,14 +168,32 @@ class OvertimeController extends Controller
         return view('overtime.edit', compact('overtime', 'teamInfo'));
     }
 
+    public function details($id)
+    {
+        $overtime = $this->otRepository->find($id);
+        $overtime->total_hours = round($overtime->total_hours / 60, 1);
+        $overtime->salary_hours = round($overtime->salary_hours / 60, 1);
+        $overtime->from_datetime = Carbon::parse($overtime->from_datetime);
+        $overtime->to_datetime = Carbon::parse($overtime->to_datetime);
+        $overtime->user_id = $overtime->user->code;
+        $overtime->approver_id = $overtime->approver->code;
+        return view('overtime.details', compact('overtime'));
+    }
+
     public function approve($id)
     {
         $overtime = $this->otRepository->find($id);
+        $otApproveSettings = $this->settingRepository->otApproveSetting();
+        $createTime = $overtime->created_at;
+        $startTime = $overtime->from_datetime;
+        $duration = $createTime->diffInHours($startTime);
         $overtime->from_datetime = Carbon::parse($overtime->from_datetime);
         $overtime->to_datetime = Carbon::parse($overtime->to_datetime);
-        $userId = Auth::id();
-        $teamInfo = $this->teamRepository->getTeamInfo($userId);
-        return view('overtime.approve', compact('overtime', 'teamInfo'));
+        $check = Auth::user()->hasRole('po') &&
+            $otApproveSettings['ot_approve'] == config('define.yes') &&
+            ($overtime->total_hours >= $otApproveSettings['total_ot_time'] * 60 ||
+                $duration < $otApproveSettings['ot_registration_time']);
+        return view('overtime.approve', compact('overtime', 'check'));
     }
 
     public function approveAction(Request $request, $id)
@@ -183,11 +201,22 @@ class OvertimeController extends Controller
         $overtime = $this->otRepository->find($id);
         $user = $this->userRepository->find($overtime->user_id);
         $email = $user->email;
+        $otApproveSettings = $this->settingRepository->otApproveSetting();
+        $createTime = $overtime->created_at;
+        $startTime = $overtime->from_datetime;
+        $duration = $createTime->diffInHours($startTime);
+        if (
+            $request->check && $request->status == config('define.overtime.approved')
+        ) {
+            $input['status'] = config('define.overtime.admin_approve');
+            $input['comment'] = $request->comment;
+            $this->otRepository->update($input, $id);
+            return redirect()->route('overtimes.manage')->with('success', trans('validation.crud.created'));
+        }
         $input['status'] = $request->status;
         $input['comment'] = $request->comment;
         $this->otRepository->update($input, $id);
         Mail::to($email)->send(new ApproveOT($input));
-        Flash::success(trans('validation.crud.updated'));
         return redirect()->route('overtimes.manage')->with('success', trans('validation.crud.created'));
     }
 
@@ -237,22 +266,13 @@ class OvertimeController extends Controller
         return redirect()->route('overtimes.index')->with('success', trans('validation.crud.created'));
     }
 
-    public function cancel($id)
+    public function cancel($id, Request $request)
     {
         $overtime = $this->otRepository->find($id);
-        $currentTime = now();
-        $registrationTime = $overtime->from_datetime;
-        $status = $overtime->status;
-        if ($currentTime->greaterThanOrEqualTo($registrationTime) || $status != 1) {
-            Flash::error(trans('Cannot cancel'));
-            return redirect(route('overtimes.index'));
-        }
-
         $overtime->status = config('define.overtime.cancel');
+        $overtime->comment = $request->comment;
         $overtime->save();
-
         Flash::success(trans('validation.crud.cancel'));
-
         return redirect(route('overtimes.index'));
     }
 

@@ -106,34 +106,71 @@
                                         </span>
                                     </td>
                                     <td>
-                                        {!! Form::open(['route' => ['overtimes.cancel', $overtime->id], 'method' => 'put']) !!}
                                         <div class="btn-group">
-                                            @if ($overtime->from_datetime < \Carbon\Carbon::now() || $overtime->status != 1)
+                                            <a href="{!! route('overtimes.details', [$overtime->id]) !!}" class="btn btn-secondary btn-sm">
+                                                <i class="glyphicon glyphicon-edit"></i>{{ trans('Details') }}
+                                            </a>
+                                            @if ($overtime->from_datetime < \Carbon\Carbon::now() || $overtime->status != config('define.overtime.registered'))
                                             @else
                                                 <a href="{!! route('overtimes.edit', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
                                                     <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
                                                 </a>
-                                                {!! Form::button('<i class="glyphicon glyphicon-trash"></i>' . trans('Cancel'), [
-                                                    'type' => 'submit',
-                                                    'class' => 'btn btn-danger btn-sm',
-                                                    'onclick' => 'confirmCancel(event)',
-                                                ]) !!}
+                                                <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                                    data-target="#cancelModal">
+                                                    <i class="glyphicon glyphicon-trash"></i>{{ trans('Cancel') }}
+                                                </button>
                                             @endif
                                         </div>
-                                        {!! Form::close() !!}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <div class="pagination justify-content-center">
-                        {{ $overtimes->appends([
-                                'start_date' => request()->input('start_date'),
-                                'end_date' => request()->input('end_date'),
-                            ])->links() }}
-                    </div>
+                                        {{-- modal cancel --}}
+                                        <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="cancelModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="cancelModalLabel">
+                                                            {{ trans('overtime.cancel_modal') }}</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {!! Form::open(['route' => ['overtimes.cancel', $overtime->id], 'method' => 'put']) !!}
+                                                        <div class="form-group">
+                                                            <label
+                                                                for="cancelReason">{{ trans('overtime.cancel_reason') }}
+                                                                <span class="text-danger">*</span>
+                                                            </label>
+                                                            <textarea class="form-control" id="cancelReason" name="comment" rows="3" required></textarea>
+                                                        </div>
+
+                                                        <div class="form-group row text-center">
+                                                            <div class="col-sm-12">
+                                                                <button type="submit"
+                                                                    class="btn btn-primary">{{ trans('Save') }}</button>
+                                                                <a href="{!! route('overtimes.index') !!}"
+                                                                    class="btn btn-default">{{ trans('Cancel') }}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {!! Form::close() !!}
+                                                </div>
+                                            </div>
+                                        </div>
+                </div>
+                </td>
+                </tr>
+                @endforeach
+                </tbody>
+                </table>
+                <div class="pagination justify-content-center">
+                    {{ $overtimes->appends([
+                            'start_date' => request()->input('start_date'),
+                            'end_date' => request()->input('end_date'),
+                        ])->links() }}
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>

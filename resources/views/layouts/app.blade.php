@@ -324,6 +324,24 @@
             }
         }
     </script>
+    {{-- enter -> submit form --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get all the forms on the page
+            const forms = document.querySelectorAll("form");
+
+            // Add an event listener to each form for keydown events
+            forms.forEach(function(form) {
+                form.addEventListener("keydown", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>

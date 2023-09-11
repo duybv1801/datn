@@ -13,6 +13,12 @@ class OvertimePolicy
 {
     use HandlesAuthorization, HasPermission;
 
+    public function before(User $user)
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+    }
     /**
      * Create a new policy instance.
      *
@@ -20,12 +26,18 @@ class OvertimePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasAnyRole(['admin', 'hr']) || $user->position == config('define.position.po');
+        return $user->hasAnyRole(['admin', 'hr', 'po']);
     }
 
     public function view(User $user)
     {
         return $user->hasAnyRole(['admin', 'hr', 'member']);
+    }
+
+    public function details(User $user, $id)
+    {
+        $user_id = Overtime::find($id)->user_id;
+        return $user->hasAnyRole(['admin', 'hr', 'po']) || $user->id === $user_id;
     }
 
     public function update(User $user, $id)
@@ -42,6 +54,6 @@ class OvertimePolicy
 
     public function approve(User $user)
     {
-        return $user->hasAnyRole(['admin', 'hr']) || $user->position == config('define.position.po');
+        return $user->hasAnyRole(['admin', 'hr', 'po']);
     }
 }

@@ -1,4 +1,4 @@
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('dashboard*') ? 'active' : '' }}">
     <a href="{!! route('home') !!}" class="nav-link">
         <i class="fas fa-home"></i>
         <p>
@@ -7,7 +7,7 @@
     </a>
 </li>
 
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('users*') ? 'active menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="	far fa-address-card"></i>
         <p>
@@ -26,7 +26,7 @@
 </li>
 
 @can('viewAny', App\Models\User::class)
-    <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <li class="nav-item {{ Request::is('manager_staff*') ? 'active' : '' }}">
         <a href="{!! route('manager_staff.index') !!}" class="nav-link">
             <i class="fas fa-user-friends"></i>
             <p>
@@ -36,7 +36,7 @@
     </li>
 @endcan
 
-<li class="nav-item {{ Request::is('doadboard*') ? 'active menu-open' : '' }}">
+<li class="nav-item {{ Request::is('overtimes*') ? 'active menu-open' : '' }}">
     @can('viewAny', App\Models\Overtime::class)
         <a href="" class="nav-link">
             <i class="far fa-clock"></i>
@@ -71,7 +71,7 @@
     @endcan
 </li>
 
-<li class="nav-item {{ Request::is('doadboard*') ? 'active menu-open' : '' }}">
+<li class="nav-item {{ Request::is('holidays*') ? 'active menu-open' : '' }}">
     @can('update', App\Models\Holiday::class)
         <a href="" class="nav-link">
             <i class="fas fa-gift"></i>
@@ -109,7 +109,7 @@
 
 
 @can('update', App\Models\Setting::class)
-    <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <li class="nav-item {{ Request::is('settings*') ? 'active' : '' }}">
         <a href="{!! route('settings.index') !!}" class="nav-link">
             <i class="fas fa-cog"></i>
             <p>

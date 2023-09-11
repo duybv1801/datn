@@ -23,4 +23,8 @@ return [
     'max_working_minutes_everyday_day' => 'Thời gian làm việc tối đa trong ngày',
     'minutes' => 'giờ',
     'percents' => '%',
+    'ot_approve' => 'Duyệt OT 2 bước',
+    'day' => 'ngày',
+    'total_ot_time' => 'Khi thời gian OT hơn',
+    'ot_registration_time' => 'Khi thời gian đăng kí trước ít hơn',
 ];

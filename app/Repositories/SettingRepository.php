@@ -35,6 +35,10 @@ class SettingRepository extends BaseRepository
         return Setting::class;
     }
 
+    public function getAllSettings()
+    {
+        return Setting::select('key', 'value')->pluck('value', 'key')->toArray();
+    }
 
     public function searchByConditions($search)
     {
@@ -79,5 +83,18 @@ class SettingRepository extends BaseRepository
             ->pluck('value', 'key');
 
         return $coefficients;
+    }
+
+    public function otApproveSetting()
+    {
+        $keys = [
+            'ot_approve',
+            'total_ot_time',
+            'ot_registration_time',
+        ];
+        $otApproveSettings = $this->model
+            ->whereIn('key', $keys)->pluck('value', 'key');
+
+        return $otApproveSettings;
     }
 }

@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- search --}}
-                <form action="{!! route('overtimes.manage') !!}" method="GET">
+                <form action="{!! route('overtimes.manage') !!}" method="GET" id="ot_manage_search">
                     <div class="row">
                         <div class="col-md-10 offset-md-1">
                             <div class="row">
@@ -75,7 +75,13 @@
                             <tr>
                                 <th>{{ Form::label('from', trans('No.')) }}</th>
                                 <th>{{ Form::label('user', trans('overtime.user')) }}</th>
-                                <th>{{ Form::label('from', trans('overtime.from')) }}</th>
+                                <th>
+                                    {{ Form::label('from', trans('overtime.from')) }}
+                                    <a href="#" class="sort-icon float-right mr-4" data-sort="asc"><i
+                                            class="fas fa-long-arrow-alt-up"></i></a>
+                                    <a href="#" class="sort-icon float-right" data-sort="desc"><i
+                                            class="fas fa-long-arrow-alt-down"></i></a>
+                                </th>
                                 <th>{{ Form::label('to', trans('overtime.to')) }}</th>
                                 <th>{{ Form::label('total_hours', trans('overtime.total_hours')) }}</th>
                                 <th>{{ Form::label('total_hours', trans('overtime.salary_hours')) }}</th>
@@ -119,13 +125,25 @@
                                     <td>
                                         {!! Form::open(['route' => ['overtimes.cancel', $overtime->id], 'method' => 'put']) !!}
                                         <div class="btn-group">
-                                            @if ($overtime->to_datetime < \Carbon\Carbon::now() || $overtime->status != 1)
-                                            @else
+                                            <a href="{!! route('overtimes.details', [$overtime->id]) !!}" class="btn btn-secondary btn-sm">
+                                                <i class="glyphicon glyphicon-edit"></i>{{ trans('Details') }}
+                                            </a>
+                                            @if ($overtime->from_datetime->month < \Carbon\Carbon::now()->month)
+                                                <!-- Ẩn nút -->
+                                            @elseif ($overtime->status == config('define.overtime.registered'))
+                                                <a href="{!! route('overtimes.approve', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
+                                                    <i
+                                                        class="glyphicon glyphicon-edit"></i>{{ trans('overtime.approve') }}
+                                                </a>
+                                            @elseif (
+                                                $overtime->status == config('define.overtime.admin_approve') &&
+                                                    auth()->user()->hasRole('admin'))
                                                 <a href="{!! route('overtimes.approve', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
                                                     <i
                                                         class="glyphicon glyphicon-edit"></i>{{ trans('overtime.approve') }}
                                                 </a>
                                             @endif
+
                                         </div>
                                         {!! Form::close() !!}
                                     </td>

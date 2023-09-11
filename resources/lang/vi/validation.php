@@ -19,6 +19,7 @@ return [
         'show_error' => 'Không tìm thấy thông tin',
         'erro_user' => 'Không tồn tại người dùng này',
         'imported' => 'Nhập file thành công',
+        'cancel' => 'Hủy thành công',
     ],
     'import_holidays' => 'Đã import ngày nghỉ cho năm ',
     'accepted'             => 'Trường :attribute phải được chấp nhận.',

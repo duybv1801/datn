@@ -6,7 +6,7 @@
             <div class="card-body">
                 <section class="content-header">
                     <h1>
-                        {{ trans('Approve') }}
+                        {{ trans('Manage Overtimes') }}
                     </h1>
                 </section>
                 <div class="content">
@@ -16,14 +16,13 @@
                             {!! Form::model($overtime, [
                                 'route' => ['overtimes.approveAction', $overtime->id],
                                 'method' => 'put',
+                                'id' => 'approveForm',
                             ]) !!}
 
                             <div class="row">
                                 <div class="col-md-5 mx-auto">
-
                                     <!-- user_id Field -->
                                     <!-- from_datetime Field -->
-
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label" for="from_datetime">
                                             {{ trans('overtime.from') }}
@@ -70,17 +69,6 @@
 
                                     <!-- total hour Field -->
 
-                                    <!-- cc Field -->
-                                    {{-- <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label"
-                                            for="cc">{{ trans('overtime.cc') }}</label>
-                                        <div class="col-sm-8">
-                                            <select id="cc" class="form-control" name="cc[]" multiple>
-
-                                            </select>
-                                        </div>
-                                    </div> --}}
-
                                     <!-- evident Field -->
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label"
@@ -98,7 +86,7 @@
                                         </label>
                                         <div class="col-3 mt-2">
                                             <input required="required" class="form-check-input" type="radio"
-                                                name="status" id="approveRadio"
+                                                name="status" id="approveRadio" checked
                                                 value="{{ config('define.overtime.approved') }}" />
                                             <label class="form-check-label rounded-circle"
                                                 for="approveRadio">{{ trans('overtime.approve') }}</label>
@@ -123,11 +111,15 @@
                                             <textarea name="comment" id="comment" required="required" class="form-control">{{ old('comment') }}</textarea>
                                         </div>
                                     </div>
+                                    {{-- check  --}}
+                                    <input type="hidden" name="check" value="{{ $check }}" id="check">
+
                                     <!-- Submit Field -->
                                     <div class="form-group row">
                                         <div class="col-sm-4"></div>
                                         <div class="col-sm-8">
-                                            <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
+                                            <button type="submit" class="btn btn-primary"
+                                                id="submitButton">{{ trans('Save') }}</button>
                                             <a href="{!! route('overtimes.manage') !!}"
                                                 class="btn btn-default">{{ trans('Cancel') }}</a>
                                         </div>
@@ -141,4 +133,32 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const approveRadio = document.getElementById('approveRadio');
+            const checkInput = document.getElementById('check');
+            const submitButton = document.getElementById('submitButton');
+            const form = document.getElementById('approveForm');
+            form.addEventListener('submit', function(event) {
+                if (approveRadio.checked && checkInput.value === '1') {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: "{{ trans('This application needs to be sent to admin for approval') }}",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: "{{ trans('Send') }}",
+                        cancelButtonText: "{{ trans('Cancel') }}"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        } else {
+                            submitButton.type = 'button';
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endsection

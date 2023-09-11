@@ -72,10 +72,10 @@
                                                         class="text-danger">*</span></label>
                                                 <div class="col-sm-8">
                                                     <select name="approver_id" id="approver_id" class="form-control">
-                                                        @foreach ($teamInfo['managers'] as $teamName => $manager)
+                                                        @foreach ($teamInfo['managers'] as $manager)
                                                             @if (!empty($manager))
                                                                 <option value="{{ $manager['id'] }}">
-                                                                    {{ $manager['code'] }}
+                                                                    {{ $manager['code'] }} ({{ $manager['email'] }})
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -127,6 +127,7 @@
                                                         class="btn btn-default">{{ trans('Cancel') }}</a>
                                                 </div>
                                             </div>
+                                            <div class="mt-5"></div>
                                         </div>
                                     </div>
                                     {!! Form::close() !!}
