@@ -79,8 +79,8 @@ class RemoteReponsitory extends BaseRepository
 
     private function applySearchConditions($query, $search)
     {
-        $startDate = isset($search['start_date']) ? Carbon::createFromFormat(config('define.date_show'), $search['start_date'])->format(config('define.datetime_db')) : now()->startOfYear()->format(config('define.date_search'));
-        $endDate = isset($search['end_date']) ? Carbon::createFromFormat(config('define.date_show'), $search['end_date'])->format(config('define.datetime_db')) : now()->endOfYear()->format(config('define.date_search'));
+        $startDate = isset($search['startDate']) ? Carbon::createFromFormat(config('define.date_show'), $search['startDate'])->format(config('define.datetime_db')) : now()->startOfYear()->format(config('define.date_search'));
+        $endDate = isset($search['endDate']) ? Carbon::createFromFormat(config('define.date_show'), $search['endDate'])->format(config('define.datetime_db')) : now()->endOfYear()->format(config('define.date_search'));
 
         $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC')
             ->where('from_datetime', '>=', $startDate)

@@ -31,8 +31,8 @@ class RemoteController  extends AppBaseController
     public function index(Request $request)
     {
         $searchParams = [
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
+            'startDate' => $request->input('startDate'),
+            'endDate' => $request->input('endDate'),
             'query' => $request->input('query'),
         ];
         $remotes = $this->remoteReponsitory->searchByConditionsRemote($searchParams);

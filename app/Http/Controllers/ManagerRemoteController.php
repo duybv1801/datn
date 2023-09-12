@@ -26,11 +26,11 @@ class ManagerRemoteController  extends AppBaseController
     public function index(Request $request)
     {
         $searchParams = [
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
+            'startDate' => $request->input('startDate'),
+            'endDate' => $request->input('endDate'),
             'query' => $request->input('query'),
         ];
-        if (Auth::user()->hasRole('po') == config('define.role.po')) {
+        if (Auth::user()->hasRole('po')) {
             $managerRemotes = $this->remoteReponsitory->searchByConditionPO($searchParams);
         } else {
             $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams);
