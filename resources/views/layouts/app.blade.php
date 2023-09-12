@@ -172,8 +172,8 @@
     </script>
     {{-- Calendar --}}
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
-    {{-- fancybox --}}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <<<<<<< HEAD {{-- fancybox --}} <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
 
@@ -185,6 +185,10 @@
 
     <!-- lightbox2 JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    =======
+    {{-- zoom_img --}}
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    >>>>>>> 41d893dcffbde3ddbdbfce6a951860ed6462277b
 
 
     <script>
@@ -227,13 +231,17 @@
                 format: 'DD/MM/yyyy',
             });
 
+            <<
+            << << < HEAD
             //Date and time picker
             $('.reservationdatetime').datetimepicker({
                 format: 'DD/MM/YYYY HH:mm',
                 icons: {
                     time: 'far fa-clock'
                 }
-            });
+            }); ===
+            === = >>>
+            >>> > 41 d893dcffbde3ddbdbfce6a951860ed6462277b
 
             //Date range picker
             $('.reservation').daterangepicker({
@@ -368,6 +376,14 @@
         }
     </script>
     {{-- multy choice cc --}} <!-- Include the Select2 library -->
+    <<<<<<< HEAD=======<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#cc').select2();
+        });
+    </script>
+    >>>>>>> 41d893dcffbde3ddbdbfce6a951860ed6462277b
 
     <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datetimepicker@4.17.47/build/js/bootstrap-datetimepicker.min.js">
