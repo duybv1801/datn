@@ -7,7 +7,7 @@
                 <table style="width: 100%; font-family: Arial, sans-serif;">
                     <tr>
                         <td style="font-size: 18px; font-weight: bold; padding-bottom: 10px;">{{ trans('remote.creator') }}
-                            {{ $user_id }}</td>
+                            {{ $userIds }}</td>
                     </tr>
                     <tr>
                         <td style="font-size: 18px; font-weight: bold; padding-bottom: 10px;">{{ trans('Subject') }}

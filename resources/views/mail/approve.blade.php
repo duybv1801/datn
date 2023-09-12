@@ -3,7 +3,7 @@
     <tr>
         <td style="padding:0 0 36px 0;color:#153643;">
             <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">
-                {{ $user_id }}
+                {{ $userIds }}
             </h1>
             <h1 style="font-size:24px;margin:0 0 20px 0;font-family:Arial,sans-serif;">
                 {{ $subject }}

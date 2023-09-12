@@ -10,18 +10,18 @@ use Illuminate\Queue\SerializesModels;
 class RemoteEmail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $user_id;
+    public $userIds;
     public $remotes;
 
-    public function __construct($user_id, $remotes)
+    public function __construct($userIds, $remotes)
     {
-        $this->user_id = $user_id;
+        $this->userIds = $userIds;
         $this->remotes = $remotes;
     }
 
     public function build()
     {
-        $user_id = ucfirst($this->user_id);
+        $userIds = ucfirst($this->userIds);
         $subject = trans('mail.mail.mail_remote_register_subject');
         $fromDate = $this->remotes->from_datetime;
         $toDate = $this->remotes->to_datetime;
@@ -32,7 +32,7 @@ class RemoteEmail extends Mailable
         return $this->view('mail.remote')
             ->with([
                 'subject' => $subject,
-                'user_id' => $user_id,
+                'userIds' => $userIds,
                 'fromDate' => $fromDate,
                 'toDate' => $toDate,
                 'approver' => $approver,
