@@ -59,7 +59,7 @@ class RemoteController  extends AppBaseController
         $totalHours = $request->total_hours;
         $input = $request->all();
         $input['total_hours'] = $totalHours;
-        $user_id = Auth::user()->code;
+        $userIds = Auth::user()->code;
 
         $input['cc'] = json_encode($request->input('cc'));
         $ccIds = json_decode($input['cc'], true);
@@ -75,7 +75,6 @@ class RemoteController  extends AppBaseController
             $imageUrl = Storage::url($imagePath);
             $input['evident'] = $imageUrl;
         }
-
         $remote = $this->remoteReponsitory->create($input);
 
         if ($ccIds) {
@@ -88,9 +87,9 @@ class RemoteController  extends AppBaseController
             }
             Mail::to($email)
                 ->cc($ccEmails)
-                ->send(new RemoteEmail($user_id, $remote));
+                ->send(new RemoteEmail($userIds, $remote));
         }
-        Mail::to($email)->send(new RemoteEmail($user_id, $remote));
+        Mail::to($email)->send(new RemoteEmail($userIds, $remote));
         Flash::success(trans('Add New Complete'));
 
         return redirect(route('remote.index'));
@@ -110,7 +109,7 @@ class RemoteController  extends AppBaseController
     {
         $remotes = $this->remoteReponsitory->find($id);
         $input =  $request->all();
-        $user_id = Auth::user()->code;
+        $userIds = Auth::user()->code;
         $user = $this->userReponsitory->find($input['approver_id']);
         $input['cc'] = json_encode($request->input('cc'));
         $ccIds = json_decode($input['cc'], true);
@@ -147,9 +146,9 @@ class RemoteController  extends AppBaseController
             }
             Mail::to($email)
                 ->cc($ccEmails)
-                ->send(new RemoteEmail($user_id, $remote));
+                ->send(new RemoteEmail($userIds, $remote));
         }
-        Mail::to($email)->send(new RemoteEmail($user_id, $remote));
+        Mail::to($email)->send(new RemoteEmail($userIds, $remote));
         Flash::success(trans('validation.crud.updated'));
 
         return redirect(route('remote.index'));
