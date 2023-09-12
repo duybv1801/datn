@@ -330,8 +330,3 @@
         </div>
     </div>
 @endcan
-<style>
-    .bootstrap-datetimepicker-widget {
-        max-width: 100%;
-    }
-</style>

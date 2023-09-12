@@ -13,8 +13,11 @@
 
 <!-- Avatar Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('avatar', trans('staff.avatar')) !!}
-    {!! Form::file('avatar', ['class' => 'form-control', 'onchange' => 'previewAvatar(event)']) !!}
+    <div class="custom-file">
+        <input type="file" class="form-control" id="avatar" name="avatar" required="required"
+            onchange="previewAvatar(event)">
+        <label class="custom-file-label" for="avatar">{{ trans('staff.avatar') }}</label>
+    </div>
     <img id="avatar-preview" src="#" alt="Preview" style="max-width: 200px; margin-top: 10px; display: none;">
 </div>
 

@@ -9,6 +9,8 @@ use App\Http\Controllers\InOutForgetController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\RemoteController;
+use App\Http\Controllers\ManagerRemoteController;
 use App\Http\Controllers\HolidayController;
 
 
@@ -41,6 +43,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('manager_staff/{id}/edit', [ManagerStaffController::class, 'edit'])->name('manager_staff.edit')->middleware('can:update,App\Models\User');
     Route::put('manager_staff/{id}', [ManagerStaffController::class, 'update'])->name('manager_staff.update')->middleware('can:update,App\Models\User');
     Route::delete('manager_staff/{id}', [ManagerStaffController::class, 'destroy'])->name('manager_staff.destroy')->middleware('can:delete,App\Models\User');
+
+    //registration_form
+    //remote
+    Route::get('remote', [RemoteController::class, 'index'])->name('remote.index');
+    Route::get('remote/create', [RemoteController::class, 'create'])->name('remote.create');
+    Route::post('remote', [RemoteController::class, 'store'])->name('remote.store');
+    Route::get('remote/{id}/edit', [RemoteController::class, 'edit'])->name('remote.edit');
+    Route::put('remote/{id}', [RemoteController::class, 'update'])->name('remote.update');
+    Route::put('remote/cancle/{id}', [RemoteController::class, 'cancel'])->name('remote.cancel');
+    //manager remote
+    Route::get('manager_remote', [ManagerRemoteController::class, 'index'])->name('manager_remote.index')->middleware('can:viewAny,App\Models\Remote');
+    Route::get('manager_remote/{id}/edit', [ManagerRemoteController::class, 'edit'])->name('manager_remote.edit')->middleware('can:update,App\Models\Remote');
+    Route::put('manager_remote/approve/{id}', [ManagerRemoteController::class, 'approve'])->name('manager_remote.approve')->middleware('can:update,App\Models\Remote');
 
     //user
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

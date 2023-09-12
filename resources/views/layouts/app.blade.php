@@ -37,6 +37,9 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    {{-- zoom_img --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -49,6 +52,10 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
+                {{-- Notifications Dropdown Menu --}}
+                @include('layouts.notifi')
+                {{-- full screen --}}
+
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>
@@ -79,7 +86,7 @@
                             class="brand-image img-circle elevation-3" style="max-width: 45px; opacity: .8">
                     @endif
                 </div>
-                <span class="brand-text font-weight-light">{{ Auth::user()->name }}</span>
+                <span class="brand-text font-weight-light">{{ Auth::user()->code }}</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
@@ -105,6 +112,16 @@
             <footer class="footer"> {{ trans('auth.nal') }}<a href="#">
             </footer>
     </div>
+
+
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+            color: black;
+            list-style: none;
+        }
+    </style>
+    <!-- JavaScript Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <!-- ./wrapper -->
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -153,7 +170,8 @@
     </script>
     {{-- Calendar --}}
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
-
+    {{-- zoom_img --}}
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
 
     <script>
@@ -196,12 +214,6 @@
                 format: 'DD/MM/yyyy',
             });
 
-            //Date and time picker
-            $('#reservationdatetime').datetimepicker({
-                icons: {
-                    time: 'far fa-clock'
-                }
-            });
 
             //Date range picker
             $('.reservation').daterangepicker({
@@ -210,6 +222,7 @@
                     separator: ' - ',
                 }
             })
+
             //Date range picker with time picker
             $('#reservationtime').daterangepicker({
                 timePicker: true,
@@ -236,7 +249,7 @@
                     'MMMM D, YYYY'))
             });
 
-            //Timepicker
+            //Timepicker        
             $('.timepicker').datetimepicker({
                 format: 'HH:mm'
             });
@@ -248,6 +261,9 @@
             })
         });
     </script>
+
+
+    {{-- delete arlert modal --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {{-- Delete 1 --}}
     <script>
@@ -269,6 +285,27 @@
             });
         }
     </script>
+    <script>
+        function confirmCancel(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "{{ trans('Are you sure you want to cancel?') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: "{{ trans('Yes, Cancel it!') }}",
+                cancelButtonText: "{{ trans('Cancel') }}"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.closest('form').submit();
+                }
+            });
+        }
+    </script>
+
+
     {{-- show modal edit holiday --}}
     <script type="text/javascript">
         $(function() {
@@ -310,6 +347,88 @@
             }
         }
     </script>
+    {{-- multy choice cc --}} <!-- Include the Select2 library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#cc').select2();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datetimepicker@4.17.47/build/js/bootstrap-datetimepicker.min.js">
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.datetime_24h').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
+                icons: {
+                    time: 'fa fa-clock',
+                    date: 'fa fa-calendar',
+                    up: 'fa fa-chevron-up',
+                    down: 'fa fa-chevron-down',
+                    previous: 'fa fa-chevron-left',
+                    next: 'fa fa-chevron-right',
+                    today: 'fa fa-calendar-check',
+                    clear: 'fa fa-trash',
+                    close: 'fa fa-times'
+                }
+            });
+        });
+    </script>
+
+
+    <script>
+        function calculateTotalHours() {
+            var from_datetime = document.getElementById('from_datetimenew').value;
+            var to_datetime = document.getElementById('to_datetimenew').value;
+
+            var fromDate = moment(from_datetime, 'DD/MM/YYYY HH:mm');
+            var toDate = moment(to_datetime, 'DD/MM/YYYY HH:mm');
+
+            // Trừ đi khoảng thời gian nghỉ trưa
+            var lunchBreakStart = moment('11:30', 'HH:mm');
+            var lunchBreakEnd = moment('13:00', 'HH:mm');
+
+            var totalDuration = moment.duration(toDate.diff(fromDate));
+
+            if (fromDate.isBefore(lunchBreakStart) && toDate.isAfter(lunchBreakEnd)) {
+                var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
+                totalDuration.subtract(lunchBreakDuration);
+            } else if (fromDate.isBetween(lunchBreakStart, lunchBreakEnd) || toDate.isBetween(lunchBreakStart,
+                    lunchBreakEnd)) {
+                var overlapStart = moment.max(fromDate, lunchBreakStart);
+                var overlapEnd = moment.min(toDate, lunchBreakEnd);
+                var overlapDuration = moment.duration(overlapEnd.diff(overlapStart));
+                totalDuration.subtract(overlapDuration);
+            }
+
+            var totalHours = totalDuration.asHours().toFixed(2);
+
+            document.getElementById('total').value = totalHours;
+        }
+    </script>
+    {{-- search fast --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get all the forms on the page
+            const forms = document.querySelectorAll("form");
+
+            // Add an event listener to each form for keydown events
+            forms.forEach(function(form) {
+                form.addEventListener("keydown", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
+
 </body>
 
 </html>

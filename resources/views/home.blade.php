@@ -1,10 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-
-        <div class="content">
-            <h1>Trang chủ</h1>
-        <div class="clearfix"></div>
+    <div class="content">
+        <h1>Trang chủ</h1>
+        {{-- <div class="clearfix"></div>
             <div class="card card-warning">
                 <div class="card-header" data-card-widget="collapse" title="Collapse">
                     <h1 class="card-title">{{ trans('search') }}</h1>
@@ -80,12 +79,12 @@
                                     <td>{!! $timesheet->record_date !!}</td>
                                     <td>{!! $timesheet->in_time !!}</td>
                                     <td>{!! $timesheet->out_time !!}</td>
-                                    <td><span class="<?= $timesheet->status==1 ? 'badge badge-success': 'badge badge-danger' ?> ">{!! __('define.timesheet.status.'.$timesheet->status) !!}</span></td>
+                                    <td><span class="<?= $timesheet->status == 1 ? 'badge badge-success' : 'badge badge-danger' ?> ">{!! __('define.timesheet.status.'.$timesheet->status) !!}</span></td>
                                     <td>{!! $timesheet->working_hours !!}</td>
                                     <td>{!! $timesheet->overtime_hours !!}</td>
                                     <td>{!! $timesheet->leave_hours !!}</td>
                                     <td>
-                                        @if($timesheet->status == 2)
+                                        @if ($timesheet->status == 2)
                                             <a href="{{route('in_out_forgets.create',['date' => $timesheet->record_date])}}" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-bell"></i> In out
                                             </a>
@@ -107,6 +106,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection

@@ -10,16 +10,9 @@
                     <i class="glyphicon glyphicon-edit"></i>
                     {{ trans('Edit') }}</a>
                 <div class="text-center mb-4">
-
-                    <label for="avatar-input" class="avatar-label">
-                        <img id="avatar-preview"
-                            src="{{ $currentUser->avatar ?: 'https://ron.nal.vn/api/files/avatar_tungts_human.png' }}"
-                            alt="User Preview" class="rounded-circle" width="150">
-                        <div class="edit-icon">
-                            <i class="fas fa-pencil-alt"></i>
-                        </div>
-                    </label>
-                    <input id="avatar-input" type="file" accept="image/*" style="display: none;">
+                    <img id="avatar-preview"
+                        src="{{ $currentUser->avatar ?: 'https://ron.nal.vn/api/files/avatar_tungts_human.png' }}"
+                        alt="User Preview" class="rounded-circle" width="150">
                 </div>
 
                 <div class="form-group row">
@@ -51,7 +44,7 @@
                     <div class="col-sm-7">
                         @php
                             $contractOptions = [
-                                1 => trans('staff.contract.fresher'),
+                                1 => trans('staff.contract.probationary'),
                                 2 => trans('staff.contract.staff'),
                                 3 => trans('staff.contract.intern'),
                             ];

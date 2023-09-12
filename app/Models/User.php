@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\HasPermission;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class User extends Authenticatable
+class   User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasPermission;
+    use HasApiTokens, HasFactory, Notifiable, HasPermission, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -37,8 +38,10 @@ class User extends Authenticatable
         'position',
         'user_id',
         'avatar',
-        'role_id'
+        'role_id',
+        'team_id'
     ];
+    protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -62,5 +65,13 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+    public function remotes()
+    {
+        return $this->hasMany(Remote::class);
     }
 }

@@ -27,7 +27,7 @@ class CreateRemotesTable extends Migration
             $table->foreign('approver_id')->references('id')
                 ->on('users');
             $table->text('comment');
-            $table->tinyInteger('status')->comment('1: Đăng ký remote, 2: Duyệt đăng ký,  3: Không cho phép, 4: Hủy');
+            $table->tinyInteger('status')->comment('1: Chưa được duyệt, 2: Duyệt đăng ký,  3: Không cho phép, 4: Hủy');
             $table->softDeletes();
             $table->timestamps();
         });
