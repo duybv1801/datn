@@ -77,12 +77,23 @@
                                 <th>{{ Form::label('user', trans('overtime.user')) }}</th>
                                 <th>
                                     {{ Form::label('from', trans('overtime.from')) }}
-                                    <a href="#" class="sort-icon float-right mr-4" data-sort="asc"><i
-                                            class="fas fa-long-arrow-alt-up"></i></a>
-                                    <a href="#" class="sort-icon float-right" data-sort="desc"><i
-                                            class="fas fa-long-arrow-alt-down"></i></a>
+                                    <a href="#" class="sort-icon float-right mr-4" data-sort="ASC"
+                                        data-column="from_datetime">
+                                        <i class="fas fa-long-arrow-alt-up" id="from-asc"></i></a>
+                                    <a href="#" class="sort-icon float-right" data-sort="DESC"
+                                        data-column="from_datetime">
+                                        <i class="fas fa-long-arrow-alt-down" id="from-desc"></i></a>
                                 </th>
-                                <th>{{ Form::label('to', trans('overtime.to')) }}</th>
+                                <th>
+                                    {{ Form::label('to', trans('overtime.to')) }}
+                                    <a href="#" class="sort-icon float-right mr-4" data-sort="ASC"
+                                        data-column="to_datetime"><i class="fas fa-long-arrow-alt-up"
+                                            id="to-asc"></i></a>
+                                    <a href="#" class="sort-icon float-right" data-sort="DESC"
+                                        data-column="to_datetime"><i class="fas fa-long-arrow-alt-down"
+                                            id="to-desc"></i></a>
+                                </th>
+
                                 <th>{{ Form::label('total_hours', trans('overtime.total_hours')) }}</th>
                                 <th>{{ Form::label('total_hours', trans('overtime.salary_hours')) }}</th>
                                 <th>{{ Form::label('reason', trans('overtime.reason')) }}</th>
@@ -162,3 +173,31 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sortIcons = document.querySelectorAll('.sort-icon');
+
+        sortIcons.forEach(icon => {
+            icon.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const sortDirection = this.getAttribute('data-sort');
+                const columnName = this.getAttribute('data-column');
+                const url = '{{ route('overtimes.manage') }}';
+                const params = new URLSearchParams({
+                    sort: sortDirection,
+                    column: columnName
+                });
+
+                const form = document.getElementById('ot_manage_search');
+                const formData = new FormData(form);
+
+                formData.forEach((value, key) => {
+                    params.append(key, value);
+                });
+
+                window.location.href = `${url}?${params.toString()}`;
+            });
+        });
+    });
+</script>

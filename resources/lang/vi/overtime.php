@@ -3,8 +3,8 @@
 return [
     'approver' => 'Người kiểm duyệt',
     'register' => 'Đăng kí',
-    'from' => 'Từ',
-    'to' => 'Đến',
+    'from' => 'Từ ngày',
+    'to' => 'Đến ngày',
     'total_hours' => 'Tổng giờ',
     'status' => 'Trạng thái',
     'salary_hours' => 'Quy ra giờ lương',
@@ -26,4 +26,5 @@ return [
     'admin_approve' => 'Chờ admin duyệt',
     'cancel_modal' => 'Hủy đơn OT',
     'cancel_reason' => 'Lý do hủy đơn',
+    'subject' => 'Tiêu đề',
 ];

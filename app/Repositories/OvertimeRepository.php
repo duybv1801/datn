@@ -40,7 +40,6 @@ class OvertimeRepository extends BaseRepository
     public function searchByConditions($search)
     {
         $query = $this->model;
-
         if (!isset($search['startDate'])) {
             $startDate = now()->startOfMonth();
         } else {
@@ -54,9 +53,13 @@ class OvertimeRepository extends BaseRepository
         if (isset($search['query'])) {
             $query = $query->where('title', 'like', '%' . $search['query'] . '%');
         }
-
-        $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
         $query = $query->where('from_datetime', '>=', $startDate)->where('to_datetime', '<=', $endDate);
+
+        if (isset($search['sort']) && $search['column']) {
+            $query->orderBy($search['column'], $search['sort']);
+        } else {
+            $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
+        }
         $query = $query->with('approver:id,code');
 
         return $query;

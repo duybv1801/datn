@@ -11,20 +11,29 @@ class ApproveOT extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $input;
+    public $overtime;
 
-    public function __construct($input)
+    public function __construct($overtime)
     {
-        $this->input = $input;
+        $this->overtime = $overtime;
+
+        $statusLabels = [
+            config('define.overtime.registered') => trans('overtime.registered'),
+            config('define.overtime.approved') => trans('overtime.approved'),
+            config('define.overtime.rejected') => trans('overtime.rejected'),
+            config('define.overtime.cancel') => trans('overtime.cancel'),
+        ];
+        $overtime->status_label = $statusLabels[$overtime->status] ?? '';
+        $this->overtime = $overtime;
     }
+
 
     public function build()
     {
         return $this->view('mail.approve_ot')
             ->subject(trans('overtime.Approval'))
             ->with([
-                'status' => $this->input['status'],
-                'comment' => $this->input['comment'],
+                'overtime' => $this->overtime,
             ]);
     }
 }

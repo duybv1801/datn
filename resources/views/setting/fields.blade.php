@@ -335,7 +335,7 @@
                     <div class="col-sm-6 ml-3">
                         <input required="required" class="form-check-input" type="radio" name="ot_approve"
                             id="ot_approve" value="{{ config('define.yes') }}"
-                            {{ $settings['ot_approve'] == config('define.yes') ? 'checked' : '' }} />
+                            {{ isset($settings['ot_approve']) && $settings['ot_approve'] == config('define.yes') ? 'checked' : '' }} />
                         <label class="form-check-label rounded-circle" for="ot_approve">{{ trans('Yes') }}</label>
                     </div>
                     <div class="">
