@@ -20,12 +20,12 @@ class HolidayPolicy
 
     public function viewAny(User $user)
     {
-        return $user->hasAnyRole(['admin', 'accounter', 'hr', 'member']);
+        return $user->hasAnyRole(['admin', 'po', 'hr', 'member']);
     }
 
     public function view(User $user)
     {
-        return $user->hasAnyRole(['admin', 'accounter', 'hr', 'member']);
+        return $user->hasAnyRole(['admin', 'po', 'hr', 'member']);
     }
 
     public function create(User $user)

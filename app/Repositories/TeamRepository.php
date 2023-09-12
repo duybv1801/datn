@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\Team;
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use App\Models\Team;
 
 class TeamRepository extends BaseRepository
 {
@@ -24,7 +24,6 @@ class TeamRepository extends BaseRepository
         return $this->fieldSearchable;
     }
 
-
     public function model()
     {
         return Team::class;
@@ -34,7 +33,7 @@ class TeamRepository extends BaseRepository
     {
         $user = $this->user->find($userId);
         $manager = null;
-        $teamIds = $user->teams->pluck('id')->toArray();
+        $teamIds = $user->teams()->pluck('id')->toArray();
         $managers = [];
         if ($user->hasRole('po')) {
             $adminUsers = $this->user->whereHas('roles', function ($query) {
@@ -63,5 +62,18 @@ class TeamRepository extends BaseRepository
             'managers' => $managers,
             'otherUsers' => $otherUsers,
         ];
+    }
+
+    public function getTeam()
+    {
+        return $this->model->distinct()->get(['manager']);
+    }
+    public function getTeamList()
+    {
+        return $this->model->pluck('name', 'id');
+    }
+    public function findTeamById($id)
+    {
+        return Team::where('id', $id)->first();
     }
 }

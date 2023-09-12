@@ -15,11 +15,15 @@ return [
     'crud' => [
         'created' => 'Thêm mới thành công !',
         'updated' => 'Cập nhật thành công !',
+        'approve' => 'Đã kiểm duyệt thành công !',
         'delete' => 'Xóa thành công !',
         'show_error' => 'Không tìm thấy thông tin',
         'erro_user' => 'Không tồn tại người dùng này',
-        'imported' => 'Nhập file thành công',
         'cancel' => 'Hủy thành công',
+        'imported' => 'Nhập file thành công',
+        'endtime_false' => 'Thời gian kết thúc không hợp lệ !',
+        'beggintime_false' => 'Thời gian bắt đầu không hợp lệ !',
+        'overtime_false' => 'Thời gian đã quá 8 tiếng trên ngày'
     ],
     'import_holidays' => 'Đã import ngày nghỉ cho năm ',
     'accepted'             => 'Trường :attribute phải được chấp nhận.',
@@ -138,6 +142,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'total_hours' => [
+            'min' => 'Trường :attribute phải làm ít nhất 1 giờ.',
+        ],
     ],
     'attributes'           => [
         'address'               => 'địa chỉ',
@@ -172,6 +179,8 @@ return [
         'title'                 => 'tiêu đề',
         'username'              => 'tên đăng nhập',
         'year'                  => 'năm',
+        'from_datetime'         => 'Từ',
+        'to_datetime'           => 'Đến',
         'check_in_time'         => 'Giờ vào',
         'check_out_time'        => 'Giờ nghỉ',
         'flexible_time'         => 'Linh động giờ vào',
@@ -193,5 +202,6 @@ return [
         'max_working_minutes_everyday_day' => 'Thời gian làm việc tối đa trong ngày',
         'to_datetime'           => 'Đến',
         'from_datetime'         => 'Từ',
+        'total_hours' => 'Số giờ'
     ],
 ];

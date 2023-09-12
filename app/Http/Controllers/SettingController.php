@@ -18,18 +18,12 @@ class SettingController extends Controller
 
     public function index(Request $request)
     {
-        if (!$request->user()->hasPermission('read')) {
-            return redirect()->back();
-        }
         $settings = $this->settingService->getAllSettings();
         return view('setting.setting', compact('settings'));
     }
 
     public function update(UpdateSettingRequest $request)
     {
-        if (!$request->user()->hasPermission('update')) {
-            return redirect()->back();
-        }
         $data = $request->except('_token');
         $this->settingService->updateSettings($data);
 

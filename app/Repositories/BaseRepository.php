@@ -75,6 +75,7 @@ abstract class BaseRepository
         return $query->paginate($perPage, $columns);
     }
 
+
     /**
      * Build a query for retrieving all records.
      *

@@ -78,13 +78,6 @@
                             <table role="presentation"
                                 style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;font-family:Arial,sans-serif;">
                                 <tr>
-                                    <td style="padding:0;width:50%;" align="left">
-                                        <p
-                                            style="margin:0;font-size:14px;line-height:16px;font-family:Arial,sans-serif;color:#ffffff;">
-                                            &reg;{{ trans('mail.mail.mail_complete') }}<br /><a>
-                                                href="http://www.example.com" </a>
-                                        </p>
-                                    </td>
                                     <td style="padding:0;width:50%;" align="right">
                                         <table role="presentation"
                                             style="border-collapse:collapse;border:0;border-spacing:0;">

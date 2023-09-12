@@ -15,6 +15,7 @@ class PermissionRoles extends Seeder
             ['name' => 'member'],
             ['name' => 'accounter'],
             ['name' => 'hr'],
+            ['name' => 'po']
         ]);
 
         DB::table('permissions')->insert([
