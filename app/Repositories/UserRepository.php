@@ -69,11 +69,22 @@ class UserRepository extends BaseRepository
         $query = $query->orderBy('created_at', 'DESC');
         return $query->paginate(config('define.paginate'));
     }
-    public function getUsersByPosition($position)
+    public function getUsersByPosition($roleId)
     {
-        return $this->model->where('position', $position)->get();
+        return $this->model->where('role_id', $roleId)->get();
     }
-
+    public function getEmailsByPosition($emailId)
+    {
+        return $this->model->find($emailId);
+    }
+    public function getCodes()
+    {
+        return $this->model->pluck('code');
+    }
+    public function getEmailsByUserIds($ccIds)
+    {
+        return $this->model->whereIn('code', $ccIds)->pluck('email');
+    }
     public function getRoleById($roleId)
     {
         return Role::where('id', $roleId)->first();

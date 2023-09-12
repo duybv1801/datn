@@ -100,19 +100,15 @@
 
         @can('viewAny', App\Models\Remote::class)
             <li class="nav-item">
-                @if ($position == config('define.position.po'))
-                    <a href="{!! route('manager_remote_po.index') !!}" class="nav-link">
-                    @else
-                        <a href="{!! route('manager_remote.index') !!}" class="nav-link">
-                @endif
-                <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('Approve') }}
-                    @if ($position == config('define.position.po'))
-                        <span class=" badge bg-danger">
-                            {{ $unreadNotifications }}
-                        </span>
-                    @endif
-                </p>
+                <a href="{!! route('manager_remote.index') !!}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('Approve') }}
+                        @if (Auth::user()->hasRole('po'))
+                            <span class=" badge bg-danger">
+                                {{ $unreadNotifications }}
+                            </span>
+                        @endif
+                    </p>
                 </a>
             </li>
         @endcan

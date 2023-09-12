@@ -61,12 +61,12 @@
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="gender">{{ trans('staff.genders.name') }}</label>
             <select name="gender" id="gender" class="form-control col-sm-5">
-                <option value="{{ config('database.gender.male') }}"
-                    {{ $user->gender == config('database.gender.male') ? 'selected' : '' }}>
+                <option value="{{ config('define.gender.male') }}"
+                    {{ $user->gender == config('define.gender.male') ? 'selected' : '' }}>
                     {{ trans('staff.genders.male') }}
                 </option>
-                <option value="{{ config('database.gender.female') }}"
-                    {{ $user->gender == config('database.gender.female') ? 'selected' : '' }}>
+                <option value="{{ config('define.gender.female') }}"
+                    {{ $user->gender == config('define.gender.female') ? 'selected' : '' }}>
                     {{ trans('staff.genders.female') }}
                 </option>
             </select>
@@ -92,16 +92,16 @@
             <label class="col-sm-5 control-label" for="contract">{{ trans('staff.contract.name') }}
                 <span class="text-danger">*</span></label>
             <select name="contract" id="contract" class="form-control col-sm-5">
-                <option value="{{ config('database.contract.staff') }}"
-                    {{ $user->contract == config('database.contract.staff') ? 'selected' : '' }}>
+                <option value="{{ config('define.contract.staff') }}"
+                    {{ $user->contract == config('define.contract.staff') ? 'selected' : '' }}>
                     {{ trans('staff.contract.staff') }}
                 </option>
-                <option value="{{ config('database.contract.probationary') }}"
-                    {{ $user->contract == config('database.contract.probationary') ? 'selected' : '' }}>
+                <option value="{{ config('define.contract.probationary') }}"
+                    {{ $user->contract == config('define.contract.probationary') ? 'selected' : '' }}>
                     {{ trans('staff.contract.probationary') }}
                 </option>
-                <option value="{{ config('database.contract.intern') }}"
-                    {{ $user->contract == config('database.contract.intern') ? 'selected' : '' }}>
+                <option value="{{ config('define.contract.intern') }}"
+                    {{ $user->contract == config('define.contract.intern') ? 'selected' : '' }}>
                     {{ trans('staff.contract.intern') }}
                 </option>
             </select>
@@ -126,12 +126,12 @@
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="status">{{ trans('staff.status.name') }}</label>
             <select name="status" id="status" class="form-control col-sm-5">
-                <option value="{{ config('database.status_user.active') }}"
-                    {{ $user->status == config('database.status_user.active') ? 'selected' : '' }}>
+                <option value="{{ config('define.status_user.active') }}"
+                    {{ $user->status == config('define.status_user.active') ? 'selected' : '' }}>
                     {{ trans('staff.status.active') }}
                 </option>
-                <option value="{{ config('database.status_user.inactive') }}"
-                    {{ $user->status == config('database.status_user.inactive') ? 'selected' : '' }}>
+                <option value="{{ config('define.status_user.inactive') }}"
+                    {{ $user->status == config('define.status_user.inactive') ? 'selected' : '' }}>
                     {{ trans('staff.status.inactive') }}
                 </option>
             </select>
@@ -142,20 +142,20 @@
             <label class="col-sm-5 control-label" for="position">{{ trans('staff.position.name') }}
                 <span class="text-danger">*</span></label>
             <select name="position" id="position" class="form-control col-sm-5">
-                <option value="{{ config('database.position.staff') }}"
-                    {{ $user->position == config('database.position.staff') ? 'selected' : '' }}>
+                <option value="{{ config('define.position.staff') }}"
+                    {{ $user->position == config('define.position.staff') ? 'selected' : '' }}>
                     {{ trans('staff.position.staff') }}
                 </option>
-                <option value="{{ config('database.position.po') }}"
-                    {{ $user->position == config('database.position.po') ? 'selected' : '' }}>
+                <option value="{{ config('define.position.po') }}"
+                    {{ $user->position == config('define.position.po') ? 'selected' : '' }}>
                     {{ trans('staff.position.po') }}
                 </option>
-                <option value="{{ config('database.position.lead') }}"
-                    {{ $user->position == config('database.position.lead') ? 'selected' : '' }}>
+                <option value="{{ config('define.position.lead') }}"
+                    {{ $user->position == config('define.position.lead') ? 'selected' : '' }}>
                     {{ trans('staff.position.lead') }}
                 </option>
-                <option value="{{ config('database.position.culi') }}"
-                    {{ $user->position == config('database.position.culi') ? 'selected' : '' }}>
+                <option value="{{ config('define.position.culi') }}"
+                    {{ $user->position == config('define.position.culi') ? 'selected' : '' }}>
                     {{ trans('staff.position.culi') }}
                 </option>
             </select>
@@ -185,20 +185,23 @@
             <label class="col-sm-5 control-label" for="role_id">{{ trans('staff.role.name') }}
                 <span class="text-danger">*</span></label>
             <select name="role_id" id="role_id" class="form-control col-sm-5">
-                <option value="{{ config('database.role.admin') }}"
-                    {{ $user->role_id == config('database.role.admin') ? 'selected' : '' }}>
+                <option value="{{ config('define.role.admin') }}"
+                    {{ $user->role_id == config('define.role.admin') ? 'selected' : '' }}>
                     {{ trans('staff.role.admin') }}
                 </option>
-                <option value="{{ config('database.role.member') }}"
-                    {{ $user->role_id == config('database.role.member') ? 'selected' : '' }}>
+                <option value="{{ config('define.role.member') }}"
+                    {{ $user->role_id == config('define.role.member') ? 'selected' : '' }}>
                     {{ trans('staff.role.member') }}
                 </option>
-                <option value="{{ config('database.role.accounter') }}"
-                    {{ $user->role_id == config('database.role.accounter') ? 'selected' : '' }}>
+                <option value="{{ config('define.role.accounter') }}"
+                    {{ $user->role_id == config('define.role.accounter') ? 'selected' : '' }}>
                     {{ trans('staff.role.accounter') }}
                 </option>
-                <option value="{{ config('database.role.hr') }}"
-                    {{ $user->role_id == config('database.role.hr') ? 'selected' : '' }}>{{ trans('staff.role.hr') }}
+                <option value="{{ config('define.role.hr') }}"
+                    {{ $user->role_id == config('define.role.hr') ? 'selected' : '' }}>{{ trans('staff.role.hr') }}
+                </option>
+                <option value="{{ config('define.role.po') }}"
+                    {{ $user->role_id == config('define.role.po') ? 'selected' : '' }}>{{ trans('staff.role.po') }}
                 </option>
             </select>
         </div>

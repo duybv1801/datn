@@ -68,19 +68,21 @@
                                         <p>{!! $user->code !!}</p>
                                     </td>
                                     <td>
-                                        {{ $user->role_id == config('database.role.admin')
+                                        {{ $user->role_id == config('define.role.admin')
                                             ? trans('staff.role.admin')
-                                            : ($user->role_id == config('database.role.member')
+                                            : ($user->role_id == config('define.role.member')
                                                 ? trans('staff.role.member')
-                                                : ($user->role_id == config('database.role.accounter')
+                                                : ($user->role_id == config('define.role.accounter')
                                                     ? trans('staff.role.accounter')
-                                                    : ($user->role_id == config('database.role.hr')
+                                                    : ($user->role_id == config('define.role.hr')
                                                         ? trans('staff.role.hr')
-                                                        : ''))) }}
+                                                        : ($user->role_id == config('define.role.po')
+                                                            ? trans('staff.role.po')
+                                                            : '')))) }}
                                     </td>
                                     <td>
                                         <p>
-                                            {{ $user->gender == config('database.gender.male') ? trans('staff.genders.male') : trans('staff.genders.female') }}
+                                            {{ $user->gender == config('define.gender.male') ? trans('staff.genders.male') : trans('staff.genders.female') }}
                                         </p>
                                     </td>
                                     <td>

@@ -14,7 +14,7 @@
                     data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="from_datetimenew" name="from_datetime"
                         class="form-control datetimepicker-input" data-target="#from_datetime"
-                        value="{{ \Carbon\Carbon::now(old('from_datetime'))->format(config('define.datetime')) }}"
+                        value="{{ \Carbon\Carbon::parse(old('from_datetime'))->format(config('define.datetime')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -33,7 +33,7 @@
                     data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="to_datetimenew" name="to_datetime"
                         class="form-control datetimepicker-input" data-target="#to_datetime"
-                        value="{{ \Carbon\Carbon::now(old('to_datetime'))->format(config('define.datetime')) }}"
+                        value="{{ \Carbon\Carbon::parse(old('to_datetime'))->format(config('define.datetime')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -85,15 +85,11 @@
             <label class="col-sm-4 col-form-label" for="cc">{{ trans('remote.cc') }}</label>
             <div class="col-sm-8">
                 <select id="cc" class="form-control" name="cc[]" multiple>
-                    @foreach ($teams as $team)
-                        <optgroup label="{{ $team->manager }}">
-                            @foreach ($teams as $subTeam)
-                                <option value="{{ $subTeam->id }}"
-                                    {{ in_array($subTeam->id, old('cc', [])) ? 'selected' : '' }}>
-                                    {{ $subTeam->name }}
-                                </option>
-                            @endforeach
-                        </optgroup>
+                    @foreach ($codes as $code)
+                        <option value="{{ $code }}"
+                            {{ in_array($code, (array) old('cc', [])) ? 'selected' : '' }}>
+                            {{ $code }}
+                        </option>
                     @endforeach
                 </select>
             </div>

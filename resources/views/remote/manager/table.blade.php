@@ -4,9 +4,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- search --}}
-                <form
-                    action="{{ Request::url() !== route('manager_remote.index') ? Request::url() : route('manager_remote.index') }}"
-                    method="GET">
+                <form action="{{ route('manager_remote.index') }}" method="GET">
                     <div class="row">
                         <div class="col-md-10 offset-md-1">
                             <div class="row">
@@ -80,7 +78,9 @@
                                 <th>{{ Form::label('from', trans('remote.from')) }}</th>
                                 <th>{{ Form::label('to', trans('remote.to')) }}</th>
                                 <th>{{ Form::label('total_hours', trans('remote.total_hours')) }}</th>
-                                <th>{{ Form::label('approver', trans('remote.approver')) }}</th>
+                                @if (!Auth::user()->hasRole('po'))
+                                    <th>{{ Form::label('approver', trans('remote.approver')) }}</th>
+                                @endif
                                 <th>{{ Form::label('status', trans('remote.status.name')) }}</th>
                                 <th>{{ Form::label('functions', trans('Funtions')) }}</th>
                             </tr>
@@ -94,25 +94,27 @@
                                     <td>{{ $managerRemote->from_datetime->format(config('define.datetime')) }}</td>
                                     <td>{{ $managerRemote->to_datetime->format(config('define.datetime')) }}</td>
                                     <td>{{ $managerRemote->total_hours }}</td>
-                                    <td>{{ $managerRemote->getApprove() }}</td>
+                                    @if (!Auth::user()->hasRole('po'))
+                                        <td>{{ $managerRemote->getApprove() }}</td>
+                                    @endif
                                     <td>
                                         @php
                                             $statusClasses = [
-                                                config('database.remotes.pending') => 'badge badge-primary',
-                                                config('database.remotes.approved') => 'badge badge-success',
-                                                config('database.remotes.rejected') => 'badge badge-danger',
-                                                config('database.remotes.cancelled') => 'badge badge-warning',
+                                                config('define.remotes.pending') => 'badge badge-primary',
+                                                config('define.remotes.approved') => 'badge badge-success',
+                                                config('define.remotes.rejected') => 'badge badge-danger',
+                                                config('define.remotes.cancelled') => 'badge badge-warning',
                                             ];
                                             $statusClass = $statusClasses[$managerRemote->status] ?? '';
                                         @endphp
                                         <span class="{{ $statusClass }}">
-                                            {{ $managerRemote->status == config('database.remotes.pending')
+                                            {{ $managerRemote->status == config('define.remotes.pending')
                                                 ? trans('remote.status.regist')
-                                                : ($managerRemote->status == config('database.remotes.approved')
+                                                : ($managerRemote->status == config('define.remotes.approved')
                                                     ? trans('remote.status.approve')
-                                                    : ($managerRemote->status == config('database.remotes.rejected')
+                                                    : ($managerRemote->status == config('define.remotes.rejected')
                                                         ? trans('remote.status.ban')
-                                                        : ($managerRemote->status == config('database.remotes.cancelled')
+                                                        : ($managerRemote->status == config('define.remotes.cancelled')
                                                             ? trans('remote.status.cancel')
                                                             : ''))) }}
                                         </span>
@@ -120,7 +122,7 @@
                                     <td>
                                         {!! Form::open(['route' => ['manager_remote.edit', $managerRemote->id], 'method' => 'put']) !!}
                                         <div class="btn-group">
-                                            @if ($managerRemote->status == config('database.remotes.pending'))
+                                            @if ($managerRemote->status == config('define.remotes.pending'))
                                                 <a href="{!! route('manager_remote.edit', [$managerRemote->id]) !!}" class="btn btn-primary btn-sm">
                                                     <i class="glyphicon glyphicon-edit"></i>{{ trans('Approve') }}
                                                 </a>

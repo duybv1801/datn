@@ -114,6 +114,12 @@
     </div>
 
 
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+            color: black;
+            list-style: none;
+        }
+    </style>
     <!-- JavaScript Bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <!-- ./wrapper -->
@@ -403,6 +409,23 @@
 
             document.getElementById('total').value = totalHours;
         }
+    </script>
+    {{-- search fast --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get all the forms on the page
+            const forms = document.querySelectorAll("form");
+
+            // Add an event listener to each form for keydown events
+            forms.forEach(function(form) {
+                form.addEventListener("keydown", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        form.submit();
+                    }
+                });
+            });
+        });
     </script>
 
 

@@ -49,7 +49,7 @@ class RemoteReponsitory extends BaseRepository
     }
     public function findByUserId($userId)
     {
-        return Remote::where('user_id', $userId);
+        return $this->model->where('user_id', $userId);
     }
 
     public function searchByConditionsRemote($search)

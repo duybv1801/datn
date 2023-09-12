@@ -21,16 +21,18 @@ class ApproveEmail extends Mailable
 
     public function build()
     {
+
         $subject = '';
         $status = ucfirst($this->status);
 
 
-        if ($status === 'Approve') {
+        if ($status === 'Approved') {
             $subject = trans('mail.mail.mail_approved');
         } elseif ($status === 'Reject') {
             $subject = trans('mail.mail.mail_rejected');
+        } elseif ($status === 'Cancelled') {
+            $subject = trans('mail.mail.mail_cancelled');
         }
-
         return $this->view('mail.approve')
             ->with(['subject' => $subject, 'comment' => $this->comment]);
     }

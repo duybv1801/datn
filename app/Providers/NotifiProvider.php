@@ -28,12 +28,12 @@ class NotifiProvider extends ServiceProvider
     {
         View::composer('layouts.notifi', function ($view) {
             $user = Auth::user();
-            if ($user->position == config('database.position.po')) {
-                $remotes = Remote::where('status',  config('database.remotes.pending'))
+            if (Auth::user()->hasRole('po')) {
+                $remotes = Remote::where('status',  config('define.remotes.pending'))
                     ->where('approver_id', $user->id)
                     ->get();
             } else {
-                $remotes = Remote::where('status',  config('database.remotes.pending'))->get();
+                $remotes = Remote::where('status',  config('define.remotes.pending'))->get();
             }
             $notifications = collect($remotes)->sortByDesc('created_at');
             $unreadNotifications = count($notifications);
@@ -46,22 +46,20 @@ class NotifiProvider extends ServiceProvider
 
         View::composer('layouts.menu', function ($view) {
             $user = Auth::user();
-            $remotes = Remote::where('status',  config('database.remotes.pending'))
+            $remotes = Remote::where('status',  config('define.remotes.pending'))
                 ->where('approver_id', $user->id)
                 ->get();
-            $position = $user->position;
             $notifications = collect($remotes);
             $unreadNotifications = count($notifications);
 
             $view->with([
-                'position' => $position,
                 'notifications' => $notifications,
                 'unreadNotifications' => $unreadNotifications
             ]);
         });
         View::composer('layouts.menu', function ($view) {
             $user = Auth::user();
-            $remotes = Remote::where('status',  config('database.remotes.pending'))
+            $remotes = Remote::where('status',  config('define.remotes.pending'))
                 ->where('user_id', $user->id)
                 ->get();
             $notifications = collect($remotes);
@@ -69,15 +67,6 @@ class NotifiProvider extends ServiceProvider
 
             $view->with([
                 'register' => $register
-            ]);
-        });
-
-        View::composer('remote.manager.approve', function ($view) {
-            $user = Auth::user();
-            $position = $user->position;
-
-            $view->with([
-                'position' => $position,
             ]);
         });
     }

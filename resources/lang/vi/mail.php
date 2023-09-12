@@ -25,7 +25,9 @@ return [
         'mail_alert_click' => 'Bấm vào đây để xác minh tài khoản của bạn',
         'mail_comments' => 'Phản hồi từ Admin :',
         'mail_approved' => 'Bạn đã được đồng ý duyệt !',
-        'mail_rejected' => 'Bạn đã bị từ chối duyệt !'
+        'mail_rejected' => 'Bạn đã bị từ chối duyệt !',
+        'mail_cancelled' => 'Xác nhận hủy !',
+        'mail_remote_register_subject' => 'Đã đăng kí Remote !',
     ]
 
 ];

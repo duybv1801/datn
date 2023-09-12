@@ -52,7 +52,8 @@ return [
         'admin' => 'Admin',
         'member' => 'Member',
         'accounter' => 'Accounter',
-        'hr' => 'HR'
+        'hr' => 'HR',
+        'po' => 'PO'
     ],
     'birthday' => 'Sinh nhật',
     'phone' => 'SĐT',

@@ -59,7 +59,7 @@ class CreateRemoteRequest extends FormRequest
     }
     public function rules()
     {
-
+        $id = $this->route('id');
         return [
             'reason' => 'required',
             'from_datetime' => 'required|date_format:' . config('define.datetime'),

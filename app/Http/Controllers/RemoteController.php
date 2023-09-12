@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use App\Traits\HasPermission;
 use App\Repositories\RemoteReponsitory;
 use App\Repositories\UserRepository;
 use App\Repositories\TeamRepository;
@@ -13,11 +12,14 @@ use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Mail\RemoteEmail;
+use App\Mail\ApproveEmail;
+use Illuminate\Support\Facades\Mail;
+
 
 class RemoteController  extends AppBaseController
 {
-    use HasPermission;
-
     private $remoteReponsitory, $userReponsitory, $teamRepository;
     public function __construct(RemoteReponsitory $remoteRepo, UserRepository $userRepo, TeamRepository $teamRepo)
     {
@@ -45,19 +47,26 @@ class RemoteController  extends AppBaseController
 
     public function create()
     {
-        $users = $this->userReponsitory->getUsersByPosition(Config('database.position.po'));
-        $teams = $this->teamRepository->getTeam();
-        $remotes = $this->remoteReponsitory->model();
-
-        return view('remote.registration.create', compact('users', 'teams'));
+        $users = $this->userReponsitory->getUsersByPosition(Config('define.role.po'));
+        $codes = $this->userReponsitory->getCodes();
+        return view('remote.registration.create', compact('users', 'codes'));
     }
 
 
     public function store(CreateRemoteRequest $request)
     {
         $request->validated();
-        $input = $request->all();
         $totalHours = $request->total_hours;
+        $input = $request->all();
+        $input['total_hours'] = $totalHours;
+        $user_id = Auth::user()->code;
+
+        $input['cc'] = json_encode($request->input('cc'));
+        $ccIds = json_decode($input['cc'], true);
+        $approverId = $input['approver_id'];
+        $user = $this->userReponsitory->getEmailsByPosition($approverId);
+        $email = $user->email;
+
         $avatar = $request->file('evident');
         if ($avatar) {
             $path = 'public/upload/' . date(config('define.date_img'));
@@ -66,8 +75,22 @@ class RemoteController  extends AppBaseController
             $imageUrl = Storage::url($imagePath);
             $input['evident'] = $imageUrl;
         }
-        $input['total_hours'] = $totalHours;
-        $this->remoteReponsitory->create($input);
+
+        $remote = $this->remoteReponsitory->create($input);
+
+        if ($ccIds) {
+            $multyEmails = $this->userReponsitory->getEmailsByUserIds($ccIds);
+            $ccEmails = [];
+            foreach ($multyEmails as $email) {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $ccEmails[] = $email;
+                }
+            }
+            Mail::to($email)
+                ->cc($ccEmails)
+                ->send(new RemoteEmail($user_id, $remote));
+        }
+        Mail::to($email)->send(new RemoteEmail($user_id, $remote));
         Flash::success(trans('Add New Complete'));
 
         return redirect(route('remote.index'));
@@ -76,9 +99,10 @@ class RemoteController  extends AppBaseController
     public function edit($id)
     {
         $remote = $this->remoteReponsitory->find($id);
-        $users = $this->userReponsitory->getUsersByPosition(config('database.position.po'));
-        $teams = $this->teamRepository->getTeam();
-        return view('remote.registration.edit', compact('remote', 'users', 'teams'));
+        $users = $this->userReponsitory->getUsersByPosition(config('define.role.po'));
+        $codes = $this->userReponsitory->getCodes();
+
+        return view('remote.registration.edit', compact('remote', 'codes', 'users'));
     }
 
 
@@ -86,6 +110,12 @@ class RemoteController  extends AppBaseController
     {
         $remotes = $this->remoteReponsitory->find($id);
         $input =  $request->all();
+        $user_id = Auth::user()->code;
+        $user = $this->userReponsitory->find($input['approver_id']);
+        $input['cc'] = json_encode($request->input('cc'));
+        $ccIds = json_decode($input['cc'], true);
+        $email = $user->email;
+
         if (empty($remotes)) {
             Flash::error(trans('validation.crud.erro_user'));
 
@@ -106,17 +136,37 @@ class RemoteController  extends AppBaseController
             }
         }
 
-        $this->remoteReponsitory->update($input, $id);
+        $remote = $this->remoteReponsitory->update($input, $id);
+        if ($ccIds) {
+            $multyEmails = $this->userReponsitory->getEmailsByUserIds($ccIds);
+            $ccEmails = [];
+            foreach ($multyEmails as $email) {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $ccEmails[] = $email;
+                }
+            }
+            Mail::to($email)
+                ->cc($ccEmails)
+                ->send(new RemoteEmail($user_id, $remote));
+        }
+        Mail::to($email)->send(new RemoteEmail($user_id, $remote));
         Flash::success(trans('validation.crud.updated'));
 
         return redirect(route('remote.index'));
     }
 
-    public function cancel($id)
+    public function cancel($id, Request $request)
     {
         $remote = $this->remoteReponsitory->find($id);
+        $user = $this->userReponsitory->find($remote->approver_id);
+        $email = $user->email;
         $remote->status = config('define.remotes.cancelled');
-        $remote->save();
+        $status = $remote->status;
+        $input =  $request->all();
+        $comment = $input['comment'];
+        $input['status'] = $status;
+        Mail::to($email)->send(new ApproveEmail('Cancelled', $comment));
+        $this->remoteReponsitory->update($input, $id);
         Flash::success(trans('validation.crud.cancel'));
 
         return redirect(route('remote.index'));

@@ -13,7 +13,7 @@
                 <div class="input-group date datetime_24h" id="from_datetime" data-target-input="nearest">
                     <input type="text" name="from_datetime"id="from_datetimenew"
                         class="form-control datetimepicker-input" data-target="#from_datetime"
-                        value="{{ \Carbon\Carbon::parse($remote->from_datetime)->format(config('confine.datetime')) }}"
+                        value="{{ \Carbon\Carbon::parse($remote->from_datetime)->format(config('define.datetime')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -75,21 +75,15 @@
             <label class="col-sm-4 col-form-label" for="cc">{{ trans('remote.cc') }}</label>
             <div class="col-sm-8">
                 <select id="cc" class="form-control" name="cc[]" multiple>
-                    @foreach ($teams as $team)
-                        <optgroup label="{{ $team->manager }}">
-                            @foreach ($teams as $subTeam)
-                                <option value="{{ $subTeam->id }}"
-                                    {{ in_array($subTeam->id, old('cc', [])) ? 'selected' : '' }}>
-                                    {{ $subTeam->name }}
-                                </option>
-                            @endforeach
-                        </optgroup>
+                    @foreach ($codes as $code)
+                        <option value="{{ $code }}"
+                            {{ in_array($code, (array) old('cc', [])) ? 'selected' : '' }}>
+                            {{ $code }}
+                        </option>
                     @endforeach
                 </select>
             </div>
         </div>
-
-
 
         <!-- evident Field -->
         <div class="form-group row">

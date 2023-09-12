@@ -25,15 +25,16 @@ class ManagerRemoteController  extends AppBaseController
 
     public function index(Request $request)
     {
-        if (!$request->user()->hasPermission('read')) {
-            return redirect()->back();
-        }
         $searchParams = [
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'query' => $request->input('query'),
         ];
-        $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams);
+        if (Auth::user()->hasRole('po') == config('define.role.po')) {
+            $managerRemotes = $this->remoteReponsitory->searchByConditionPO($searchParams);
+        } else {
+            $managerRemotes = $this->remoteReponsitory->searchByConditions($searchParams);
+        }
         foreach ($managerRemotes as $remote) {
             $remote->from_datetime = Carbon::parse($remote->from_datetime);
             $remote->to_datetime = Carbon::parse($remote->to_datetime);
@@ -42,32 +43,8 @@ class ManagerRemoteController  extends AppBaseController
         return view('remote.manager.index')->with('managerRemotes', $managerRemotes);
     }
 
-    public function indexPO(Request $request)
-    {
-        if (!$request->user()->hasPermission('read')) {
-            return redirect()->back();
-        }
-        $searchParams = [
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
-            'query' => $request->input('query'),
-        ];
-
-        $managerRemotes = $this->remoteReponsitory->searchByConditionPO($searchParams);
-
-        foreach ($managerRemotes as $remote) {
-            $remote->from_datetime = Carbon::parse($remote->from_datetime);
-            $remote->to_datetime = Carbon::parse($remote->to_datetime);
-        }
-
-        return view('remote.manager.po_index')->with('managerRemotes', $managerRemotes);
-    }
-
     public function edit($id, Request $request)
     {
-        if (!$request->user()->hasPermission('update')) {
-            return redirect()->back();
-        }
         $managerRemotes = $this->remoteReponsitory->find($id);
 
         return view('remote.manager.edit')->with('managerRemotes', $managerRemotes);
@@ -76,22 +53,19 @@ class ManagerRemoteController  extends AppBaseController
 
     public function approve($id, Request $request)
     {
-        if (!$request->user()->hasPermission('update')) {
-            return redirect()->back();
-        }
         $managerRemotes = $this->remoteReponsitory->find($id);
         $user = $this->userReponsitory->find($managerRemotes->user_id);
         $email = $user->email;
         $status = $request->input('status');
         $comment = $request->input('comment')  ?? '';
 
-        if ($status === config('database.remotes.approved')) {
-            Mail::to($email)->send(new ApproveEmail('approved', $comment));
-            $managerRemotes->status = config('database.remotes.approved');
+        if ($status === config('define.remotes.approved')) {
+            Mail::to($email)->send(new ApproveEmail('Approved', $comment));
+            $managerRemotes->status = config('define.remotes.approved');
             $managerRemotes->save();
-        } elseif ($status === config('database.remotes.rejected')) {
+        } elseif ($status === config('define.remotes.rejected')) {
             Mail::to($email)->send(new ApproveEmail('Reject', $comment));
-            $managerRemotes->status = config('database.remotes.rejected');
+            $managerRemotes->status = config('define.remotes.rejected');
             $managerRemotes->save();
         } else {
             Flash::error(trans('validation.crud.erro_user'));
@@ -100,10 +74,7 @@ class ManagerRemoteController  extends AppBaseController
 
         Flash::success(trans('validation.crud.approve'));
 
-        if (Auth::user()->position == config('database.position.po')) {
-            return redirect(route('manager_remote_po.index'));
-        } else {
-            return redirect(route('manager_remote.index'));
-        }
+
+        return redirect(route('manager_remote.index'));
     }
 }

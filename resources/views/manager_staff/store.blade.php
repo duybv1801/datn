@@ -37,21 +37,25 @@
             </label>
             <div class="col-sm-8">
                 <select name="role_id" id="role_id" class="form-control">
-                    <option value="{{ config('database.role.admin') }}"
-                        {{ old('role_id') == config('database.role.admin') ? 'selected' : '' }}>
+                    <option value="{{ config('define.role.admin') }}"
+                        {{ old('role_id') == config('define.role.admin') ? 'selected' : '' }}>
                         {{ trans('staff.role.admin') }}
                     </option>
-                    <option value="{{ config('database.role.member') }}"
-                        {{ old('role_id') == config('database.role.member') ? 'selected' : '' }}>
+                    <option value="{{ config('define.role.member') }}"
+                        {{ old('role_id') == config('define.role.member') ? 'selected' : '' }}>
                         {{ trans('staff.role.member') }}
                     </option>
-                    <option value="{{ config('database.role.accounter') }}"
-                        {{ old('role_id') == config('database.role.accounter') ? 'selected' : '' }}>
+                    <option value="{{ config('define.role.accounter') }}"
+                        {{ old('role_id') == config('define.role.accounter') ? 'selected' : '' }}>
                         {{ trans('staff.role.accounter') }}
                     </option>
-                    <option value="{{ config('database.role.hr') }}"
-                        {{ old('role_id') == config('database.role.hr') ? 'selected' : '' }}>
+                    <option value="{{ config('define.role.hr') }}"
+                        {{ old('role_id') == config('define.role.hr') ? 'selected' : '' }}>
                         {{ trans('staff.role.hr') }}
+                    </option>
+                    <option value="{{ config('define.role.po') }}"
+                        {{ old('role_id') == config('define.role.po') ? 'selected' : '' }}>
+                        {{ trans('staff.role.po') }}
                     </option>
                 </select>
             </div>

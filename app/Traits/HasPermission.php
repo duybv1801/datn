@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Models\Role;
-use App\Models\Permission;
 
 
 trait HasPermission
@@ -13,15 +12,6 @@ trait HasPermission
         return $this->roles()->where('name', $role)->exists();
     }
 
-    public function hasPermission($permission)
-    {
-        foreach ($this->roles as $role) {
-            if ($role->permissions()->where('name', $permission)->exists()) {
-                return true;
-            }
-        }
-        return false;
-    }
     public function hasAnyRole($roles)
     {
         foreach ($roles as $role) {

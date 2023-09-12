@@ -20,6 +20,7 @@ class Remote extends Model
         'approver_id',
         'comment',
         'status',
+        'cc'
     ];
     public function user()
     {

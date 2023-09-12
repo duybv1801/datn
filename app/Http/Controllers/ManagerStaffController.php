@@ -8,20 +8,16 @@ use App\Repositories\UserRepository;
 use App\Repositories\TeamRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Mail\VerifyEmail;
-use App\Models\Role;
-use App\Models\Team;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Laracasts\Flash\Flash;
 use Carbon\Carbon;
-use App\Traits\HasPermission;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class ManagerStaffController extends AppBaseController
 {
-    use HasPermission;
     private $userRepository, $teamRepository;
     public function __construct(UserRepository $userRepo, TeamRepository $teamRepo)
     {
@@ -36,9 +32,6 @@ class ManagerStaffController extends AppBaseController
      */
     public function index(Request $request)
     {
-        if (!$request->user()->hasPermission('read')) {
-            return redirect()->back();
-        }
         $searchParams = [
             'query' => $request->input('query'),
         ];
@@ -54,10 +47,6 @@ class ManagerStaffController extends AppBaseController
      */
     public function create(Request $request)
     {
-        if (!$request->user()->hasPermission('create')) {
-            return redirect()->back();
-        }
-
         return view('manager_staff.create');
     }
 
@@ -71,7 +60,6 @@ class ManagerStaffController extends AppBaseController
     public function store(CreateStaffRequest $request)
     {
         $input = $request->all();
-
         $input['password'] = Hash::make($input['password']);
 
         $roleId = $request->input('roleId');
@@ -100,9 +88,6 @@ class ManagerStaffController extends AppBaseController
      */
     public function edit($id, Request $request)
     {
-        if (!$request->user()->hasPermission('update')) {
-            return redirect()->back();
-        }
         $user = $this->userRepository->find($id);
         $teams = $this->teamRepository->getTeamList();
 
@@ -124,9 +109,6 @@ class ManagerStaffController extends AppBaseController
      */
     public function update($id, UpdateStaffRequest $request)
     {
-        if (!$request->user()->hasPermission('update')) {
-            return redirect()->back();
-        }
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
@@ -156,9 +138,6 @@ class ManagerStaffController extends AppBaseController
      */
     public function destroy($id, Request $request)
     {
-        if (!$request->user()->hasPermission('delete')) {
-            return redirect()->back();
-        }
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {

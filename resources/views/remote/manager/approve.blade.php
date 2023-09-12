@@ -69,8 +69,8 @@
             <div class="col-3 mt-2">
                 <div class="form-check">
                     <input required="required" class="form-check-input" type="radio" name="status" id="approveRadio"
-                        value="{{ config('database.remotes.approved') }}"
-                        {{ $managerRemotes->status == config('database.remotes.approved') ? 'checked' : '' }}>
+                        value="{{ config('define.remotes.approved') }}"
+                        {{ $managerRemotes->status == config('define.remotes.approved') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="approveRadio">
                         {{ trans('Approve') }}
                     </label>
@@ -79,8 +79,8 @@
             <div class="col-3 mt-2 ">
                 <div class="form-check">
                     <input required="required" class="form-check-input" type="radio" name="status" id="rejectRadio"
-                        value="{{ config('database.remotes.rejected') }}"
-                        {{ $managerRemotes->status == config('database.remotes.rejected') ? 'checked' : '' }}>
+                        value="{{ config('define.remotes.rejected') }}"
+                        {{ $managerRemotes->status == config('define.remotes.rejected') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="rejectRadio">
                         {{ trans('Reject') }}
                     </label>
@@ -102,11 +102,7 @@
         <!-- Submit Field -->
         <div class="form-group col-sm-4 ">
             {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
-            @if ($position == config('database.position.po'))
-                <a href="{!! route('manager_remote_po.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
-            @else
-                <a href="{!! route('manager_remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
-            @endif
+            <a href="{!! route('manager_remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
         </div>
 
 
