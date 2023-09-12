@@ -36,20 +36,20 @@ class OvertimePolicy
 
     public function details(User $user, $id)
     {
-        $user_id = Overtime::find($id)->user_id;
-        return $user->hasAnyRole(['admin', 'hr', 'po']) || $user->id === $user_id;
+        $userId = Overtime::find($id)->user_id;
+        return $user->hasAnyRole(['admin', 'hr', 'po']) || $user->id === $userId;
     }
 
     public function update(User $user, $id)
     {
-        $user_id = Overtime::find($id)->user_id;
-        return $user->id === $user_id;
+        $userId = Overtime::find($id)->user_id;
+        return $user->id === $userId;
     }
 
     public function delete(User $user, $id)
     {
-        $user_id = Overtime::find($id)->user_id;
-        return $user->id === $user_id;
+        $userId = Overtime::find($id)->user_id;
+        return $user->id === $userId;
     }
 
     public function approve(User $user)
