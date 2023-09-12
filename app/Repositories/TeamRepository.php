@@ -9,7 +9,11 @@ use App\Models\Team;
 class TeamRepository extends BaseRepository
 {
 
-    protected $fieldSearchable = [];
+    protected $fieldSearchable = [
+        'id',
+        'name',
+        'manager_id'
+    ];
     protected $user;
     protected $team;
 
@@ -33,7 +37,7 @@ class TeamRepository extends BaseRepository
     {
         $user = $this->user->find($userId);
         $manager = null;
-        $teamIds = $user->teams()->pluck('id')->toArray();
+        $teamIds = $user->teams->pluck('id')->toArray();
         $managers = [];
         if ($user->hasRole('po')) {
             $adminUsers = $this->user->whereHas('roles', function ($query) {

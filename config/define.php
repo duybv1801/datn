@@ -7,6 +7,7 @@ return [
     'datetime_db'       => 'Y/m/d H:i',
     'yes'               => '1',
     'no'                => '0',
+    'percents'           => '100',
     'overtime'          => [
         'registered'    => '1',
         'admin_approve' => '2',

@@ -129,7 +129,7 @@ class OvertimeController extends Controller
         $input['comment'] = $request->comment;
         $input['status'] = config('define.overtime.registered');
         $avatar = $request->file('evident');
-        $path = 'public/upload/' . date('Y/m/d');
+        $path = 'public/upload/' . date(config('define.date_img'));
         $filename = Str::random(10) . '.' . $avatar->extension();
         $imagePath = $avatar->storeAs($path, $filename);
         $imageUrl = asset(Storage::url($imagePath));
@@ -139,11 +139,11 @@ class OvertimeController extends Controller
             return $date->format(config('define.date_search'));
         })->toArray();
 
-        $start_at = Carbon::createFromFormat(config('define.datetime'), $request->input('from_datetime'));
-        $end_at = Carbon::createFromFormat(config('define.datetime'), $request->input('to_datetime'));
-        $input['total_hours'] = $start_at->diffInMinutes($end_at);
-        $input['from_datetime'] = $start_at->format(config('define.datetime_db'));
-        $input['to_datetime'] = $end_at->format(config('define.datetime_db'));
+        $startAt = Carbon::createFromFormat(config('define.datetime'), $request->input('from_datetime'));
+        $endAt = Carbon::createFromFormat(config('define.datetime'), $request->input('to_datetime'));
+        $input['total_hours'] = $startAt->diffInMinutes($endAt);
+        $input['from_datetime'] = $startAt->format(config('define.datetime_db'));
+        $input['to_datetime'] = $endAt->format(config('define.datetime_db'));
 
         $dateRanges = [
             [$input['from_datetime'], $input['to_datetime']]
@@ -156,7 +156,7 @@ class OvertimeController extends Controller
             + $coefficients['ot_day_dayoff'] * $result['dayMinutesWeekend']
             + $coefficients['ot_night_dayoff'] * $result['nightMinutesWeekend']
             + $coefficients['ot_day_holiday'] * $result['dayMinutesHolidays']
-            + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / 100;
+            + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / config('define.percents');
 
         $overtime = $this->otRepository->create($input);
         $overtime->user_id = $overtime->user->code;
@@ -170,6 +170,8 @@ class OvertimeController extends Controller
             }
         }
         Mail::to($email)->send($mail);
+        Flash::success(trans('validation.crud.created'));
+
         return redirect()->route('overtimes.index')->with('success', trans('validation.crud.created'));
     }
 
@@ -212,7 +214,9 @@ class OvertimeController extends Controller
             $input['status'] = config('define.overtime.admin_approve');
             $input['comment'] = $request->comment;
             $this->otRepository->update($input, $id);
-            return redirect()->route('overtimes.manage')->with('success', trans('validation.crud.created'));
+            Flash::success(trans('validation.crud.approve'));
+
+            return redirect()->route('overtimes.manage');
         }
         $input['status'] = $request->status;
         $input['comment'] = $request->comment;
@@ -220,7 +224,9 @@ class OvertimeController extends Controller
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
         Mail::to($email)->send(new ApproveOT($overtime));
-        return redirect()->route('overtimes.manage')->with('success', trans('validation.crud.created'));
+        Flash::success(trans('validation.crud.approve'));
+
+        return redirect()->route('overtimes.manage');
     }
 
     public function edit($id)
@@ -241,24 +247,24 @@ class OvertimeController extends Controller
         $input['comment'] = $request->comment;
         $avatar = $request->file('evident');
         if ($avatar) {
-            $path = 'public/upload/' . date('Y/m/d');
+            $path = 'public/upload/' . date(config('define.date_img'));
             $filename = Str::random(10) . '.' . $avatar->extension();
             $imagePath = $avatar->storeAs($path, $filename);
             $imageUrl = Storage::url($imagePath);
             $input['evident'] = $imageUrl;
-            $old_imagePath = str_replace('/storage', 'public', $overtime->evident);
-            Storage::delete($old_imagePath);
+            $oldPath = str_replace('/storage', 'public', $overtime->evident);
+            Storage::delete($oldPath);
         }
 
         $holidays = $this->holidayRepository->all()->pluck('date')->transform(function ($date) {
-            return $date->format('Y-m-d');
+            return $date->format(config('define.date_search'));
         })->toArray();
 
-        $start_at = Carbon::createFromFormat(config('define.datetime'), $request->input('from_datetime'));
-        $end_at = Carbon::createFromFormat(config('define.datetime'), $request->input('to_datetime'));
-        $input['total_hours'] = $start_at->diffInMinutes($end_at);
-        $input['from_datetime'] = $start_at->format(config('define.datetime_db'));
-        $input['to_datetime'] = $end_at->format(config('define.datetime_db'));
+        $startAt = Carbon::createFromFormat(config('define.datetime'), $request->input('from_datetime'));
+        $endAt = Carbon::createFromFormat(config('define.datetime'), $request->input('to_datetime'));
+        $input['total_hours'] = $startAt->diffInMinutes($endAt);
+        $input['from_datetime'] = $startAt->format(config('define.datetime_db'));
+        $input['to_datetime'] = $endAt->format(config('define.datetime_db'));
 
         $dateRanges = [
             [$input['from_datetime'], $input['to_datetime']]
@@ -271,7 +277,7 @@ class OvertimeController extends Controller
             + $coefficients['ot_day_dayoff'] * $result['dayMinutesWeekend']
             + $coefficients['ot_night_dayoff'] * $result['nightMinutesWeekend']
             + $coefficients['ot_day_holiday'] * $result['dayMinutesHolidays']
-            + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / 100;
+            + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / config('define.percents');
 
         $this->otRepository->update($input, $id);
         $overtime->user_id = $overtime->user->code;
@@ -329,7 +335,7 @@ class OvertimeController extends Controller
                 if (($hour > $nightStartHour || ($hour == $nightStartHour && $start->minute >= $nightStartMinutes)) ||
                     ($hour < $nightEndHour || ($hour == $nightEndHour && $start->minute < $nightEndMinutes))
                 ) {
-                    if (in_array($start->format('Y-m-d'), $holidays)) {
+                    if (in_array($start->format(config('define.date_search')), $holidays)) {
                         $nightMinutesHolidays++;
                     } elseif ($start->dayOfWeek === 6 || $start->dayOfWeek === 0) {
                         $nightMinutesWeekend++;
@@ -337,7 +343,7 @@ class OvertimeController extends Controller
                         $nightMinutes++;
                     }
                 } else {
-                    if (in_array($start->format('Y-m-d'), $holidays)) {
+                    if (in_array($start->format(config('define.date_search')), $holidays)) {
                         $dayMinutesHolidays++;
                     } elseif ($start->dayOfWeek === 6 || $start->dayOfWeek === 0) {
                         $dayMinutesWeekend++;

@@ -13,6 +13,7 @@ class Team extends Model
         'name',
         'manager_id',
         'manager',
+        'id',
     ];
 
     public function users()
