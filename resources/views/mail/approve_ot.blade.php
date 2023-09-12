@@ -11,7 +11,7 @@
                     </tr>
                     <tr>
                         <td style="font-size: 18px; font-weight: bold; padding-bottom: 10px;">
-                            {{ trans('overtime.subject') }}:
+                            {{ trans('overtime.status') }}:
                             {{ $overtime->status_label }}
                         </td>
                     </tr>

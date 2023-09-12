@@ -127,7 +127,7 @@
                                         <label class="col-sm-4 col-form-label"
                                             for="evident">{{ trans('overtime.evident') }}</label>
                                         <div class="col-sm-8">
-                                            <a href="{{ $overtime->evident }}" data-lightbox="evident">
+                                            <a data-fancybox="gallery" href="{{ $overtime->evident }}">
                                                 <img class="img-thumbnail" src="{{ $overtime->evident }}" alt="Preview">
                                             </a>
                                         </div>

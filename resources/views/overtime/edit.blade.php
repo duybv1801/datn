@@ -92,15 +92,19 @@
 
 
                                     <!-- cc Field -->
-                                    {{-- <div class="form-group row">
+                                    <div class="form-group row">
                                         <label class="col-sm-4 col-form-label"
                                             for="cc">{{ trans('overtime.cc') }}</label>
                                         <div class="col-sm-8">
-                                            <select id="cc" class="form-control" name="cc[]" multiple>
-
+                                            <select id="cc" class="form-control select2" name="cc[]" multiple>
+                                                @foreach ($teamInfo['otherUsers'] as $otherMember)
+                                                    <option value="{{ $otherMember['email'] }}">
+                                                        {{ $otherMember['code'] }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
-                                    </div> --}}
+                                    </div>
 
                                     <!-- evident Field -->
                                     <div class="form-group row">

@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ trans('auth.nal_lg') }}</title>
     {{-- select 2 --}}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -159,6 +158,8 @@
     {{-- fancybox --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
     {{-- select 2 --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
@@ -341,7 +342,20 @@
             });
         });
     </script>
+    {{-- multy choice cc --}} <!-- Include the Select2 library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
+    <script>
+        $(document).ready(function() {
+            $('#cc').select2();
+        });
+    </script>
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+            color: black;
+            list-style: none;
+        }
+    </style>
 </body>
 
 </html>

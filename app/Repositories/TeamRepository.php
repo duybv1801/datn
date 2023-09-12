@@ -50,7 +50,7 @@ class TeamRepository extends BaseRepository
                 array_push($managers, $manager);
             }
         }
-        $otherUsers = $this->user->select('id', 'code', 'name')
+        $otherUsers = $this->user->select('id', 'code', 'email')
             ->where('id', '!=', $userId)
             ->get();
         $otherUsers = $otherUsers->toArray();

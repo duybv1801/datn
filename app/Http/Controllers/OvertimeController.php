@@ -136,7 +136,7 @@ class OvertimeController extends Controller
         $input['evident'] = $imageUrl;
 
         $holidays = $this->holidayRepository->all()->pluck('date')->transform(function ($date) {
-            return $date->format('Y-m-d');
+            return $date->format(config('define.date_search'));
         })->toArray();
 
         $start_at = Carbon::createFromFormat(config('define.datetime'), $request->input('from_datetime'));
@@ -162,7 +162,14 @@ class OvertimeController extends Controller
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
         $email = $overtime->approver->email;
-        Mail::to($email)->send(new ApproveOT($overtime));
+        $cc = $request->cc;
+        $mail = new ApproveOT($overtime);
+        if (!empty($cc)) {
+            foreach ($cc as $ccEmail) {
+                $mail->cc($ccEmail);
+            }
+        }
+        Mail::to($email)->send($mail);
         return redirect()->route('overtimes.index')->with('success', trans('validation.crud.created'));
     }
 
@@ -270,7 +277,14 @@ class OvertimeController extends Controller
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
         $email = $overtime->approver->email;
-        Mail::to($email)->send(new ApproveOT($overtime));
+        $cc = $request->cc;
+        $mail = new ApproveOT($overtime);
+        if (!empty($cc)) {
+            foreach ($cc as $ccEmail) {
+                $mail->cc($ccEmail);
+            }
+        }
+        Mail::to($email)->send($mail);
         Flash::success(trans('validation.crud.updated'));
 
         return redirect()->route('overtimes.index');

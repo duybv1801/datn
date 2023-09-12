@@ -72,6 +72,7 @@
                                                         class="text-danger">*</span></label>
                                                 <div class="col-sm-8">
                                                     <select name="approver_id" id="approver_id" class="form-control">
+                                                        <option hidden></option>
                                                         @foreach ($teamInfo['managers'] as $manager)
                                                             @if (!empty($manager))
                                                                 <option value="{{ $manager['id'] }}">
@@ -84,20 +85,20 @@
                                             </div>
 
                                             <!-- Form Group for CC -->
-                                            {{-- <div class="form-group row">
+                                            <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label"
                                                     for="cc">{{ trans('overtime.cc') }}</label>
                                                 <div class="col-sm-8">
                                                     <select id="cc" class="form-control select2" name="cc[]"
                                                         multiple>
                                                         @foreach ($teamInfo['otherUsers'] as $otherMember)
-                                                            <option value="{{ $otherMember['id'] }}">
+                                                            <option value="{{ $otherMember['email'] }}">
                                                                 {{ $otherMember['code'] }}
                                                             </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div> --}}
+                                            </div>
 
                                             <!-- evident Field -->
                                             <div class="form-group row">
@@ -138,9 +139,4 @@
             </div>
         </div>
     </div>
-    <script>
-        $(function() {
-            $('.js-example-basic-multiple').select2();
-        });
-    </script>
 @endsection

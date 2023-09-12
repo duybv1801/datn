@@ -173,12 +173,13 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                </td>
-                </tr>
-                @endforeach
-                </tbody>
-                </table>
+
                 <div class="pagination justify-content-center">
                     {{ $overtimes->appends([
                             'start_date' => request()->input('start_date'),
