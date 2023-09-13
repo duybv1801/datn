@@ -18,8 +18,12 @@ class ApproveOT extends Mailable
         $this->overtime = $overtime;
 
         $statusLabels = [
+            config('define.overtime.admin_approve') => trans('overtime.admin_approve'),
             config('define.overtime.registered') => trans('overtime.registered'),
             config('define.overtime.approved') => trans('overtime.approved'),
+            config('define.overtime.confirm') => trans('overtime.confirm'),
+            config('define.overtime.admin_confirm') => trans('overtime.admin_confirm'),
+            config('define.overtime.confirmed') => trans('overtime.confirmed'),
             config('define.overtime.rejected') => trans('overtime.rejected'),
             config('define.overtime.cancel') => trans('overtime.cancel'),
         ];

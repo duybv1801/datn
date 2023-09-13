@@ -126,6 +126,11 @@
                                             <a href="{!! route('overtimes.details', [$overtime->id]) !!}" class="btn btn-secondary btn-sm">
                                                 <i class="glyphicon glyphicon-edit"></i>{{ trans('Details') }}
                                             </a>
+                                            @if ($overtime->to_datetime < \Carbon\Carbon::now() && $overtime->status == config('define.overtime.approved'))
+                                                <a href="{!! route('overtimes.edit', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Confirm') }}
+                                                </a>
+                                            @endif
                                             @if ($overtime->from_datetime < \Carbon\Carbon::now() || $overtime->status != config('define.overtime.registered'))
                                             @else
                                                 <a href="{!! route('overtimes.edit', [$overtime->id]) !!}" class="btn btn-primary btn-sm">

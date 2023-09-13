@@ -29,7 +29,10 @@
                     </tr>
                     <tr>
                         <td style="font-size: 18px; padding-bottom: 10px;">
-                            @if ($overtime->status == config('define.overtime.registered') || $overtime->status == config('define.overtime.cancel'))
+                            @if (
+                                $overtime->status == config('define.overtime.registered') ||
+                                    $overtime->status == config('define.overtime.cancel') ||
+                                    $overtime->status == config('define.overtime.confirm'))
                                 {{ trans('overtime.reason') }}: {{ $overtime->reason }}
                             @else
                                 {{ trans('overtime.comment') }}: {{ $overtime->comment }}

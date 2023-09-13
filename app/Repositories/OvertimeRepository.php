@@ -57,6 +57,9 @@ class OvertimeRepository extends BaseRepository
 
         if (isset($search['sort']) && $search['column']) {
             $query->orderBy($search['column'], $search['sort']);
+        } elseif (isset($search['order'])) {
+            $query = $query->orderByRaw('FIELD(status, ' . implode(',', $search['order']) . ')')
+                ->orderBy('created_at', 'DESC');
         } else {
             $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
         }

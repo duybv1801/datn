@@ -139,19 +139,33 @@
                                             <a href="{!! route('overtimes.details', [$overtime->id]) !!}" class="btn btn-secondary btn-sm">
                                                 <i class="glyphicon glyphicon-edit"></i>{{ trans('Details') }}
                                             </a>
+                                            @if ($overtime->to_datetime < \Carbon\Carbon::now() && $overtime->status == config('define.overtime.confirm'))
+                                                <a href="{!! route('overtimes.approve', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>
+                                                    {{ trans('Confirm') }}
+                                                </a>
+                                            @elseif (
+                                                $overtime->status == config('define.overtime.admin_confirm') &&
+                                                    auth()->user()->hasRole('admin'))
+                                                <a href="{!! route('overtimes.approve', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>
+                                                    {{ trans('Confirm') }}
+                                                </a>
+                                            @endif
+
                                             @if ($overtime->from_datetime->month < \Carbon\Carbon::now()->month)
                                                 <!-- Ẩn nút -->
                                             @elseif ($overtime->status == config('define.overtime.registered'))
                                                 <a href="{!! route('overtimes.approve', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
-                                                    <i
-                                                        class="glyphicon glyphicon-edit"></i>{{ trans('overtime.approve') }}
+                                                    <i class="glyphicon glyphicon-edit"></i>
+                                                    {{ trans('overtime.approve') }}
                                                 </a>
                                             @elseif (
                                                 $overtime->status == config('define.overtime.admin_approve') &&
                                                     auth()->user()->hasRole('admin'))
                                                 <a href="{!! route('overtimes.approve', [$overtime->id]) !!}" class="btn btn-primary btn-sm">
-                                                    <i
-                                                        class="glyphicon glyphicon-edit"></i>{{ trans('overtime.approve') }}
+                                                    <i class="glyphicon glyphicon-edit"></i>
+                                                    {{ trans('overtime.approve') }}
                                                 </a>
                                             @endif
 

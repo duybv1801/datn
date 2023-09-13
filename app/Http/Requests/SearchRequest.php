@@ -24,8 +24,8 @@ class SearchRequest extends FormRequest
     public function rules()
     {
         return [
-            'start_date' => 'date_format:d/m/Y',
-            'end_date' => 'date_format:d/m/Y|after:start_date',
+            'start_date' => 'date_format:' . config('define.date_show'),
+            'end_date' => 'after:start_date|date_format:' . config('define.date_show'),
         ];
     }
 }

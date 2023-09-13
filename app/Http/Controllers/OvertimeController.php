@@ -45,7 +45,9 @@ class OvertimeController extends Controller
             config('define.overtime.admin_approve') => ['label' => trans('overtime.admin_approve'), 'class' => 'badge badge-info'],
             config('define.overtime.registered') => ['label' => trans('overtime.registered'), 'class' => 'badge badge-primary'],
             config('define.overtime.approved') => ['label' => trans('overtime.approved'), 'class' => 'badge badge-success'],
-            config('define.overtime.confirmed') => ['label' => trans('overtime.confirmed'), 'class' => 'badge badge-secondary'],
+            config('define.overtime.confirm') => ['label' => trans('overtime.confirm'), 'class' => 'badge badge-secondary'],
+            config('define.overtime.admin_confirm') => ['label' => trans('overtime.admin_confirm'), 'class' => 'badge badge-dark'],
+            config('define.overtime.confirmed') => ['label' => trans('overtime.confirmed'), 'class' => 'badge badge-light'],
             config('define.overtime.rejected') => ['label' => trans('overtime.rejected'), 'class' => 'badge badge-warning'],
             config('define.overtime.cancel') => ['label' => trans('overtime.cancel'), 'class' => 'badge badge-danger'],
         ];
@@ -77,11 +79,22 @@ class OvertimeController extends Controller
 
     public function manage(SearchRequest $request)
     {
+        $order = [
+            config('define.overtime.registered'),
+            config('define.overtime.admin_approve'),
+            config('define.overtime.confirm'),
+            config('define.overtime.admin_confirm'),
+            config('define.overtime.approved'),
+            config('define.overtime.confirmed'),
+            config('define.overtime.rejected'),
+            config('define.overtime.cancel'),
+        ];
         $searchParams = [
             'startDate' => $request->start_date,
             'endDate' => $request->end_date,
             'sort' => $request->sort,
             'column' => $request->column,
+            'order' => $order,
         ];
         $overtimesQuery = $this->otRepository->searchByConditions($searchParams);
         if ($request->user()->hasRole('po')) {
@@ -206,25 +219,36 @@ class OvertimeController extends Controller
     public function approveAction(Request $request, $id)
     {
         $overtime = $this->otRepository->find($id);
-        $user = $this->userRepository->find($overtime->user_id);
-        $email = $user->email;
-        if (
-            $request->check && $request->status == config('define.overtime.approved')
-        ) {
-            $input['status'] = config('define.overtime.admin_approve');
-            $input['comment'] = $request->comment;
-            $this->otRepository->update($input, $id);
-            Flash::success(trans('validation.crud.approve'));
+        $email = $overtime->user->email;
+        $approver_id = $overtime->user->id;
+        $input = [
+            'approver_id' => $approver_id,
+            'status' => $request->status,
+            'comment' => $request->comment
+        ];
 
-            return redirect()->route('overtimes.manage');
+        if ($request->check && $request->status == config('define.overtime.approved')) {
+            if ($overtime->status == config('define.overtime.registered')) {
+                $input['status'] = config('define.overtime.admin_approve');
+                Flash::success(trans('validation.crud.approve'));
+            } elseif ($overtime->status == config('define.overtime.confirm')) {
+                $input['status'] = config('define.overtime.admin_confirm');
+                Flash::success(trans('validation.crud.confirm'));
+            }
         }
-        $input['status'] = $request->status;
-        $input['comment'] = $request->comment;
-        $this->otRepository->update($input, $id);
+        if (
+            $input['status'] == config('define.overtime.approved') &&
+            ($overtime->status == config('define.overtime.confirm')
+                || $overtime->status == config('define.overtime.admin_confirm'))
+        ) {
+            $input['status'] = config('define.overtime.confirmed');
+        }
+
+        $overtime = $this->otRepository->update($input, $id);
+
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
         Mail::to($email)->send(new ApproveOT($overtime));
-        Flash::success(trans('validation.crud.approve'));
 
         return redirect()->route('overtimes.manage');
     }
@@ -278,8 +302,10 @@ class OvertimeController extends Controller
             + $coefficients['ot_night_dayoff'] * $result['nightMinutesWeekend']
             + $coefficients['ot_day_holiday'] * $result['dayMinutesHolidays']
             + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / config('define.percents');
-
-        $this->otRepository->update($input, $id);
+        if ($overtime->status == config('define.overtime.approved')) {
+            $input['status'] = config('define.overtime.confirm');
+        }
+        $overtime = $this->otRepository->update($input, $id);
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
         $email = $overtime->approver->email;

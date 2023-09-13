@@ -32,7 +32,7 @@
 
         <!-- Role Field -->
         <div class="form-group row">
-            <label class="col-sm-4 col-form-label" for="role">{{ trans('staff.role.name') }}
+            <label class="col-sm-4 col-form-label" for="role_id">{{ trans('staff.role.name') }}
                 <span class="text-danger">*</span>
             </label>
             <div class="col-sm-8">

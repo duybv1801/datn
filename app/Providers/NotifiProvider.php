@@ -27,33 +27,36 @@ class NotifiProvider extends ServiceProvider
      */
     public function boot()
     {
-        $statusOT = [
+        $statusApprove = [
             config('define.overtime.registered'),
-            config('define.overtime.admin_approve')
+            config('define.overtime.admin_approve'),
+            config('define.overtime.admin_confirm'),
+        ];
+        $statusPO = [
+            config('define.overtime.registered'),
+            config('define.overtime.confirm'),
+        ];
+        $statusData = [
+            config('define.overtime.admin_approve') => ['label' => trans('overtime.admin_approve')],
+            config('define.overtime.registered') => ['label' => trans('overtime.registered')],
+            config('define.overtime.approved') => ['label' => trans('overtime.approved')],
+            config('define.overtime.confirm') => ['label' => trans('overtime.confirm')],
+            config('define.overtime.admin_confirm') => ['label' => trans('overtime.admin_confirm')],
+            config('define.overtime.confirmed') => ['label' => trans('overtime.confirmed')],
+            config('define.overtime.rejected') => ['label' => trans('overtime.rejected')],
+            config('define.overtime.cancel') => ['label' => trans('overtime.cancel')],
         ];
 
-        View::composer('layouts.notifi', function ($view) use ($statusOT) {
-            $user = Auth::user();
+        View::composer('layouts.notifi', function ($view) use ($statusApprove, $statusData) {
             $notifications = [];
             $ots = [];
-
-            if (Auth::user()->hasRole('po')) {
-                $remotes = Remote::where('status', config('define.remotes.pending'))
-                    ->where('approver_id', $user->id)
-                    ->get();
-
-                $ots = Overtime::where('status', config('define.overtime.registered'))
-                    ->where('approver_id', $user->id)
-                    ->get();
-            } else {
-                $remotes = Remote::where('status', config('define.remotes.pending'))->get();
-                $ots = Overtime::whereIn('status', $statusOT)->get();
-            }
-
+            $remotes = Remote::where('status', config('define.remotes.pending'))->get();
+            $ots = Overtime::whereIn('status', $statusApprove)->get();
             $notifications = collect($remotes)->concat($ots)->sortByDesc('created_at');
             $unreadNotifications = count($notifications);
 
             $view->with([
+                'statusData' => $statusData,
                 'notifications' => $notifications,
                 'unreadNotifications' => $unreadNotifications,
             ]);
@@ -86,19 +89,19 @@ class NotifiProvider extends ServiceProvider
             ]);
         });
         //OT
-        View::composer('layouts.menu', function ($view) use ($statusOT) {
+        View::composer('layouts.menu', function ($view) use ($statusApprove, $statusPO) {
             $user = Auth::user();
-            $overtimes = Overtime::where('status',  config('define.overtime.registered'))
+            $overtimes = Overtime::whereIn('status', $statusApprove)
                 ->where('user_id', $user->id)
                 ->get();
             $countRegisterOT = collect($overtimes);
             $registerOT = count($countRegisterOT);
             if (Auth::user()->hasRole('po')) {
-                $ots = Overtime::where('status', config('define.overtime.registered'))
+                $ots = Overtime::whereIn('status', $statusPO)
                     ->where('approver_id', $user->id)
                     ->get();
             } else {
-                $ots = Overtime::whereIn('status', $statusOT)->get();
+                $ots = Overtime::whereIn('status', $statusApprove)->get();
             }
             $notificationOT = collect($ots);
             $unreadNotificationOT = count($notificationOT);

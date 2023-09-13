@@ -29,8 +29,9 @@ class CreateOTRequest extends FormRequest
             'evident' => 'required|image|mimes:jpg,png,svg|max:1024',
             'approver_id' => 'required|numeric',
             'comment' => 'text',
-            'from_datetime' => 'required|date_format:d/m/Y H:i',
-            'to_datetime' => 'required|date_format:d/m/Y H:i|after:from_datetime',
+            'from_datetime' => 'required|date_format:' . config('define.datetime'),
+            'to_datetime' =>
+            'required|after:from_datetime|date_format:' . config('define.datetime'),
         ];
     }
 }

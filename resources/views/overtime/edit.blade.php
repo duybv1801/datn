@@ -6,7 +6,11 @@
             <div class="card-body">
                 <section class="content-header">
                     <h1>
-                        {{ trans('Update') }}
+                        @if ($overtime->status == config('define.overtime.approved'))
+                            {{ trans('Confirm OT') }}
+                        @else
+                            {{ trans('Update') }}
+                        @endif
                     </h1>
                 </section>
                 <div class="content">
@@ -127,7 +131,13 @@
                                     <div class="form-group row">
                                         <div class="col-sm-4"></div>
                                         <div class="col-sm-8">
-                                            <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                @if ($overtime->status == config('define.overtime.approved'))
+                                                    {{ trans('Confirm') }}
+                                                @else
+                                                    {{ trans('Save') }}
+                                                @endif
+                                            </button>
                                             <a href="{!! route('overtimes.index') !!}"
                                                 class="btn btn-default">{{ trans('Cancel') }}</a>
                                         </div>

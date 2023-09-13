@@ -16,6 +16,7 @@ return [
     'admin_approve' => 'Chờ admin duyệt',
     'approved' => 'Đã duyệt',
     'confirm' => 'Chờ xác nhận',
+    'admin_confirm' => 'Chờ admin xác nhận',
     'confirmed' => 'Đã xác nhận',
     'rejected' => 'Từ chối',
     'cancel' => 'Hủy',
