@@ -62,8 +62,8 @@ class OvertimeController extends Controller
         $allOvertimes = $this->otRepository->searchByConditions($searchParams);
         $overtimes = $this->otRepository->userQuery($allOvertimes, Auth::id());
         $overtimes->getCollection()->transform(function ($item) {
-            $item->total_hours = round($item->total_hours / 60, 1);
-            $item->salary_hours = round($item->salary_hours / 60, 1);
+            $item->total_hours = round($item->total_hours / config('define.hour'), config('define.decimal'));
+            $item->salary_hours = round($item->salary_hours / config('define.hour'), config('define.decimal'));
             $item->from_datetime = Carbon::parse($item->from_datetime);
             $item->to_datetime = Carbon::parse($item->to_datetime);
             $item->approver_id = $item->approver->code;
@@ -91,8 +91,8 @@ class OvertimeController extends Controller
         $allOvertimes = $overtimesQuery->get();
         $overtimes = new Collection();
         foreach ($allOvertimes as $item) {
-            $item->total_hours = round($item->total_hours / 60, 1);
-            $item->salary_hours = round($item->salary_hours / 60, 1);
+            $item->total_hours = round($item->total_hours / config('define.hour'), config('define.decimal'));
+            $item->salary_hours = round($item->salary_hours / config('define.hour'), config('define.decimal'));
             $item->from_datetime = Carbon::parse($item->from_datetime);
             $item->to_datetime = Carbon::parse($item->to_datetime);
             $item->user_id = $item->user->code;
@@ -130,7 +130,7 @@ class OvertimeController extends Controller
         $input['status'] = config('define.overtime.registered');
         $avatar = $request->file('evident');
         $path = 'public/upload/' . date(config('define.date_img'));
-        $filename = Str::random(10) . '.' . $avatar->extension();
+        $filename = Str::random(config('define.random')) . '.' . $avatar->extension();
         $imagePath = $avatar->storeAs($path, $filename);
         $imageUrl = asset(Storage::url($imagePath));
         $input['evident'] = $imageUrl;
@@ -172,14 +172,14 @@ class OvertimeController extends Controller
         Mail::to($email)->send($mail);
         Flash::success(trans('validation.crud.created'));
 
-        return redirect()->route('overtimes.index')->with('success', trans('validation.crud.created'));
+        return redirect()->route('overtimes.index');
     }
 
     public function details($id)
     {
         $overtime = $this->otRepository->find($id);
-        $overtime->total_hours = round($overtime->total_hours / 60, 1);
-        $overtime->salary_hours = round($overtime->salary_hours / 60, 1);
+        $overtime->total_hours = round($overtime->total_hours / config('define.hour'), config('define.decimal'));
+        $overtime->salary_hours = round($overtime->salary_hours / config('define.hour'), config('define.decimal'));
         $overtime->from_datetime = Carbon::parse($overtime->from_datetime);
         $overtime->to_datetime = Carbon::parse($overtime->to_datetime);
         $overtime->user_id = $overtime->user->code;
@@ -198,7 +198,7 @@ class OvertimeController extends Controller
         $overtime->to_datetime = Carbon::parse($overtime->to_datetime);
         $check = Auth::user()->hasRole('po') &&
             $otApproveSettings['ot_approve'] == config('define.yes') &&
-            ($overtime->total_hours >= $otApproveSettings['total_ot_time'] * 60 ||
+            ($overtime->total_hours >= $otApproveSettings['total_ot_time'] * config('define.hour') ||
                 $duration < $otApproveSettings['ot_registration_time']);
         return view('overtime.approve', compact('overtime', 'check'));
     }
@@ -248,7 +248,7 @@ class OvertimeController extends Controller
         $avatar = $request->file('evident');
         if ($avatar) {
             $path = 'public/upload/' . date(config('define.date_img'));
-            $filename = Str::random(10) . '.' . $avatar->extension();
+            $filename = Str::random(config('define.random')) . '.' . $avatar->extension();
             $imagePath = $avatar->storeAs($path, $filename);
             $imageUrl = Storage::url($imagePath);
             $input['evident'] = $imageUrl;
@@ -337,7 +337,7 @@ class OvertimeController extends Controller
                 ) {
                     if (in_array($start->format(config('define.date_search')), $holidays)) {
                         $nightMinutesHolidays++;
-                    } elseif ($start->dayOfWeek === 6 || $start->dayOfWeek === 0) {
+                    } elseif ($start->dayOfWeek === config('define.saturday') || $start->dayOfWeek === config('define.sunday')) {
                         $nightMinutesWeekend++;
                     } else {
                         $nightMinutes++;
@@ -345,7 +345,7 @@ class OvertimeController extends Controller
                 } else {
                     if (in_array($start->format(config('define.date_search')), $holidays)) {
                         $dayMinutesHolidays++;
-                    } elseif ($start->dayOfWeek === 6 || $start->dayOfWeek === 0) {
+                    } elseif ($start->dayOfWeek === config('define.saturday') || $start->dayOfWeek === config('define.sunday')) {
                         $dayMinutesWeekend++;
                     } else {
                         $dayMinutes++;
