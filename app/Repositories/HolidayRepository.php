@@ -71,6 +71,7 @@ class HolidayRepository extends BaseRepository
     public function createHoliday(array $holidayData)
     {
         $existingDates = $this->model->whereIn('date', array_column($holidayData, 'date'))->pluck('date')->toArray();
+        //can optimize
         $toCreate = [];
         $toUpdate = [];
 

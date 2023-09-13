@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\HolidayService;
 use Laracasts\Flash\Flash;
+use App\Http\Requests\SearchRequest;
 
 class HolidayController extends Controller
 {
@@ -15,7 +16,7 @@ class HolidayController extends Controller
         $this->holidayService = $holidayService;
     }
 
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
         $holidays = $this->holidayService->getHolidays($request);
         return view('holiday.index', compact('holidays'));

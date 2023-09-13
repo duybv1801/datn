@@ -21,6 +21,7 @@ return [
         'erro_user' => 'Không tồn tại người dùng này',
         'cancel' => 'Hủy thành công',
         'imported' => 'Nhập file thành công',
+        'confirm' => 'Xác nhận thành công',
         'endtime_false' => 'Thời gian kết thúc không hợp lệ !',
         'beggintime_false' => 'Thời gian bắt đầu không hợp lệ !',
         'overtime_false' => 'Thời gian đã quá 8 tiếng trên ngày'
@@ -200,6 +201,8 @@ return [
         'ot_day_holiday'        => 'Hệ số OT ban ngày ngày lễ',
         'ot_night_holiday'      => 'Hệ số OT ban đêm ngày lễ',
         'max_working_minutes_everyday_day' => 'Thời gian làm việc tối đa trong ngày',
+        'to_datetime'           => 'Đến',
+        'from_datetime'         => 'Từ',
         'total_hours' => 'Số giờ'
     ],
 ];

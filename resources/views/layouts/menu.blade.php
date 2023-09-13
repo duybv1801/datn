@@ -1,5 +1,4 @@
-{{-- HOme --}}
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('dashboard*') ? 'active' : '' }}">
     <a href="{!! route('home') !!}" class="nav-link">
         <i class="fas fa-home"></i>
         <p>
@@ -32,7 +31,7 @@
 
 {{-- Manager staff --}}
 @can('viewAny', App\Models\User::class)
-    <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <li class="nav-item {{ Request::is('manager_staff*') ? 'active' : '' }}">
         <a href="{!! route('manager_staff.index') !!}" class="nav-link">
             <i class="fas fa-user-friends"></i>
             <p>
@@ -42,8 +41,51 @@
     </li>
 @endcan
 
-{{-- holiday --}}
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('overtimes*') ? 'active menu-open' : '' }}">
+    @can('viewAny', App\Models\Overtime::class)
+        <a href="" class="nav-link">
+            <i class="far fa-clock"></i>
+            <p>
+                {{ trans('Overtimes') }}
+                <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{!! route('overtimes.index') !!}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('overtime.register') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $registerOT }}
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{!! route('overtimes.manage') !!}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('Manage Overtimes') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $unreadNotificationOT }}
+                    </span>
+                </a>
+            </li>
+        </ul>
+    @else
+        <a href="{!! route('overtimes.index') !!}" class="nav-link">
+            <i class="far fa-clock"></i>
+            <p>
+                {{ trans('Overtimes') }}
+            </p>
+            <span class=" badge bg-danger">
+                {{ $registerOT }}
+            </span>
+        </a>
+    @endcan
+</li>
+
+<li class="nav-item {{ Request::is('holidays*') ? 'active menu-open' : '' }}">
     @can('update', App\Models\Holiday::class)
         <a href="" class="nav-link">
             <i class="fas fa-gift"></i>
@@ -93,7 +135,7 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p> {{ trans('Registration') }}</p>
                 <span class=" badge bg-danger">
-                    {{ $register }}
+                    {{ $registerRemotes }}
                 </span>
             </a>
         </li>
@@ -105,7 +147,7 @@
                     <p> {{ trans('Approve') }}
                         @if (Auth::user()->hasRole('po'))
                             <span class=" badge bg-danger">
-                                {{ $unreadNotifications }}
+                                {{ $unreadNotificationRemotes }}
                             </span>
                         @endif
                     </p>
@@ -117,7 +159,7 @@
 
 {{-- setting --}}
 @can('update', App\Models\Setting::class)
-    <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <li class="nav-item {{ Request::is('settings*') ? 'active' : '' }}">
         <a href="{!! route('settings.index') !!}" class="nav-link">
             <i class="fas fa-cog"></i>
             <p>

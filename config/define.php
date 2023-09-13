@@ -1,10 +1,28 @@
 <?php
 return [
-    'paginate' => '10',
-    'date_search' => 'Y-m-d',
-    'date_show' => 'd/m/Y',
-    'datetime' => 'd/m/Y H:i',
-    'datetime_db' => 'Y/m/d H:i',
+    'paginate'          => '10',
+    'date_search'       => 'Y-m-d',
+    'date_show'         => 'd/m/Y',
+    'datetime'          => 'd/m/Y H:i',
+    'datetime_db'       => 'Y/m/d H:i',
+    'yes'               => '1',
+    'no'                => '0',
+    'percents'          => '100',
+    'hour'              => 60,
+    'decimal'           => 1,
+    'sunday'            => 0,
+    'saturday'          => 6,
+    'overtime'          => [
+        'registered'    => '1',
+        'admin_approve' => '2',
+        'approved'      => '3',
+        'confirm'       => '4',
+        'admin_confirm' => '5',
+        'confirmed'     => '6',
+        'rejected'      => '7',
+        'cancel'        => '8',
+    ],
+
     'time' => 'H:i',
     'date_img' => 'Y/m/d',
     'remotes' => [

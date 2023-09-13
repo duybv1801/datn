@@ -84,9 +84,8 @@
                                                 id="reservation_modal" name="daterange" required>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-4"></div>
-                                        <div class="col-sm-8">
+                                    <div class="form-group row text-center">
+                                        <div class="col-sm-12">
                                             <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
                                             <a href="{!! route('holidays.index') !!}"
                                                 class="btn btn-default">{{ trans('Cancel') }}</a>
@@ -127,9 +126,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-4"></div>
-                                        <div class="col-sm-8">
+                                    <div class="form-group row text-center">
+                                        <div class="col-sm-12">
                                             <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
                                             <a href="{!! route('holidays.index') !!}"
                                                 class="btn btn-default">{{ trans('Cancel') }}</a>

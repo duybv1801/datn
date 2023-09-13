@@ -9,20 +9,34 @@
             </button>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
-            style="max-height: 400px; overflow-y: auto;width:300px">
+            style="max-height: 400px; overflow-y: auto; max-width: 400px">
             <span class="dropdown-item dropdown-header">{{ $unreadNotifications }}
                 {{ trans('Notifications') }}</span>
             <div class="dropdown-divider"></div>
             @foreach ($notifications as $notification)
                 @php
-                    $managerRemoteId = $notification->id;
-                    $route = route('manager_remote.edit', ['id' => $managerRemoteId]);
+                    $editId = $notification->id;
+                    $route = '';
+                    
+                    if ($notification instanceof \App\Models\Remote) {
+                        $route = route('manager_remote.edit', ['id' => $editId]);
+                    } elseif ($notification instanceof \App\Models\Overtime) {
+                        $route = route('overtimes.approve', ['id' => $editId]);
+                    }
                 @endphp
-                <a href="{{ $route }}" class="dropdown-item">
-                    <i class="fab fa-twitch"></i> {{ $notification->getName() }}
-                    {{ trans('Registered Remote') }}
-                    <span class="float-left text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
-                </a>
+
+                <div class="text-truncate" style="max-width: 300px;">
+                    <a href="{{ $route }}" class="dropdown-item">
+                        <i class="fab fa-twitch"></i>
+                        @if ($notification instanceof \App\Models\Remote)
+                            {{ $notification->getName() }} {{ trans('Registered Remote') }}
+                        @elseif ($notification instanceof \App\Models\Overtime)
+                            {{ $notification->getName() }} {{ trans('Registered OT') }}
+                            {{ $statusData[$notification->status]['label'] }}
+                        @endif
+                        <span class="float-left text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
+                    </a>
+                </div>
                 <div class="dropdown-divider"></div>
             @endforeach
         </div>

@@ -8,10 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Team extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'manager'];
+
+    protected $fillable = [
+        'name',
+        'manager_id',
+        'manager',
+        'id',
+    ];
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class);
     }
 }

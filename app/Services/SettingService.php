@@ -15,7 +15,7 @@ class SettingService
 
     public function getAllSettings()
     {
-        return $this->settingRepository->all();
+        return $this->settingRepository->getAllSettings();
     }
 
     public function updateSettings(array $data)

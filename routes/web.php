@@ -12,7 +12,8 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\RemoteController;
 use App\Http\Controllers\ManagerRemoteController;
 use App\Http\Controllers\HolidayController;
-
+use App\Http\Controllers\OvertimeController;
+use App\Models\Overtime;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +85,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/holidays/multi_delete', [HolidayController::class, 'delete'])->name('holidays.multi_delete')->middleware('can:delete,App\Models\Holiday');
     Route::post('/holidays/export', [HolidayController::class, 'export'])->name('holidays.export')->middleware('can:update,App\Models\Holiday');
     Route::get('/holidays/calendar', [HolidayController::class, 'calendar'])->name('holidays.calendar')->middleware('can:view,App\Models\Holiday');
+
+    //overtimes
+    Route::get('/overtimes', [OvertimeController::class, 'index'])->name('overtimes.index');
+    Route::get('/overtimes/create', [OvertimeController::class, 'create'])->name('overtimes.create');
+    Route::post('/overtimes', [OvertimeController::class, 'store'])->name('overtimes.store');
+    Route::put('/overtimes/cancel/{id}', [OvertimeController::class, 'cancel'])->name('overtimes.cancel')->middleware('can:delete,App\Models\Overtime,id');
+    Route::get('/overtimes/edit/{id}', [OvertimeController::class, 'edit'])->name('overtimes.edit')->middleware('can:update,App\Models\Overtime,id');
+    Route::put('/overtimes/update/{id}', [OvertimeController::class, 'update'])->name('overtimes.update')->middleware('can:update,App\Models\Overtime,id');
+    Route::get('/overtimes/manage', [OvertimeController::class, 'manage'])->name('overtimes.manage')->middleware('can:viewAny,App\Models\Overtime');
+    Route::get('/overtimes/approve/{id}', [OvertimeController::class, 'approve'])->name('overtimes.approve')->middleware('can:approve,App\Models\Overtime');
+    Route::put('/overtimes/approve/{id}', [OvertimeController::class, 'approveAction'])->name('overtimes.approveAction')->middleware('can:approve,App\Models\Overtime');
+    Route::get('/overtimes/details/{id}', [OvertimeController::class, 'details'])->name('overtimes.details')->middleware('can:details,App\Models\Overtime,id');
 });
 
 //password mail
