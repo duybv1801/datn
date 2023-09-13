@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Overtime;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
@@ -26,47 +27,84 @@ class NotifiProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::composer('layouts.notifi', function ($view) {
+        $statusOT = [
+            config('define.overtime.registered'),
+            config('define.overtime.admin_approve')
+        ];
+
+        View::composer('layouts.notifi', function ($view) use ($statusOT) {
             $user = Auth::user();
+            $notifications = [];
+            $ots = [];
+
             if (Auth::user()->hasRole('po')) {
-                $remotes = Remote::where('status',  config('define.remotes.pending'))
+                $remotes = Remote::where('status', config('define.remotes.pending'))
+                    ->where('approver_id', $user->id)
+                    ->get();
+
+                $ots = Overtime::where('status', config('define.overtime.registered'))
                     ->where('approver_id', $user->id)
                     ->get();
             } else {
-                $remotes = Remote::where('status',  config('define.remotes.pending'))->get();
+                $remotes = Remote::where('status', config('define.remotes.pending'))->get();
+                $ots = Overtime::whereIn('status', $statusOT)->get();
             }
-            $notifications = collect($remotes)->sortByDesc('created_at');
+
+            $notifications = collect($remotes)->concat($ots)->sortByDesc('created_at');
             $unreadNotifications = count($notifications);
 
             $view->with([
                 'notifications' => $notifications,
-                'unreadNotifications' => $unreadNotifications
+                'unreadNotifications' => $unreadNotifications,
             ]);
         });
+
 
         View::composer('layouts.menu', function ($view) {
             $user = Auth::user();
             $remotes = Remote::where('status',  config('define.remotes.pending'))
                 ->where('approver_id', $user->id)
                 ->get();
-            $notifications = collect($remotes);
-            $unreadNotifications = count($notifications);
+            $notificationRemotes = collect($remotes);
+            $unreadNotificationRemotes = count($notificationRemotes);
 
             $view->with([
-                'notifications' => $notifications,
-                'unreadNotifications' => $unreadNotifications
+                'notificationRemotes' => $notificationRemotes,
+                'unreadNotificationRemotes' => $unreadNotificationRemotes
             ]);
         });
         View::composer('layouts.menu', function ($view) {
             $user = Auth::user();
-            $remotes = Remote::where('status',  config('define.remotes.pending'))
+            $remotes = Remote::where('status', config('define.remotes.pending'))
                 ->where('user_id', $user->id)
                 ->get();
-            $notifications = collect($remotes);
-            $register = count($notifications);
+            $notificationRemotes = collect($remotes);
+            $registerRemotes = count($notificationRemotes);
 
             $view->with([
-                'register' => $register
+                'registerRemotes' => $registerRemotes
+            ]);
+        });
+        //OT
+        View::composer('layouts.menu', function ($view) use ($statusOT) {
+            $user = Auth::user();
+            $overtimes = Overtime::where('status',  config('define.overtime.registered'))
+                ->where('user_id', $user->id)
+                ->get();
+            $countRegisterOT = collect($overtimes);
+            $registerOT = count($countRegisterOT);
+            if (Auth::user()->hasRole('po')) {
+                $ots = Overtime::where('status', config('define.overtime.registered'))
+                    ->where('approver_id', $user->id)
+                    ->get();
+            } else {
+                $ots = Overtime::whereIn('status', $statusOT)->get();
+            }
+            $notificationOT = collect($ots);
+            $unreadNotificationOT = count($notificationOT);
+            $view->with([
+                'registerOT' => $registerOT,
+                'unreadNotificationOT' => $unreadNotificationOT
             ]);
         });
     }

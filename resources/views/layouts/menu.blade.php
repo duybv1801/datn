@@ -55,6 +55,9 @@
                 <a href="{!! route('overtimes.index') !!}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p> {{ trans('overtime.register') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $registerOT }}
+                    </span>
                 </a>
             </li>
         </ul>
@@ -63,6 +66,9 @@
                 <a href="{!! route('overtimes.manage') !!}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p> {{ trans('Manage Overtimes') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $unreadNotificationOT }}
+                    </span>
                 </a>
             </li>
         </ul>
@@ -72,6 +78,9 @@
             <p>
                 {{ trans('Overtimes') }}
             </p>
+            <span class=" badge bg-danger">
+                {{ $registerOT }}
+            </span>
         </a>
     @endcan
 </li>
@@ -126,7 +135,7 @@
                 <i class="far fa-circle nav-icon"></i>
                 <p> {{ trans('Registration') }}</p>
                 <span class=" badge bg-danger">
-                    {{ $register }}
+                    {{ $registerRemotes }}
                 </span>
             </a>
         </li>
@@ -138,7 +147,7 @@
                     <p> {{ trans('Approve') }}
                         @if (Auth::user()->hasRole('po'))
                             <span class=" badge bg-danger">
-                                {{ $unreadNotifications }}
+                                {{ $unreadNotificationRemotes }}
                             </span>
                         @endif
                     </p>

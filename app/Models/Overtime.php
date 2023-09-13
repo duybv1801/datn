@@ -33,4 +33,11 @@ class Overtime extends Model
     {
         return $this->belongsTo(User::class, 'approver_id');
     }
+
+    public function getName()
+    {
+        $approver = User::find($this->user_id);
+
+        return $approver->code;
+    }
 }
