@@ -8,25 +8,11 @@ use Illuminate\Support\Facades\Http;
 
 class DailyTimesheet extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+
     protected $signature = 'command:dailyTimesheet';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Call api server to get daily timesheet';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     protected $timesheetRepository;
 
     public function __construct(
@@ -36,11 +22,6 @@ class DailyTimesheet extends Command
         $this->timesheetRepository = $timesheetRepository;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
         $response = Http::withHeaders([

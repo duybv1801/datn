@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Traits\HasPermission;
 use App\Repositories\RemoteReponsitory;
 use App\Repositories\UserRepository;
+use App\Repositories\TimesheetRepository;
 use Laracasts\Flash\Flash;
 use App\Mail\ApproveEmail;
 use Illuminate\Support\Facades\Mail;
@@ -16,11 +17,12 @@ use Illuminate\Support\Facades\Auth;
 class ManagerRemoteController  extends AppBaseController
 {
     use HasPermission;
-    private $remoteReponsitory, $userReponsitory;
-    public function __construct(RemoteReponsitory $remoteRepo, UserRepository $userRepo)
+    private $remoteReponsitory, $userReponsitory, $timesheetRepository;
+    public function __construct(RemoteReponsitory $remoteRepo, UserRepository $userRepo, TimesheetRepository $timesheetRepo)
     {
         $this->remoteReponsitory = $remoteRepo;
         $this->userReponsitory = $userRepo;
+        $this->timesheetRepository = $timesheetRepo;
     }
 
     public function index(Request $request)
@@ -63,6 +65,7 @@ class ManagerRemoteController  extends AppBaseController
             Mail::to($email)->send(new ApproveEmail('Approved', $comment));
             $managerRemotes->status = config('define.remotes.approved');
             $managerRemotes->save();
+            $this->timesheetRepository->updateRemote($managerRemotes);
         } elseif ($status === config('define.remotes.rejected')) {
             Mail::to($email)->send(new ApproveEmail('Reject', $comment));
             $managerRemotes->status = config('define.remotes.rejected');

@@ -6,6 +6,7 @@ use App\Repositories\HolidayRepository;
 use App\Repositories\SettingRepository;
 use App\Repositories\TimesheetRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\TeamRepository;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class HomeController extends Controller
     protected $timesheetRepository;
     protected $userRepository;
     protected $holidayRepository;
-
+    protected $teamRepository;
     protected $settingRepository;
     /**
      * Create a new controller instance.
@@ -28,13 +29,15 @@ class HomeController extends Controller
         TimesheetRepository $timesheetRepository,
         HolidayRepository $holidayRepository,
         SettingRepository $settingRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        TeamRepository $teamRepository
     ) {
         $this->middleware('auth');
         $this->timesheetRepository = $timesheetRepository;
         $this->holidayRepository = $holidayRepository;
         $this->settingRepository = $settingRepository;
         $this->userRepository = $userRepository;
+        $this->teamRepository = $teamRepository;
     }
 
     public function index(Request $request)
@@ -50,7 +53,8 @@ class HomeController extends Controller
         $data['timesheetData'] = $this->timesheetRepository->searchByConditions($conditions);
         $data['timesheetData']->getCollection()->transform(function ($item) {
             $item->working_hours = round($item->working_hours / config('define.hour'), config('define.decimal'));
-            $item->salary_hours = round($item->salary_hours / config('define.hour'), config('define.decimal'));
+            $item->remote_hours = round($item->remote_hours / config('define.hour'), config('define.decimal'));
+            $item->leave_hours = round($item->leave_hours / config('define.hour'), config('define.decimal'));
             $item->overtime_hours = round($item->overtime_hours / config('define.hour'), config('define.decimal'));
             $item->record_date = Carbon::parse($item->record_date)->format(config('define.date_show'));
             return $item;
@@ -73,15 +77,22 @@ class HomeController extends Controller
             $conditions['user_id'] = $request->user_id;
         }
         $data = $conditions;
-        $data['timesheetData'] = $this->timesheetRepository->searchByConditions($conditions);
+        if (Auth::user()->hasRole('po')) {
+            $member = $this->teamRepository->getMember(Auth::id());
+            $data['timesheetData'] = $this->timesheetRepository->searchByConditions($conditions, $member['userIds']);
+            $data['users'] = $member['userData'];
+        } else {
+            $data['timesheetData'] = $this->timesheetRepository->searchByConditions($conditions);
+            $data['users'] = $this->userRepository->all([], null, null, ['id', 'name']);
+        }
         $data['timesheetData']->getCollection()->transform(function ($item) {
             $item->working_hours = round($item->working_hours / config('define.hour'), config('define.decimal'));
-            $item->salary_hours = round($item->salary_hours / config('define.hour'), config('define.decimal'));
+            $item->remote_hours = round($item->remote_hours / config('define.hour'), config('define.decimal'));
+            $item->leave_hours = round($item->leave_hours / config('define.hour'), config('define.decimal'));
             $item->overtime_hours = round($item->overtime_hours / config('define.hour'), config('define.decimal'));
             $item->record_date = Carbon::parse($item->record_date)->format(config('define.date_show'));
             return $item;
         });
-        $data['users'] = $this->userRepository->all([], null, null, ['id', 'name']);
         return view('timesheet', $data);
     }
 
@@ -111,6 +122,7 @@ class HomeController extends Controller
                 trans('timesheet.check_out'),
                 trans('timesheet.status'),
                 trans('timesheet.work_time'),
+                trans('timesheet.remote_time'),
                 trans('timesheet.ot_time'),
                 trans('timesheet.leave_time')
             ]
@@ -125,8 +137,9 @@ class HomeController extends Controller
                 $timesheet->out_time,
                 __('define.timesheet.status.' . $timesheet->status),
                 round($timesheet->working_hours / config('define.hour'), config('define.decimal')),
-                $timesheet->overtime_hours,
-                $timesheet->leave_hours
+                round($timesheet->remote_hours / config('define.hour'), config('define.decimal')),
+                round($timesheet->overtime_hours / config('define.hour'), config('define.decimal')),
+                round($timesheet->leave_hours / config('define.hour'), config('define.decimal'))
             ];
         }
 

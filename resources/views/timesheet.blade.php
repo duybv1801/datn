@@ -83,7 +83,8 @@
                                                     <div class="form-group">
                                                         <label for="user">{{ trans('overtime.user') }}</label>
                                                         <div class="input-group">
-                                                            <select name="user_id" id="user" class="form-control">
+                                                            <select name="user_id" id="user"
+                                                                class="form-control select2">
                                                                 <option hidden></option>
                                                                 @foreach ($users as $user)
                                                                     @if (!empty($user))
@@ -119,15 +120,15 @@
                                         <thead>
                                             <tr>
                                                 <th>{{ Form::label('#', trans('No.')) }}</th>
-                                                <th>{{ Form::label('user_code', trans('timesheet.user_code')) }}</th>
                                                 <th> {{ Form::label('name', trans('timesheet.name')) }} </th>
                                                 <th> {{ Form::label('date', trans('timesheet.date')) }} </th>
                                                 <th>{{ Form::label('check_in', trans('timesheet.check_in')) }}</th>
                                                 <th>{{ Form::label('check_out', trans('timesheet.check_out')) }}</th>
-                                                <th>{{ Form::label('status', trans('timesheet.status')) }}</th>
                                                 <th>{{ Form::label('work_time', trans('timesheet.work_time')) }}</th>
+                                                <th>{{ Form::label('remote_time', trans('timesheet.remote_time')) }}</th>
                                                 <th>{{ Form::label('ot_time', trans('timesheet.ot_time')) }}</th>
                                                 <th>{{ Form::label('leave_time', trans('timesheet.leave_time')) }}</th>
+                                                <th>{{ Form::label('status', trans('timesheet.status')) }}</th>
                                                 <th>{{ Form::label('functions', trans('Funtions')) }}</th>
                                             </tr>
                                         </thead>
@@ -136,17 +137,17 @@
                                             @forelse ($timesheetData as $timesheet)
                                                 <tr>
                                                     <td>{{ $i++ }}</td>
-                                                    <td>{!! $timesheet->user->code !!}</td>
                                                     <td>{!! $timesheet->user->name !!}</td>
                                                     <td>{!! $timesheet->record_date !!}</td>
                                                     <td>{!! $timesheet->in_time !!}</td>
                                                     <td>{!! $timesheet->out_time !!}</td>
+                                                    <td>{!! $timesheet->working_hours !!}</td>
+                                                    <td>{!! $timesheet->remote_hours !!}</td>
+                                                    <td>{!! $timesheet->overtime_hours !!}</td>
+                                                    <td>{!! $timesheet->leave_hours !!}</td>
                                                     <td><span
                                                             class="<?= $timesheet->status == config('define.timesheet.normal') ? 'badge badge-success' : 'badge badge-danger' ?> ">{!! __('define.timesheet.status.' . $timesheet->status) !!}</span>
                                                     </td>
-                                                    <td>{!! $timesheet->working_hours !!}</td>
-                                                    <td>{!! $timesheet->overtime_hours !!}</td>
-                                                    <td>{!! $timesheet->leave_hours !!}</td>
                                                     <td>
                                                         @if ($timesheet->status == config('define.timesheet.reconfirm'))
                                                             <div class="btn-group">

@@ -18,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Holiday::class => \App\Policies\HolidayPolicy::class,
         \App\Models\Settings::class => \App\Policies\SettingPolicy::class,
         \App\Models\Overtime::class => \App\Policies\OvertimePolicy::class,
+        \App\Models\Timesheet::class => \App\Policies\TimesheetPolicy::class,
     ];
 
     /**

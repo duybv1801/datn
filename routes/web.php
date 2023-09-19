@@ -37,10 +37,9 @@ Route::middleware(['auth'])->group(function () {
     //home
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('timesheet/home', [HomeController::class, 'index'])->name('timesheet.home');
-    Route::get('timesheet/manage', [HomeController::class, 'manage'])->name('timesheet.manage');
-    Route::post('timesheet/exporter', [HomeController::class, 'export'])->name('timesheet.export');
-    Route::post('timesheet/import', [HomeController::class, 'import'])->name('timesheet.import');
-
+    Route::get('timesheet/manage', [HomeController::class, 'manage'])->name('timesheet.manage')->middleware('can:viewAny,App\Models\Timesheet');
+    Route::post('timesheet/exporter', [HomeController::class, 'export'])->name('timesheet.export')->middleware('can:viewAny,App\Models\Timesheet');
+    Route::post('timesheet/import', [HomeController::class, 'import'])->name('timesheet.import')->middleware('can:viewAny,App\Models\Timesheet');
 
     //manager staff 
     Route::get('manager_staff', [ManagerStaffController::class, 'index'])->name('manager_staff.index')->middleware('can:viewAny,App\Models\User');

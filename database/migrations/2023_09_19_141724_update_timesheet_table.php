@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCcToRemotesTable extends Migration
+class UpdateTimesheetTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddCcToRemotesTable extends Migration
      */
     public function up()
     {
-        Schema::table('remotes', function (Blueprint $table) {
-            $table->string('cc')->nullable();
+        Schema::table('timesheets', function (Blueprint $table) {
+            $table->integer('remote_hours')->default(0);
         });
     }
 
@@ -25,8 +25,8 @@ class AddCcToRemotesTable extends Migration
      */
     public function down()
     {
-        Schema::table('remotes', function (Blueprint $table) {
-            $table->dropColumn('cc');
+        Schema::table('timesheets', function (Blueprint $table) {
+            $table->dropColumn('remote_hours');
         });
     }
 }

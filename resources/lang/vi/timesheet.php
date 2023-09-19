@@ -8,6 +8,7 @@ return [
     'check_out' => 'Giờ ra',
     'status' => 'Trạng thái',
     'work_time' => 'Giờ công',
+    'remote_time' => 'Giờ làm từ xa',
     'ot_time' => 'Giờ OT',
     'leave_time' => 'Giờ phép',
     'manage' => 'Quản lý',

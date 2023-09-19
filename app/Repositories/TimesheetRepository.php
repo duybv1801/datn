@@ -38,7 +38,7 @@ class TimesheetRepository extends BaseRepository
         $this->fieldSearchable;
     }
 
-    public function searchByConditions($search)
+    public function searchByConditions($search, $userIds = [])
     {
         $query = $this->model;
         if (count($search)) {
@@ -58,7 +58,9 @@ class TimesheetRepository extends BaseRepository
                 }
             }
         }
-
+        if ($userIds != null) {
+            $query = $query->whereIn('user_id', $userIds);
+        }
         return $query->with('user')->orderBy('record_date', 'DESC')->paginate(config('define.paginate'));
     }
 
@@ -86,6 +88,7 @@ class TimesheetRepository extends BaseRepository
         return $query->get()->sum(function ($timesheet) {
             return round($timesheet->working_hours / config('define.hour'), config('define.decimal'))
                 + round($timesheet->leave_hours / config('define.hour'), config('define.decimal'))
+                + round($timesheet->remote_hours / config('define.hour'), config('define.decimal'))
                 + round($timesheet->overtime_hours / config('define.hour'), config('define.decimal'));
         });
     }
@@ -171,6 +174,36 @@ class TimesheetRepository extends BaseRepository
         $data['user_id'] = $overtime->user_id;
         $data['record_date'] = $recordDate;
         $data['overtime_hours'] = $overtime->salary_hours;
+        $existingTimesheet = Timesheet::where('user_id', $data['user_id'])
+            ->where('record_date', $data['record_date'])->first();
+        if ($existingTimesheet) {
+            $existingTimesheet->update($data);
+        } else {
+            $this->model->create($data);
+        }
+    }
+
+    public function updateRemote($remote)
+    {
+        $recordDate = Carbon::parse($remote->to_datetime)->format(config('define.date_search'));
+        $data['user_id'] = $remote->user_id;
+        $data['record_date'] = $recordDate;
+        $data['remote_hours'] = $remote->total_hours;
+        $existingTimesheet = Timesheet::where('user_id', $data['user_id'])
+            ->where('record_date', $data['record_date'])->first();
+        if ($existingTimesheet) {
+            $existingTimesheet->update($data);
+        } else {
+            $this->model->create($data);
+        }
+    }
+
+    public function updateLeave($leave)
+    {
+        $recordDate = Carbon::parse($leave->to_datetime)->format(config('define.date_search'));
+        $data['user_id'] = $leave->user_id;
+        $data['record_date'] = $recordDate;
+        $data['leave_hours'] = $leave->total_hours;
         $existingTimesheet = Timesheet::where('user_id', $data['user_id'])
             ->where('record_date', $data['record_date'])->first();
         if ($existingTimesheet) {

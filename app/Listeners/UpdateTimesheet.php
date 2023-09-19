@@ -51,7 +51,7 @@ class UpdateTimesheet implements ShouldQueue
                 $totalDuration -= $overlapDuration;
             }
             $data['working_hours'] = $totalDuration;
-            if ($totalDuration + $timesheet->leave_hours > $settings['working_time'] * config('define.hour')) {
+            if ($totalDuration + $timesheet->leave_hours + $timesheet->remote_hours > $settings['working_time'] * config('define.hour')) {
                 $data['status'] = config('define.timesheet.normal');
             }
             $timesheet->update($data);

@@ -1,28 +1,38 @@
 <li class="nav-item {{ Request::is('timesheet*') ? 'active menu-open' : '' }}">
-    <a href="{!! route('home') !!}" class="nav-link">
-        <i class="fas fa-home"></i>
-        <p>
-            {{ trans('Home') }}
-            <i class="fas fa-angle-left right"></i>
+    @can('viewAny', App\Models\Overtime::class)
+        <a href="{!! route('home') !!}" class="nav-link">
+            <i class="fas fa-home"></i>
+            <p>
+                {{ trans('Home') }}
+                <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{!! route('timesheet.home') !!}" class="nav-link {{ Request::is('timesheet/home') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('timesheet.home') }}</p>
+                </a>
+            </li>
 
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
-        <li class="nav-item">
-            <a href="{!! route('timesheet.home') !!}" class="nav-link {{ Request::is('timesheet/home') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('timesheet.home') }}</p>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{!! route('timesheet.manage') !!}" class="nav-link {{ Request::is('timesheet/manage*') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('timesheet.manage') }}</p>
-            </a>
-        </li>
-    </ul>
+            <li class="nav-item">
+                <a href="{!! route('timesheet.manage') !!}" class="nav-link {{ Request::is('timesheet/manage*') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('timesheet.manage') }}</p>
+                </a>
+            </li>
+        </ul>
+    @else
+        <a href="{!! route('home') !!}" class="nav-link">
+            <i class="fas fa-home"></i>
+            <p>
+                {{ trans('Home') }}
+            </p>
+        </a>
+    @endcan
 </li>
+
+
 {{-- Account manager --}}
 <li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
     <a href="{!! route('users.index') !!}" class="nav-link">

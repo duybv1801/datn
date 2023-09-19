@@ -68,6 +68,17 @@ class TeamRepository extends BaseRepository
         ];
     }
 
+    public function getMember($poId)
+    {
+        $team = Team::where('manager_id', $poId)->with('users')->first();
+        $userIds = $team->users->pluck('id')->toArray();
+        $userData = $team->users;
+        return [
+            'userIds' => $userIds,
+            'userData' => $userData
+        ];
+    }
+
     public function getTeam()
     {
         return $this->team->pluck('manager');
