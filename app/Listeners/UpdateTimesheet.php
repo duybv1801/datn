@@ -31,7 +31,6 @@ class UpdateTimesheet implements ShouldQueue
      */
     public function handle(TimesheetUpdate $event)
     {
-        Log::info('Listener has completed processing.');
         $timesheet = $event->timesheet;
         if ($timesheet->in_time != null && $timesheet->out_time != null) {
             $checkIn = Carbon::parse($timesheet->in_time);

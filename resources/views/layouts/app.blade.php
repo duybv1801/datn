@@ -456,7 +456,6 @@
     <script>
         $(document).ready(function() {
             $('#cc').select2();
-            // $('#user').select2();
         });
     </script>
     <style>

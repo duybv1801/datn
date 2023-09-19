@@ -158,7 +158,7 @@ class TimesheetRepository extends BaseRepository
                     'in_time' => $data['GioDen'],
                     'check_in' => $data['GioDen'],
                 ];
-                if ($data['GioVe'] != null) {
+                if (isset($data['GioVe']) && $data['GioVe'] != null) {
                     $createData['out_time'] = $data['GioVe'];
                     $createData['check_out'] = $data['GioVe'];
                 }
