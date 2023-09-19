@@ -60,7 +60,7 @@ class RemoteController  extends AppBaseController
         $input = $request->all();
         $input['total_hours'] = $totalHours;
         $userIds = Auth::user()->code;
-
+        $input['status'] = config('define.remotes.pending');
         $input['cc'] = json_encode($request->input('cc'));
         $ccIds = json_decode($input['cc'], true);
         $approverId = $input['approver_id'];

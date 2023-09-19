@@ -12,6 +12,7 @@ use App\Repositories\HolidayRepository;
 use App\Repositories\SettingRepository;
 use App\Repositories\TeamRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\TimesheetRepository;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -28,19 +29,22 @@ class OvertimeController extends Controller
     private $teamRepository;
     private $userRepository;
     private $statusData;
+    private $timesheetRepository;
 
     public function __construct(
         OvertimeRepository $otRepo,
         HolidayRepository $holidayRepo,
         SettingRepository $settingRepo,
         TeamRepository $teamRepo,
-        UserRepository $userRepo
+        UserRepository $userRepo,
+        TimesheetRepository $timesheetRepo
     ) {
         $this->otRepository = $otRepo;
         $this->holidayRepository = $holidayRepo;
         $this->settingRepository = $settingRepo;
         $this->teamRepository = $teamRepo;
         $this->userRepository = $userRepo;
+        $this->timesheetRepository = $timesheetRepo;
         $this->statusData = [
             config('define.overtime.admin_approve') => ['label' => trans('overtime.admin_approve'), 'class' => 'badge badge-info'],
             config('define.overtime.registered') => ['label' => trans('overtime.registered'), 'class' => 'badge badge-primary'],
@@ -208,6 +212,11 @@ class OvertimeController extends Controller
         $startTime = $overtime->from_datetime;
         $duration = $createTime->diffInHours($startTime);
         $overtime->from_datetime = Carbon::parse($overtime->from_datetime);
+        if ($overtime->from_datetime->month < Carbon::now()->month) {
+            Flash::success(trans('validation.crud.overtime'));
+            return redirect()->route('overtimes.manage');
+        };
+
         $overtime->to_datetime = Carbon::parse($overtime->to_datetime);
         $check = Auth::user()->hasRole('po') &&
             $otApproveSettings['ot_approve'] == config('define.yes') &&
@@ -242,6 +251,7 @@ class OvertimeController extends Controller
                 || $overtime->status == config('define.overtime.admin_confirm'))
         ) {
             $input['status'] = config('define.overtime.confirmed');
+            $this->timesheetRepository->updateOT($overtime);
         }
 
         $overtime = $this->otRepository->update($input, $id);
@@ -363,7 +373,7 @@ class OvertimeController extends Controller
                 ) {
                     if (in_array($start->format(config('define.date_search')), $holidays)) {
                         $nightMinutesHolidays++;
-                    } elseif ($start->dayOfWeek === config('define.saturday') || $start->dayOfWeek === config('define.sunday')) {
+                    } elseif ($start->isWeekend()) {
                         $nightMinutesWeekend++;
                     } else {
                         $nightMinutes++;
@@ -371,7 +381,7 @@ class OvertimeController extends Controller
                 } else {
                     if (in_array($start->format(config('define.date_search')), $holidays)) {
                         $dayMinutesHolidays++;
-                    } elseif ($start->dayOfWeek === config('define.saturday') || $start->dayOfWeek === config('define.sunday')) {
+                    } elseif ($start->isWeekend()) {
                         $dayMinutesWeekend++;
                     } else {
                         $dayMinutes++;

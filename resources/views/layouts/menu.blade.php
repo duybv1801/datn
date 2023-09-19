@@ -1,32 +1,36 @@
-<li class="nav-item {{ Request::is('dashboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('timesheet*') ? 'active menu-open' : '' }}">
     <a href="{!! route('home') !!}" class="nav-link">
         <i class="fas fa-home"></i>
         <p>
             {{ trans('Home') }}
-        </p>
-    </a>
-
-    {{-- notification --}}
-    <a type="hidden" name="user_id" href="{!! route('home') !!}">
-
-
-        {{-- Account manager --}}
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
-    <a href="#" class="nav-link">
-        <i class="	far fa-address-card"></i>
-        <p>
-            {{ trans('Account Manager') }}
             <i class="fas fa-angle-left right"></i>
+
         </p>
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{!! route('users.index') !!}" class="nav-link">
+            <a href="{!! route('timesheet.home') !!}" class="nav-link {{ Request::is('timesheet/home') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('Account information') }}</p>
+                <p> {{ trans('timesheet.home') }}</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{!! route('timesheet.manage') !!}" class="nav-link {{ Request::is('timesheet/manage*') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ trans('timesheet.manage') }}</p>
             </a>
         </li>
     </ul>
+</li>
+{{-- Account manager --}}
+<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+    <a href="{!! route('users.index') !!}" class="nav-link">
+        <i class="	far fa-address-card"></i>
+        <p>
+            {{ trans('Account Manager') }}
+        </p>
+    </a>
 </li>
 
 {{-- Manager staff --}}
@@ -52,7 +56,8 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{!! route('overtimes.index') !!}" class="nav-link">
+                <a href="{!! route('overtimes.index') !!}" class="nav-link {{ Request::is('overtimes') ? 'active' : '' }}"
+                    title="{{ trans('Number of applications that have not been approved/confirmed') }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p> {{ trans('overtime.register') }}</p>
                     <span class=" badge bg-danger">
@@ -63,7 +68,7 @@
         </ul>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{!! route('overtimes.manage') !!}" class="nav-link">
+                <a href="{!! route('overtimes.manage') !!}" class="nav-link {{ Request::is('overtimes/manage') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p> {{ trans('Manage Overtimes') }}</p>
                     <span class=" badge bg-danger">
@@ -73,7 +78,8 @@
             </li>
         </ul>
     @else
-        <a href="{!! route('overtimes.index') !!}" class="nav-link">
+        <a href="{!! route('overtimes.index') !!}" class="nav-link"
+            title="{{ trans('Number of applications that have not been approved/confirmed') }}">
             <i class="far fa-clock"></i>
             <p>
                 {{ trans('Overtimes') }}
@@ -96,7 +102,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{!! route('holidays.calendar') !!}" class="nav-link">
+                <a href="{!! route('holidays.calendar') !!}" class="nav-link {{ Request::is('holidays/calendar') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p> {{ trans('holiday.calendar') }}</p>
                 </a>
@@ -104,7 +110,7 @@
         </ul>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{!! route('holidays.index') !!}" class="nav-link">
+                <a href="{!! route('holidays.index') !!}" class="nav-link {{ Request::is('holidays') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p> {{ trans('Manage Holidays') }}</p>
                 </a>

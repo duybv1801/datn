@@ -89,4 +89,8 @@ class UserRepository extends BaseRepository
     {
         return Role::where('id', $roleId)->first();
     }
+    public function getUserByCode($code)
+    {
+        return $this->model->where('code', $code)->first();
+    }
 }

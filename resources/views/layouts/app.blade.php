@@ -464,6 +464,15 @@
             list-style: none;
         }
     </style>
+    {{-- change label name when import file --}}
+    <script>
+        document.getElementById('csv_file').addEventListener('change', function(event) {
+            const fileInput = event.target;
+            const fileName = fileInput.files[0].name;
+            const label = fileInput.nextElementSibling;
+            label.innerText = fileName;
+        });
+    </script>
 </body>
 
 </html>

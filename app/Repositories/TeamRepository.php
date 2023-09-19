@@ -70,11 +70,11 @@ class TeamRepository extends BaseRepository
 
     public function getTeam()
     {
-        return $this->model->distinct()->get(['manager']);
+        return $this->team->pluck('manager');
     }
     public function getTeamList()
     {
-        return $this->model->pluck('name', 'id');
+        return $this->team->pluck('name', 'id');
     }
     public function findTeamById($id)
     {

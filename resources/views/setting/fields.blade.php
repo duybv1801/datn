@@ -27,7 +27,7 @@
                     <div class="input-group date timepicker" id="timepicker_check_out_time" data-target-input="nearest">
                         <input type="text" class="form-control datetimepicker-input"
                             data-target="#timepicker_check_out_time"
-                            value="{{ $settings['check_out_time'] ?? '16:30' }}" name="check_out_time"
+                            value="{{ $settings['check_out_time'] ?? '18:30' }}" name="check_out_time"
                             id="check_out_time" data-toggle="datetimepicker">
                         <div class="input-group-append" data-target="#timepicker_check_out_time"
                             data-toggle="datetimepicker">

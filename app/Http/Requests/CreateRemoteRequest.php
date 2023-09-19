@@ -47,7 +47,6 @@ class CreateRemoteRequest extends FormRequest
             if ($totalDuration > $settings['working_time']) {
                 $validator->errors()->add('to_datetime', trans('validation.crud.overtime_false'));
             }
-
             if (!$validator->errors()->any()) {
                 $this->merge([
                     'total_hours' => $totalDuration,

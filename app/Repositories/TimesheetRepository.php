@@ -3,7 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\Timesheet;
+use App\Models\User;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
+use App\Events\TimesheetUpdate;
 
 /**
  * Class TimesheetRepository
@@ -34,48 +38,55 @@ class TimesheetRepository extends BaseRepository
         $this->fieldSearchable;
     }
 
-    public function searchByConditions($search, $limit = 50)
+    public function searchByConditions($search)
     {
         $query = $this->model;
         if (count($search)) {
             foreach ($search as $key => $value) {
                 switch ($key) {
                     case 'start_date':
-                        $query = $query->where('record_date', '>=', $value);
+                        $startDate = Carbon::createFromFormat(config('define.date_show'), $value)->format(config('define.date_search'));
+                        $query = $query->where('record_date', '>=', $startDate);
                         break;
                     case 'end_date':
-                        $query = $query->where('record_date', '<=', $value);
+                        $endDate = Carbon::createFromFormat(config('define.date_show'), $value)->format(config('define.date_search'));
+                        $query = $query->where('record_date', '<=', $endDate);
                         break;
                     default:
-                    $query = $query->where($key, $value);
+                        $query = $query->where($key, $value);
                         break;
                 }
             }
         }
 
-        return $query->with('user')->orderBy('record_date', 'DESC')->paginate($limit);
+        return $query->with('user')->orderBy('record_date', 'DESC')->paginate(config('define.paginate'));
     }
 
-    public function getWorkingHours($search) {
+    public function getWorkingHours($search)
+    {
         $query = $this->model;
         if (count($search)) {
             foreach ($search as $key => $value) {
                 switch ($key) {
                     case 'start_date':
-                        $query = $query->where('record_date', '>=', $value);
+                        $startDate = Carbon::createFromFormat(config('define.date_show'), $value)->format(config('define.date_search'));
+                        $query = $query->where('record_date', '>=', $startDate);
                         break;
                     case 'end_date':
-                        $query = $query->where('record_date', '<=', $value);
+                        $endDate = Carbon::createFromFormat(config('define.date_show'), $value)->format(config('define.date_search'));
+                        $query = $query->where('record_date', '<=', $endDate);
                         break;
                     default:
-                    $query = $query->where($key, $value);
+                        $query = $query->where($key, $value);
                         break;
                 }
             }
         }
 
-        return $query->get()->sum(function($timesheet){
-            return $timesheet->working_hours + $timesheet->leave_hours;
+        return $query->get()->sum(function ($timesheet) {
+            return round($timesheet->working_hours / config('define.hour'), config('define.decimal'))
+                + round($timesheet->leave_hours / config('define.hour'), config('define.decimal'))
+                + round($timesheet->overtime_hours / config('define.hour'), config('define.decimal'));
         });
     }
 
@@ -99,5 +110,73 @@ class TimesheetRepository extends BaseRepository
         }
 
         return $query->with('user')->orderBy('record_date', 'DESC')->first();
+    }
+
+    public function createTimesheet($importData)
+    {
+        $newTimesheets = [];
+        $userIds = User::pluck('id')->toArray();
+
+        foreach ($importData as $key => $data) {
+            $userId = $data['MaID'];
+            if (!in_array($userId, $userIds)) {
+                unset($importData[$key]);
+                $recordDate = $data['Ngay'];
+                $newTimesheets[] = [
+                    'userId' => $userId,
+                    'recordDate' => $recordDate,
+                ];
+            }
+        }
+        $existingTimesheets = Timesheet::whereIn('user_id', array_column($newTimesheets, 'userId'))
+            ->whereIn('record_date', array_column($newTimesheets, 'recordDate'))
+            ->get();
+        foreach ($importData as $data) {
+            $userId = $data['MaID'];
+            $recordDate = $data['Ngay'];
+            $key = $userId . $recordDate;
+            $existingTimesheet = $existingTimesheets->first(function ($item) use ($key) {
+                return $item->user_id . $item->record_date === $key;
+            });
+            if ($existingTimesheet) {
+                $updateData = [
+                    'in_time' => $data['GioDen'],
+                ];
+
+                if (isset($data['GioVe'])) {
+                    $updateData['out_time'] = $data['GioVe'];
+                }
+                $existingTimesheet->update($updateData);
+                event(new TimesheetUpdate($existingTimesheet));
+            } else {
+                $createData = [
+                    'user_id' => $data['MaID'],
+                    'record_date' => $data['Ngay'],
+                    'in_time' => $data['GioDen'],
+                    'check_in' => $data['GioDen'],
+                ];
+                if ($data['GioVe'] != null) {
+                    $createData['out_time'] = $data['GioVe'];
+                    $createData['check_out'] = $data['GioVe'];
+                }
+                $timesheet = $this->model->create($createData);
+                event(new TimesheetUpdate($timesheet));
+            }
+        }
+    }
+
+    public function updateOT($overtime)
+    {
+        $recordDate = Carbon::parse($overtime->to_datetime)->format(config('define.date_search'));
+        $data['user_id'] = $overtime->user_id;
+        $data['record_date'] = $recordDate;
+        $data['overtime_hours'] = $overtime->salary_hours;
+        $existingTimesheet = Timesheet::where('user_id', $data['user_id'])
+            ->where('record_date', $data['record_date'])->first();
+        if ($existingTimesheet) {
+            $existingTimesheet->update($data);
+        } else {
+            $this->model->create($data);
+        }
     }
 }

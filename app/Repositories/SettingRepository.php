@@ -97,4 +97,17 @@ class SettingRepository extends BaseRepository
 
         return $otApproveSettings;
     }
+
+    public function getTimeLunch()
+    {
+        $keys = [
+            'check_in_time',
+            'check_out_time',
+            'lunch_time_start',
+            'lunch_time_end',
+            'working_time',
+        ];
+        $timeLunch = $this->model->whereIn('key', $keys)->pluck('value', 'key');
+        return $timeLunch;
+    }
 }

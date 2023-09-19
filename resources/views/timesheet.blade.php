@@ -6,7 +6,23 @@
             <div class="col-md-6">
                 <h1>{{ trans('Home') }}</h1>
             </div>
+            <div class="col-md-6">
+                <button class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#importTimesheet">
+                    {{ trans('holiday.file') }}
+                </button>
+                <div>
+                    {!! Form::open(['route' => ['timesheet.export'], 'method' => 'post']) !!}
+                    {!! Form::hidden('start_date', request()->input('start_date')) !!}
+                    {!! Form::hidden('end_date', request()->input('end_date')) !!}
+                    {!! Form::hidden('user_id', request()->input('user_id')) !!}
 
+                    <button class="btn btn-success float-right mr-1" type="submit">
+                        {{ trans('holiday.export') }}
+                    </button>
+                    {!! Form::close() !!}
+
+                </div>
+            </div>
         </div>
     </section>
     <div class="content">
@@ -19,7 +35,7 @@
                         <div class="card">
                             <div class="card-body">
                                 {{-- search --}}
-                                <form action="{!! route('home') !!}" method="GET" id="ot_search">
+                                <form action="{!! route('timesheet.manage') !!}" method="GET" id="ot_search">
                                     <div class="row">
                                         <div class="col-md-10 offset-md-1">
                                             <div class="row">
@@ -62,6 +78,26 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- key word --}}
+                                                <div class="col-2">
+                                                    <div class="form-group">
+                                                        <label for="user">{{ trans('overtime.user') }}</label>
+                                                        <div class="input-group">
+                                                            <select name="user_id" id="user" class="form-control">
+                                                                <option hidden></option>
+                                                                @foreach ($users as $user)
+                                                                    @if (!empty($user))
+                                                                        <option value="{{ $user['id'] }}"
+                                                                            {{ $user['id'] == request('user_id') ? 'selected' : '' }}>
+                                                                            {{ $user['name'] }}
+                                                                        </option>
+                                                                    @endif
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 {{-- search --}}
                                                 <div class="col-1">
                                                     <div class="form-group">
@@ -78,20 +114,6 @@
                                         </div>
                                     </div>
                                 </form>
-                                <h5 class="text-danger" style="margin-bottom: 20px">
-                                    <span style="margin-right: 30px">
-                                        {{ trans('Remaining vacation time') }}: {{ Auth::user()->leave_hours_left }}h
-                                    </span>
-                                    @if (Auth::user()->leave_hours_left_in_month != 0)
-                                        {{ trans('Remaining leave time by month') }}:
-                                        {{ Auth::user()->leave_hours_left_in_month }}h
-                                    @endif
-                                    <span style="margin-right: 30px" class="float-right">
-
-                                        {{ trans('Number of paid hours') }}: {{ $workingHours }}/{{ $totalHours }}
-                                    </span>
-
-                                </h5>
                                 <div class="table-responsive">
                                     <table class="table user-table">
                                         <thead>
@@ -156,6 +178,48 @@
                                         ])->links() }}
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal import -->
+    <div class="modal" id="importTimesheet" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ trans('holiday.file') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <form action="{!! route('timesheet.import') !!}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="csv_file">{{ trans('holiday.file') }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="form-control" id="csv_file" name="csv_file"
+                                                required="required">
+                                            <label class="custom-file-label"
+                                                for="csv_file">{{ trans('holiday.choose') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row text-center">
+                                    <div class="col-sm-12">
+                                        <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
+                                        <a href="{!! route('timesheet.manage') !!}"
+                                            class="btn btn-default">{{ trans('Cancel') }}</a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

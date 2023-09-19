@@ -5,13 +5,12 @@ return [
     'date_show'         => 'd/m/Y',
     'datetime'          => 'd/m/Y H:i',
     'datetime_db'       => 'Y/m/d H:i',
+    'datetime_ts'       => 'm/d/Y H:i',
     'yes'               => '1',
     'no'                => '0',
     'percents'          => '100',
     'hour'              => 60,
     'decimal'           => 1,
-    'sunday'            => 0,
-    'saturday'          => 6,
     'overtime'          => [
         'registered'    => '1',
         'admin_approve' => '2',
@@ -22,13 +21,16 @@ return [
         'rejected'      => '7',
         'cancel'        => '8',
     ],
-
-    'time' => 'H:i',
-    'date_img' => 'Y/m/d',
-    'remotes' => [
-        'pending' => '1',
-        'approved' => '2',
-        'rejected' => '3',
+    'timesheet'         => [
+        'normal'        => '1',
+        'reconfirm'     => '2',
+    ],
+    'time'              => 'H:i',
+    'date_img'          => 'Y/m/d',
+    'remotes'           => [
+        'pending'       => '1',
+        'approved'      => '2',
+        'rejected'      => '3',
         'cancelled' => '4',
     ],
     'position' => [
@@ -59,4 +61,13 @@ return [
     ],
     'add_minutes' => '10',
     'random' => '10',
+    'import_data'        => [
+        'code'           => 0,
+        'record_date'    => 2,
+        'in_time'        => 3,
+        'out_time'       => 4,
+        'status'         => 5,
+        'overtime_hours' => 7,
+        'time'    => 8,
+    ]
 ];
