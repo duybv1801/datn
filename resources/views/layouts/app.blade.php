@@ -39,7 +39,6 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     {{-- zoom_img --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 </head>
@@ -115,13 +114,6 @@
             </footer>
     </div>
 
-
-    <style>
-        .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
-            color: black;
-            list-style: none;
-        }
-    </style>
     <!-- JavaScript Bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <!-- ./wrapper -->
@@ -177,8 +169,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
 
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
     {{-- select 2 --}}
     <!-- lightbox2 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
@@ -370,14 +361,7 @@
             }
         }
     </script>
-    {{-- multy choice cc --}} <!-- Include the Select2 library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('#cc').select2();
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datetimepicker@4.17.47/build/js/bootstrap-datetimepicker.min.js">
@@ -456,6 +440,7 @@
     <script>
         $(document).ready(function() {
             $('#cc').select2();
+            $('#user').select2();
         });
     </script>
     <style>

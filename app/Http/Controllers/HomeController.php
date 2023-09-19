@@ -59,8 +59,16 @@ class HomeController extends Controller
             $item->record_date = Carbon::parse($item->record_date)->format(config('define.date_show'));
             return $item;
         });
-
-        $data['workingHours'] = $this->timesheetRepository->getWorkingHours($conditions);
+        $holiday = $this->holidayRepository->searchByConditions($conditions)->pluck('date');
+        $countHoliday = 0;
+        $setting = $this->settingRepository->searchByConditions(['key' => 'working_time'])->pluck('value', 'key')->toArray();
+        $hourPerDay = (int)$setting['working_time'];
+        foreach ($holiday as $date) {
+            if (!$date->isWeekend()) {
+                $countHoliday++;
+            }
+        }
+        $data['workingHours'] = $this->timesheetRepository->getWorkingHours($conditions) + $countHoliday * $hourPerDay;
         $data['totalHours'] = $this->calTotalHours($startDate, $endDate);
         return view('home', $data);
     }
@@ -247,22 +255,11 @@ class HomeController extends Controller
 
     private function calTotalHours($startDate, $endDate)
     {
-        $conditions = [
-            'start_date' => $startDate,
-            'end_date' => $endDate
-        ];
-        $holiday = $this->holidayRepository->searchByConditions($conditions)->pluck('date')->toArray();
-        $formattedHolidays = [];
-        foreach ($holiday as $date) {
-            $formattedDate = $date->format(config('define.date_show'));
-            $formattedHolidays[] = $formattedDate;
-        }
         $start = Carbon::createFromFormat(config('define.date_show'), $startDate);
         $end = Carbon::createFromFormat(config('define.date_show'), $endDate);
         $day = 0;
         while ($start->lte($end)) {
-            $startDateString = $start->format(config('define.date_show'));
-            if (!$start->isWeekend() && !in_array($startDateString, $formattedHolidays)) {
+            if (!$start->isWeekend()) {
                 $day++;
             }
 

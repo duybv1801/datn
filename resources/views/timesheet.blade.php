@@ -83,8 +83,7 @@
                                                     <div class="form-group">
                                                         <label for="user">{{ trans('overtime.user') }}</label>
                                                         <div class="input-group">
-                                                            <select name="user_id" id="user"
-                                                                class="form-control select2">
+                                                            <select name="user_id" id="user" class="form-control">
                                                                 <option hidden></option>
                                                                 @foreach ($users as $user)
                                                                     @if (!empty($user))
