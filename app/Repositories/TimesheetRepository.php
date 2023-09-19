@@ -124,7 +124,7 @@ class TimesheetRepository extends BaseRepository
             if (!in_array($userId, $userIds)) {
                 unset($importData[$key]);
             } else {
-                $recordDate = $data['Ngay'];
+                $recordDate = Carbon::parse($data['Ngay'])->format(config('define.date_search'));
                 $newTimesheets[] = [
                     'userId' => $userId,
                     'recordDate' => $recordDate,
@@ -136,10 +136,10 @@ class TimesheetRepository extends BaseRepository
             ->get();
         foreach ($importData as $data) {
             $userId = $data['MaID'];
-            $recordDate = $data['Ngay'];
+            $recordDate = Carbon::parse($data['Ngay'])->format(config('define.date_search'));
             $key = $userId . $recordDate;
             $existingTimesheet = $existingTimesheets->first(function ($item) use ($key) {
-                return $item->user_id . $item->record_date === $key;
+                return $item->user_id . $item->record_date == $key;
             });
             if ($existingTimesheet) {
                 $updateData = [
