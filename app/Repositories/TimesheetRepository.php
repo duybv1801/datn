@@ -119,11 +119,11 @@ class TimesheetRepository extends BaseRepository
     {
         $newTimesheets = [];
         $userIds = User::pluck('id')->toArray();
-
         foreach ($importData as $key => $data) {
             $userId = $data['MaID'];
             if (!in_array($userId, $userIds)) {
                 unset($importData[$key]);
+            } else {
                 $recordDate = $data['Ngay'];
                 $newTimesheets[] = [
                     'userId' => $userId,
