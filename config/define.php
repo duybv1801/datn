@@ -69,5 +69,11 @@ return [
         'status'         => 5,
         'overtime_hours' => 7,
         'time'    => 8,
-    ]
+    ],
+    'home' => [
+        'userId' => 'MaID',
+        'recordDate' => 'Ngay',
+        'inTime' => 'GioDen',
+        'outTime' => 'GioVe',
+    ],
 ];

@@ -48,8 +48,7 @@
                                                             <input type="text" class="form-control datetimepicker-input"
                                                                 data-target="#reservationdate_from"
                                                                 data-toggle="datetimepicker" name="start_date"
-                                                                id="search_from"
-                                                                value="{{ request('start_date',now()->subMonth()->startOfMonth()->format(config('define.date_show'))) }}" />
+                                                                id="search_from" value="{{ $start_date }}" />
                                                             <div class="input-group-append"
                                                                 data-target="#reservationdate_from"
                                                                 data-toggle="datetimepicker">
@@ -68,7 +67,7 @@
                                                             <input type="text" class="form-control datetimepicker-input"
                                                                 data-target="#reservationdate_to"
                                                                 data-toggle="datetimepicker" name="end_date" id="search_to"
-                                                                value="{{ request('end_date',now()->endOfMonth()->format(config('define.date_show'))) }}" />
+                                                                value="{{ $end_date }}" />
                                                             <div class="input-group-append"
                                                                 data-target="#reservationdate_to"
                                                                 data-toggle="datetimepicker">

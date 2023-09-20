@@ -1,12 +1,12 @@
 <div class="form-group row">
-    <label class="col-sm-4 col-form-label" for="code">{{ trans('Mã nhân viên') }}
+    <label class="col-sm-4 col-form-label" for="code">{{ trans('inout.code') }}
     </label>
     <div class="col-sm-8">
         <label class="">{{ Auth::user()->code }}</label>
     </div>
 </div>
 <div class="form-group row">
-    <label class="col-sm-4 col-form-label" for="name">{{ trans('Tên nhân viên') }}
+    <label class="col-sm-4 col-form-label" for="name">{{ trans('inout.name') }}
     </label>
     <div class="col-sm-8">
         <label class="">{{ Auth::user()->name }}</label>
@@ -25,7 +25,7 @@
     </div>
 </div>
 <div class="form-group row">
-    <label class="col-sm-4 control-label" for="in_time">{{ trans('Check in') }} <span class="text-danger">*</span>
+    <label class="col-sm-4 control-label" for="in_time">{{ trans('inout.checkin') }} <span class="text-danger">*</span>
     </label>
     <div class="col-sm-8 input-group date timepicker" id="timepicker_check_out_time" data-target-input="nearest">
         <input type="text" class="form-control datetimepicker-input" data-target="#timepicker_check_out_time"
@@ -36,7 +36,8 @@
     </div>
 </div>
 <div class="form-group row">
-    <label class="col-sm-4 control-label" for="out_time">{{ trans('Check out') }} <span class="text-danger">*</span>
+    <label class="col-sm-4 control-label" for="out_time">{{ trans('inout.checkout') }} <span
+            class="text-danger">*</span>
     </label>
     <div class="col-sm-8 input-group date timepicker" id="timepicker_check_out_time" data-target-input="nearest">
         <input type="text" class="form-control datetimepicker-input" data-target="#timepicker_check_out_time"
@@ -47,7 +48,7 @@
     </div>
 </div>
 <div class="form-group row">
-    <label class="col-sm-4 control-label" for="timesheet">{{ trans('Giờ hệ thống ghi nhận') }}</label>
+    <label class="col-sm-4 control-label" for="timesheet">{{ trans('inout.system_time') }}</label>
     <div class="col-sm-8 text-bold text-danger">
         <span style="margin-right: 30px">Check In:{{ $timesheet->in_time ?: '00:00:00' }}</span>
         Check Out: {{ $timesheet->out_time ?: '00:00:00' }}

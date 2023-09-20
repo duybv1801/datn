@@ -97,7 +97,6 @@ class TimesheetRepository extends BaseRepository
         return $query->get()->sum(function ($timesheet) {
             return round($timesheet->working_hours / config('define.hour'), config('define.decimal'))
                 + round($timesheet->leave_hours / config('define.hour'), config('define.decimal'))
-                + round($timesheet->remote_hours / config('define.hour'), config('define.decimal'))
                 + round($timesheet->overtime_hours / config('define.hour'), config('define.decimal'));
         });
     }
@@ -126,14 +125,15 @@ class TimesheetRepository extends BaseRepository
 
     public function createTimesheet($importData)
     {
+        dd($importData);
         $newTimesheets = [];
         $userIds = User::pluck('id')->toArray();
         foreach ($importData as $key => $data) {
-            $userId = $data['MaID'];
+            $userId = $data[config('define.home.userId')];
             if (!in_array($userId, $userIds)) {
                 unset($importData[$key]);
             } else {
-                $recordDate = Carbon::parse($data['Ngay'])->format(config('define.date_search'));
+                $recordDate = Carbon::parse($data[config('define.home.recordDate')])->format(config('define.date_search'));
                 $newTimesheets[] = [
                     'userId' => $userId,
                     'recordDate' => $recordDate,
@@ -144,32 +144,32 @@ class TimesheetRepository extends BaseRepository
             ->whereIn('record_date', array_column($newTimesheets, 'recordDate'))
             ->get();
         foreach ($importData as $data) {
-            $userId = $data['MaID'];
-            $recordDate = Carbon::parse($data['Ngay'])->format(config('define.date_search'));
+            $userId = $data[config('define.home.userId')];
+            $recordDate = Carbon::parse($data[config('define.home.recordDate')])->format(config('define.date_search'));
             $key = $userId . $recordDate;
             $existingTimesheet = $existingTimesheets->first(function ($item) use ($key) {
                 return $item->user_id . $item->record_date == $key;
             });
             if ($existingTimesheet) {
                 $updateData = [
-                    'in_time' => $data['GioDen'],
+                    'in_time' => $data[config('define.home.inTime')],
                 ];
 
-                if (isset($data['GioVe'])) {
-                    $updateData['out_time'] = $data['GioVe'];
+                if (isset($data[config('define.home.outTime')])) {
+                    $updateData['out_time'] = $data[config('define.home.outTime')];
                 }
                 $existingTimesheet->update($updateData);
                 event(new TimesheetUpdate($existingTimesheet));
             } else {
                 $createData = [
-                    'user_id' => $data['MaID'],
-                    'record_date' => $data['Ngay'],
-                    'in_time' => $data['GioDen'],
-                    'check_in' => $data['GioDen'],
+                    'user_id' => $data[config('define.home.userId')],
+                    'record_date' => $data[config('define.home.recordDate')],
+                    'in_time' => $data[config('define.home.inTime')],
+                    'check_in' => $data[config('define.home.inTime')],
                 ];
-                if (isset($data['GioVe']) && $data['GioVe'] != null) {
-                    $createData['out_time'] = $data['GioVe'];
-                    $createData['check_out'] = $data['GioVe'];
+                if (isset($data[config('define.home.outTime')]) && $data[config('define.home.outTime')] != null) {
+                    $createData['out_time'] = $data[config('define.home.outTime')];
+                    $createData['check_out'] = $data[config('define.home.outTime')];
                 }
                 $timesheet = $this->model->create($createData);
                 event(new TimesheetUpdate($timesheet));

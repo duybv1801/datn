@@ -224,8 +224,8 @@ class HomeController extends Controller
             list($userCode, $date) = explode('|', $combinedKey);
             $userId = $userCodeToUserId[$userCode] ?? null;
 
-            $resultGroup['MaID'] = $userId;
-            $resultGroup['Ngay'] = $date;
+            $resultGroup[config('define.home.userId')] = $userId;
+            $resultGroup[config('define.home.recordDate')] = $date;
 
             foreach ($group as $row) {
                 $currentTime = strtotime($row[config('define.import_data.time')]);
@@ -242,10 +242,10 @@ class HomeController extends Controller
             foreach ($group as $row) {
                 $currentTime = strtotime($row[config('define.import_data.time')]);
                 if ($currentTime == $earliestTime || $currentTime == $latestTime) {
-                    if (empty($resultGroup['GioDen'])) {
-                        $resultGroup['GioDen'] = $row[config('define.import_data.time')];
+                    if (empty($resultGroup[config('define.home.inTime')])) {
+                        $resultGroup[config('define.home.inTime')] = $row[config('define.import_data.time')];
                     } else {
-                        $resultGroup['GioVe'] = $row[config('define.import_data.time')];
+                        $resultGroup[config('define.home.outTime')] = $row[config('define.import_data.time')];
                     }
                 }
             }
