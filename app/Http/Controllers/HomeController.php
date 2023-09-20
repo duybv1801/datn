@@ -58,7 +58,6 @@ class HomeController extends Controller
         $data['timesheetData'] = $this->timesheetRepository->searchByConditions($conditions);
         $data['timesheetData']->getCollection()->transform(function ($item) {
             $item->working_hours = round($item->working_hours / config('define.hour'), config('define.decimal'));
-            $item->remote_hours = round($item->remote_hours / config('define.hour'), config('define.decimal'));
             $item->leave_hours = round($item->leave_hours / config('define.hour'), config('define.decimal'));
             $item->overtime_hours = round($item->overtime_hours / config('define.hour'), config('define.decimal'));
             $item->record_date = Carbon::parse($item->record_date)->format(config('define.date_show'));
@@ -103,7 +102,6 @@ class HomeController extends Controller
         }
         $data['timesheetData']->getCollection()->transform(function ($item) {
             $item->working_hours = round($item->working_hours / config('define.hour'), config('define.decimal'));
-            $item->remote_hours = round($item->remote_hours / config('define.hour'), config('define.decimal'));
             $item->leave_hours = round($item->leave_hours / config('define.hour'), config('define.decimal'));
             $item->overtime_hours = round($item->overtime_hours / config('define.hour'), config('define.decimal'));
             $item->record_date = Carbon::parse($item->record_date)->format(config('define.date_show'));
@@ -138,7 +136,6 @@ class HomeController extends Controller
                 trans('timesheet.check_out'),
                 trans('timesheet.status'),
                 trans('timesheet.work_time'),
-                trans('timesheet.remote_time'),
                 trans('timesheet.ot_time'),
                 trans('timesheet.leave_time')
             ]
@@ -153,7 +150,6 @@ class HomeController extends Controller
                 $timesheet->out_time,
                 __('define.timesheet.status.' . $timesheet->status),
                 round($timesheet->working_hours / config('define.hour'), config('define.decimal')),
-                round($timesheet->remote_hours / config('define.hour'), config('define.decimal')),
                 round($timesheet->overtime_hours / config('define.hour'), config('define.decimal')),
                 round($timesheet->leave_hours / config('define.hour'), config('define.decimal'))
             ];

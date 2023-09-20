@@ -67,7 +67,7 @@ class TimesheetRepository extends BaseRepository
         $query = $query->where(function ($q) {
             $q->where(function ($subQuery) {
                 $subQuery->where('overtime_hours', '>', 0)
-                    ->orWhereRaw('DAYOFWEEK(record_date) NOT IN (1, 7)'); // 1 là Chủ Nhật, 7 là Thứ Bảy
+                    ->orWhereRaw('DAYOFWEEK(record_date) NOT IN (1, 7)'); // 1->Sunday, 7->Saturday
             });
         });
         return $query->with('user')->orderBy('record_date', 'DESC')->paginate(config('define.paginate'));
