@@ -52,6 +52,9 @@ class TimesheetRepository extends BaseRepository
                         $endDate = Carbon::createFromFormat(config('define.date_show'), $value)->format(config('define.date_search'));
                         $query = $query->where('record_date', '<=', $endDate);
                         break;
+                    case 'user_ids':
+                        $query = $query->whereIn('user_id', $value);
+                        break;
                     default:
                         $query = $query->where($key, $value);
                         break;
@@ -61,6 +64,12 @@ class TimesheetRepository extends BaseRepository
         if ($userIds != null) {
             $query = $query->whereIn('user_id', $userIds);
         }
+        $query = $query->where(function ($q) {
+            $q->where(function ($subQuery) {
+                $subQuery->where('overtime_hours', '>', 0)
+                    ->orWhereRaw('DAYOFWEEK(record_date) NOT IN (1, 7)'); // 1 là Chủ Nhật, 7 là Thứ Bảy
+            });
+        });
         return $query->with('user')->orderBy('record_date', 'DESC')->paginate(config('define.paginate'));
     }
 
@@ -183,21 +192,6 @@ class TimesheetRepository extends BaseRepository
         }
     }
 
-    public function updateRemote($remote)
-    {
-        $recordDate = Carbon::parse($remote->to_datetime)->format(config('define.date_search'));
-        $data['user_id'] = $remote->user_id;
-        $data['record_date'] = $recordDate;
-        $data['remote_hours'] = $remote->total_hours;
-        $existingTimesheet = Timesheet::where('user_id', $data['user_id'])
-            ->where('record_date', $data['record_date'])->first();
-        if ($existingTimesheet) {
-            $existingTimesheet->update($data);
-        } else {
-            $this->model->create($data);
-        }
-    }
-
     public function updateLeave($leave)
     {
         $recordDate = Carbon::parse($leave->to_datetime)->format(config('define.date_search'));
@@ -211,5 +205,17 @@ class TimesheetRepository extends BaseRepository
         } else {
             $this->model->create($data);
         }
+    }
+
+    public function checkRemoteCheckIn($userId, $date)
+    {
+        $check = true;
+        $query = $this->model->where('user_id', $userId)
+            ->where('record_date', 'like', '%' . $date . '%')
+            ->whereNotNull('check_in');
+        if ($query->exists()) {
+            $check = false;
+        }
+        return $check;
     }
 }

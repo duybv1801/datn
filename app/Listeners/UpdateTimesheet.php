@@ -32,7 +32,11 @@ class UpdateTimesheet implements ShouldQueue
     public function handle(TimesheetUpdate $event)
     {
         $timesheet = $event->timesheet;
-        if ($timesheet->in_time != null && $timesheet->out_time != null) {
+        $recordDate = Carbon::parse($timesheet->record_date);
+        if ($recordDate->isWeekend()) {
+            $data['status'] = config('define.timesheet.normal');
+            $timesheet->update($data);
+        } else if ($timesheet->in_time != null && $timesheet->out_time != null) {
             $checkIn = Carbon::parse($timesheet->in_time);
             $checkOut = Carbon::parse($timesheet->out_time);
             $settings = $this->settingRepository->getTimeLunch();
@@ -49,8 +53,13 @@ class UpdateTimesheet implements ShouldQueue
                 $overlapDuration = $overlapEnd->diffInMinutes($overlapStart);
                 $totalDuration -= $overlapDuration;
             }
+            if ($totalDuration > $settings['max_working_minutes_everyday_day'] * config('define.hour')) {
+                $totalDuration = $settings['max_working_minutes_everyday_day'] * config('define.hour');
+            }
             $data['working_hours'] = $totalDuration;
-            if ($totalDuration + $timesheet->leave_hours + $timesheet->remote_hours > $settings['working_time'] * config('define.hour')) {
+            if (
+                $totalDuration + $timesheet->leave_hours + $timesheet->remote_hours >= $settings['working_time'] * config('define.hour')
+            ) {
                 $data['status'] = config('define.timesheet.normal');
             }
             $timesheet->update($data);

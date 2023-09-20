@@ -7,6 +7,7 @@ use App\Repositories\SettingRepository;
 use App\Repositories\TimesheetRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\TeamRepository;
+use App\Repositories\RemoteReponsitory;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class HomeController extends Controller
     protected $holidayRepository;
     protected $teamRepository;
     protected $settingRepository;
+    protected $remoteRepository;
     /**
      * Create a new controller instance.
      *
@@ -30,7 +32,8 @@ class HomeController extends Controller
         HolidayRepository $holidayRepository,
         SettingRepository $settingRepository,
         UserRepository $userRepository,
-        TeamRepository $teamRepository
+        TeamRepository $teamRepository,
+        RemoteReponsitory $remoteRepository
     ) {
         $this->middleware('auth');
         $this->timesheetRepository = $timesheetRepository;
@@ -38,16 +41,18 @@ class HomeController extends Controller
         $this->settingRepository = $settingRepository;
         $this->userRepository = $userRepository;
         $this->teamRepository = $teamRepository;
+        $this->remoteRepository = $remoteRepository;
     }
 
     public function index(Request $request)
     {
         $startDate = $request->start_date ?: Carbon::now()->subMonth()->startOfMonth()->format(config('define.date_show'));
         $endDate = $request->end_date ?: Carbon::now()->endOfMonth()->format(config('define.date_show'));
+        $userId = Auth::id();
         $conditions = [
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'user_id' => Auth::user()->id
+            'user_id' =>  $userId,
         ];
         $data = $conditions;
         $data['timesheetData'] = $this->timesheetRepository->searchByConditions($conditions);
@@ -68,6 +73,9 @@ class HomeController extends Controller
                 $countHoliday++;
             }
         }
+        $date = now()->format(config('define.date_search'));
+        $data['checkRemote']  = $this->remoteRepository->checkRemoteTime($userId, $date);
+        $data['checkRemoteCheckIn'] = $data['checkRemote'] && $this->timesheetRepository->checkRemoteCheckIn($userId, $date);
         $data['workingHours'] = $this->timesheetRepository->getWorkingHours($conditions) + $countHoliday * $hourPerDay;
         $data['totalHours'] = $this->calTotalHours($startDate, $endDate);
         return view('home', $data);
@@ -81,8 +89,8 @@ class HomeController extends Controller
             'start_date' => $startDate,
             'end_date' => $endDate,
         ];
-        if ($request->user_id) {
-            $conditions['user_id'] = $request->user_id;
+        if ($request->user_ids) {
+            $conditions['user_ids'] = $request->user_ids;
         }
         $data = $conditions;
         if (Auth::user()->hasRole('po')) {

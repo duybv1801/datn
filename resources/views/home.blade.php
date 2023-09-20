@@ -6,7 +6,26 @@
             <div class="col-md-6">
                 <h1>{{ trans('Home') }}</h1>
             </div>
-
+            <div class="col-md-6">
+                @if ($checkRemote)
+                    <div>
+                        {!! Form::open(['route' => ['inout.checkout'], 'method' => 'post']) !!}
+                        <button class="btn btn-danger float-right mr-1" type="submit">
+                            {{ trans('Check-out') }}
+                        </button>
+                        {!! Form::close() !!}
+                    </div>
+                @endif
+                @if ($checkRemoteCheckIn)
+                    <div>
+                        {!! Form::open(['route' => ['inout.checkin'], 'method' => 'post']) !!}
+                        <button class="btn btn-success float-right mr-1" type="submit">
+                            {{ trans('Check-in') }}
+                        </button>
+                        {!! Form::close() !!}
+                    </div>
+                @endif
+            </div>
         </div>
     </section>
     <div class="content">
@@ -102,7 +121,6 @@
                                                 <th>{{ Form::label('check_in', trans('timesheet.check_in')) }}</th>
                                                 <th>{{ Form::label('check_out', trans('timesheet.check_out')) }}</th>
                                                 <th>{{ Form::label('work_time', trans('timesheet.work_time')) }}</th>
-                                                <th>{{ Form::label('remote_time', trans('timesheet.remote_time')) }}</th>
                                                 <th>{{ Form::label('ot_time', trans('timesheet.ot_time')) }}</th>
                                                 <th>{{ Form::label('leave_time', trans('timesheet.leave_time')) }}</th>
                                                 <th>{{ Form::label('status', trans('timesheet.status')) }}</th>
@@ -119,7 +137,6 @@
                                                     <td>{!! $timesheet->in_time !!}</td>
                                                     <td>{!! $timesheet->out_time !!}</td>
                                                     <td>{!! $timesheet->working_hours !!}</td>
-                                                    <td>{!! $timesheet->remote_hours !!}</td>
                                                     <td>{!! $timesheet->overtime_hours !!}</td>
                                                     <td>{!! $timesheet->leave_hours !!}</td>
                                                     <td><span

@@ -94,4 +94,12 @@ class RemoteReponsitory extends BaseRepository
 
         return $query;
     }
+
+    public function checkRemoteTime($userId, $date)
+    {
+        $query = $this->model->where('user_id', $userId)
+            ->where('status', config('define.remotes.approved'))
+            ->where('to_datetime', 'like', '%' . $date . '%');
+        return $query->exists();
+    }
 }

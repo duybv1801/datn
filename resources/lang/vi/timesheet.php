@@ -14,4 +14,5 @@ return [
     'manage' => 'Quản lý',
     'home' => 'Chấm công',
     'normal' => 'Bình thường',
+    'user' => 'Nhân viên',
 ];
