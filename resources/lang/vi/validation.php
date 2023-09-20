@@ -24,7 +24,8 @@ return [
         'confirm' => 'Xác nhận thành công',
         'endtime_false' => 'Thời gian kết thúc không hợp lệ !',
         'beggintime_false' => 'Thời gian bắt đầu không hợp lệ !',
-        'overtime_false' => 'Thời gian đã quá 8 tiếng trên ngày'
+        'overtime_false' => 'Thời gian đã quá 8 tiếng trên ngày',
+        'overtime' => 'Đã quá thời gian kiểm duyệt',
     ],
     'import_holidays' => 'Đã import ngày nghỉ cho năm ',
     'accepted'             => 'Trường :attribute phải được chấp nhận.',

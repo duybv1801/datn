@@ -47,7 +47,7 @@ class UpdateSettingRequest extends FormRequest
             'ot_night_dayoff' => 'required|numeric',
             'ot_day_holiday' => 'required|numeric',
             'ot_night_holiday' => 'required|numeric',
-            'max_working_minutes_everyday_day' => 'required|numeric|gt:working_time',
+            'max_working_minutes_everyday_day' => 'required|numeric|gte:working_time',
         ];
     }
 

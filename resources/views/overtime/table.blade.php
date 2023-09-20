@@ -195,7 +195,6 @@
         </div>
     </div>
 </div>
-</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const sortIcons = document.querySelectorAll('.sort-icon');

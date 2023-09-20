@@ -31,6 +31,7 @@ class NotifiProvider extends ServiceProvider
             config('define.overtime.registered'),
             config('define.overtime.admin_approve'),
             config('define.overtime.admin_confirm'),
+            config('define.overtime.confirm'),
         ];
         $statusPO = [
             config('define.overtime.registered'),

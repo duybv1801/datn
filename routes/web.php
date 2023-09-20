@@ -36,6 +36,14 @@ Route::middleware(['auth'])->group(function () {
 
     //home
     Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('timesheet/home', [HomeController::class, 'index'])->name('timesheet.home');
+    Route::get('timesheet/manage', [HomeController::class, 'manage'])->name('timesheet.manage')->middleware('can:viewAny,App\Models\Timesheet');
+    Route::post('timesheet/exporter', [HomeController::class, 'export'])->name('timesheet.export')->middleware('can:viewAny,App\Models\Timesheet');
+    Route::post('timesheet/import', [HomeController::class, 'import'])->name('timesheet.import')->middleware('can:viewAny,App\Models\Timesheet');
+
+    //Check-in check-out
+    Route::post('/inout/checkin', [InOutController::class, 'checkIn'])->name('inout.checkin');
+    Route::post('/inout/checkout', [InOutController::class, 'checkOut'])->name('inout.checkout');
 
     //manager staff 
     Route::get('manager_staff', [ManagerStaffController::class, 'index'])->name('manager_staff.index')->middleware('can:viewAny,App\Models\User');
@@ -66,8 +74,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/change_password/{user}', [UserController::class, 'change_password'])->name('users.change_password');
 
     //in out forgets
-    Route::resource('in_out_forgets', InOutForgetController::class);
-
+    Route::get('/in_out_forgets', [InOutForgetController::class, 'index'])->name('in_out_forgets.index');
+    Route::get('/in_out_forgets/create', [InOutForgetController::class, 'create'])->name('in_out_forgets.create');
+    Route::post('/in_out_forgets', [InOutForgetController::class, 'store'])->name('in_out_forgets.store');
+    Route::get('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'show'])->name('in_out_forgets.show');
+    Route::get('/in_out_forgets/{in_out_forget}/edit', [InOutForgetController::class, 'edit'])->name('in_out_forgets.edit');
+    Route::put('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'update'])->name('in_out_forgets.update');
+    Route::delete('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'destroy'])->name('in_out_forgets.destroy');
     //leaves
     Route::resource('leaves', LeaveController::class);
 
