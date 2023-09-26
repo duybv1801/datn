@@ -226,7 +226,8 @@
                 format: 'DD/MM/YYYY HH:mm',
                 icons: {
                     time: 'far fa-clock'
-                }
+                },
+                stepping: {{ $settings['block'] }},
             });
 
             //Date range picker
@@ -265,7 +266,8 @@
 
             //Timepicker        
             $('.timepicker').datetimepicker({
-                format: 'HH:mm'
+                format: 'HH:mm',
+                stepping: {{ $settings['block'] }},
             });
             $('#reservationdate').datetimepicker({
                 format: 'DD/MM/YYYY'

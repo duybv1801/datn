@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Remote;
 use App\Models\InOutForget;
+use App\Models\Setting;
 
 class NotifiProvider extends ServiceProvider
 {
@@ -133,6 +134,13 @@ class NotifiProvider extends ServiceProvider
             $view->with([
                 'registerInOut' => $registerOT,
                 'unreadNotificationInOut' => $unreadNotificationOT
+            ]);
+        });
+        //Setting
+        View::composer('layouts.app', function ($view) {
+            $settings =  Setting::select('key', 'value')->pluck('value', 'key')->toArray();
+            $view->with([
+                'settings' => $settings,
             ]);
         });
     }
