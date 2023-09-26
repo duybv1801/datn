@@ -13,8 +13,7 @@ use App\Http\Controllers\RemoteController;
 use App\Http\Controllers\ManagerRemoteController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\OvertimeController;
-use App\Models\Overtime;
-
+use App\Http\Controllers\InOutController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -74,13 +73,17 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/change_password/{user}', [UserController::class, 'change_password'])->name('users.change_password');
 
     //in out forgets
+    Route::get('/in_out_forgets/manage', [InOutForgetController::class, 'manage'])->name('in_out_forgets.manage')->middleware('can:viewAny, App\Models\InOutForget');
+    Route::get('/in_out_forgets/approve/{in_out_forget}', [InOutForgetController::class, 'approve'])->name('in_out_forgets.approve')->middleware('can:approve, App\Models\InOutForget');
+    Route::put('/in_out_forgets/approve/{in_out_forget}', [InOutForgetController::class, 'approveAction'])->name('in_out_forgets.approve_action')->middleware('can:approve, App\Models\InOutForget');
     Route::get('/in_out_forgets', [InOutForgetController::class, 'index'])->name('in_out_forgets.index');
     Route::get('/in_out_forgets/create', [InOutForgetController::class, 'create'])->name('in_out_forgets.create');
     Route::post('/in_out_forgets', [InOutForgetController::class, 'store'])->name('in_out_forgets.store');
-    Route::get('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'show'])->name('in_out_forgets.show');
-    Route::get('/in_out_forgets/{in_out_forget}/edit', [InOutForgetController::class, 'edit'])->name('in_out_forgets.edit');
-    Route::put('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'update'])->name('in_out_forgets.update');
-    Route::delete('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'destroy'])->name('in_out_forgets.destroy');
+    Route::get('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'detail'])->name('in_out_forgets.detail')->middleware('can:details, App\Models\InOutForget');
+    Route::get('/in_out_forgets/{in_out_forget}/edit', [InOutForgetController::class, 'edit'])->name('in_out_forgets.edit')->middleware('can:update, App\Models\InOutForget');
+    Route::put('/in_out_forgets/update/{in_out_forget}', [InOutForgetController::class, 'update'])->name('in_out_forgets.update')->middleware('can:update, App\Models\InOutForget');
+    Route::put('/in_out_forgets/{in_out_forget}', [InOutForgetController::class, 'cancel'])->name('in_out_forgets.cancel')->middleware('can:delete, App\Models\InOutForget');
+
     //leaves
     Route::resource('leaves', LeaveController::class);
 

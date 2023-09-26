@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Remote;
+use App\Models\InOutForget;
 
 class NotifiProvider extends ServiceProvider
 {
@@ -52,8 +53,9 @@ class NotifiProvider extends ServiceProvider
             $notifications = [];
             $ots = [];
             $remotes = Remote::where('status', config('define.remotes.pending'))->get();
+            $inOutForget = InOutForget::where('status', config('define.remotes.pending'))->get();
             $ots = Overtime::whereIn('status', $statusApprove)->get();
-            $notifications = collect($remotes)->concat($ots)->sortByDesc('created_at');
+            $notifications = collect($remotes)->concat($ots)->concat($inOutForget)->sortByDesc('created_at');
             $unreadNotifications = count($notifications);
 
             $view->with([
@@ -109,6 +111,28 @@ class NotifiProvider extends ServiceProvider
             $view->with([
                 'registerOT' => $registerOT,
                 'unreadNotificationOT' => $unreadNotificationOT
+            ]);
+        });
+        //InOutForget
+        View::composer('layouts.menu', function ($view) {
+            $user = Auth::user();
+            $inOutForget = InOutForget::where('status', config('define.in_out.register'))
+                ->where('user_id', $user->id)
+                ->get();
+            $countRegisterOT = collect($inOutForget);
+            $registerOT = count($countRegisterOT);
+            if (Auth::user()->hasRole('po')) {
+                $inOutForget = InOutForget::where('status', config('define.in_out.register'))
+                    ->where('approver_id', $user->id)
+                    ->get();
+            } else {
+                $inOutForget = InOutForget::where('status', config('define.in_out.register'))->get();
+            }
+            $notificationOT = collect($inOutForget);
+            $unreadNotificationOT = count($notificationOT);
+            $view->with([
+                'registerInOut' => $registerOT,
+                'unreadNotificationInOut' => $unreadNotificationOT
             ]);
         });
     }

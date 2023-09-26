@@ -10,7 +10,7 @@ return [
     'no'                => '0',
     'percents'          => '100',
     'hour'              => 60,
-    'decimal'           => 1,
+    'decimal'           => 2,
     'overtime'          => [
         'registered'    => '1',
         'admin_approve' => '2',
@@ -68,12 +68,18 @@ return [
         'out_time'       => 4,
         'status'         => 5,
         'overtime_hours' => 7,
-        'time'    => 8,
+        'time'           => 8,
     ],
-    'home' => [
-        'userId' => 'MaID',
-        'recordDate' => 'Ngay',
-        'inTime' => 'GioDen',
-        'outTime' => 'GioVe',
+    'home'               => [
+        'userId'         => 'MaID',
+        'recordDate'     => 'Ngay',
+        'inTime'         => 'GioDen',
+        'outTime'        => 'GioVe',
+    ],
+    'in_out'             => [
+        'register'       => '1',
+        'approve'        => '2',
+        'reject'         => '3',
+        'cancel'         => '4',
     ],
 ];

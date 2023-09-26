@@ -6,35 +6,29 @@
                 <table style="width: 100%; font-family: Arial, sans-serif;">
                     <tr>
                         <td style="font-size: 18px; font-weight: bold; padding-bottom: 10px;">
-                            {{ trans('overtime.user') }}: {{ $overtime->user->name }}
+                            {{ trans('inout.name') }}: {{ $inOutForget->user->name }}
                         </td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 18px; font-weight: bold; padding-bottom: 10px;">
-                            {{ trans('overtime.status') }}: {{ trans('overtime.label ' . $overtime->status) }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 18px; padding-bottom: 10px;">{{ trans('overtime.from') }}:
-                            {{ $overtime->from_datetime }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 18px; padding-bottom: 10px;">{{ trans('overtime.to') }}:
-                            {{ $overtime->to_datetime }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 18px; padding-bottom: 10px;">{{ trans('overtime.approver') }}:
-                            {{ $overtime->approver->name }}</td>
                     </tr>
                     <tr>
                         <td style="font-size: 18px; padding-bottom: 10px;">
-                            @if (
-                                $overtime->status == config('define.overtime.registered') ||
-                                    $overtime->status == config('define.overtime.cancel') ||
-                                    $overtime->status == config('define.overtime.confirm'))
-                                {{ trans('overtime.reason') }}: {{ $overtime->reason }}
+                            {{ trans('inout.checkin') }}: {{ $inOutForget->in_time }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 18px; padding-bottom: 10px;">
+                            {{ trans('inout.checkout') }}: {{ $inOutForget->out_time }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 18px; padding-bottom: 10px;">
+                            {{ trans('inout.total_hours') }}:
+                            {{ round($inOutForget->total_hours / config('define.hour'), config('define.decimal')) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 18px; padding-bottom: 10px;">
+                            @if ($inOutForget->status == config('define.in_out.register') || $inOutForget->status == config('define.in_out.cancel'))
+                                {{ trans('inout.reason') }}: {{ $inOutForget->reason }}
                             @else
-                                {{ trans('overtime.comment') }}: {{ $overtime->comment }}
+                                {{ trans('inout.comment') }}: {{ $inOutForget->comment }}
                             @endif
                         </td>
                     </tr>

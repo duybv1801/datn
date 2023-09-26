@@ -131,24 +131,24 @@
                                             @forelse ($timesheetData as $timesheet)
                                                 <tr>
                                                     <td>{{ $i++ }}</td>
-                                                    <td>{!! $timesheet->user->name !!}</td>
-                                                    <td>{!! $timesheet->record_date !!}</td>
-                                                    <td>{!! $timesheet->in_time !!}</td>
-                                                    <td>{!! $timesheet->out_time !!}</td>
-                                                    <td>{!! $timesheet->working_hours !!}</td>
-                                                    <td>{!! $timesheet->overtime_hours !!}</td>
-                                                    <td>{!! $timesheet->leave_hours !!}</td>
+                                                    <td>{!! $timesheet['name'] !!}</td>
+                                                    <td>{!! $timesheet['date'] !!}</td>
+                                                    <td>{!! $timesheet['check_in'] !!}</td>
+                                                    <td>{!! $timesheet['check_out'] !!}</td>
+                                                    <td>{!! $timesheet['working_hours'] !!}</td>
+                                                    <td>{!! $timesheet['overtime_hours'] !!}</td>
+                                                    <td>{!! $timesheet['leave_hours'] !!}</td>
                                                     <td><span
-                                                            class="<?= $timesheet->status == config('define.timesheet.normal') ? 'badge badge-success' : 'badge badge-danger' ?> ">{!! __('define.timesheet.status.' . $timesheet->status) !!}</span>
+                                                            class="<?= $timesheet['status'] == config('define.timesheet.normal') ? 'badge badge-success' : 'badge badge-danger' ?> ">{!! __('define.timesheet.status.' . $timesheet['status']) !!}</span>
                                                     </td>
                                                     <td>
-                                                        @if ($timesheet->status == config('define.timesheet.reconfirm'))
+                                                        @if ($timesheet['status'] == config('define.timesheet.reconfirm'))
                                                             <div class="btn-group">
-                                                                <a href="{{ route('in_out_forgets.create', ['date' => $timesheet->record_date]) }}"
+                                                                <a href="{{ route('in_out_forgets.create', ['date' => $timesheet['date']]) }}"
                                                                     class="btn btn-primary btn-sm">
                                                                     {{ trans('In out') }}
                                                                 </a>
-                                                                <a href="{{ route('leaves.create', ['date' => $timesheet->record_date]) }}"
+                                                                <a href="{{ route('leaves.create', ['date' => $timesheet['date']]) }}"
                                                                     class="btn btn-danger btn-sm">
                                                                     {{ trans('Leaves') }}
                                                                 </a>

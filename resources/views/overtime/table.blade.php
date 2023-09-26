@@ -117,8 +117,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="{{ $statusData[$overtime->status]['class'] }}">
-                                            {{ $statusData[$overtime->status]['label'] }}
+                                        <span class="{{ trans('overtime.class ' . $overtime->status) }}">
+                                            {{ trans('overtime.label ' . $overtime->status) }}
                                         </span>
                                     </td>
                                     <td>

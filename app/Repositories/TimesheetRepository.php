@@ -125,7 +125,6 @@ class TimesheetRepository extends BaseRepository
 
     public function createTimesheet($importData)
     {
-        dd($importData);
         $newTimesheets = [];
         $userIds = User::pluck('id')->toArray();
         foreach ($importData as $key => $data) {

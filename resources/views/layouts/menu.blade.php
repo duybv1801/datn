@@ -1,4 +1,4 @@
-<li class="nav-item {{ Request::is('timesheet*') ? 'active menu-open' : '' }}">
+<li class="nav-item {{ Request::is('timesheet*') || Request::is('/') ? 'active menu-open' : '' }}">
     @can('viewAny', App\Models\Overtime::class)
         <a href="{!! route('home') !!}" class="nav-link">
             <i class="fas fa-home"></i>
@@ -14,7 +14,6 @@
                     <p> {{ trans('timesheet.home') }}</p>
                 </a>
             </li>
-
             <li class="nav-item">
                 <a href="{!! route('timesheet.manage') !!}" class="nav-link {{ Request::is('timesheet/manage*') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
@@ -34,7 +33,7 @@
 
 
 {{-- Account manager --}}
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('users*') ? 'active' : '' }}">
     <a href="{!! route('users.index') !!}" class="nav-link">
         <i class="	far fa-address-card"></i>
         <p>
@@ -55,6 +54,51 @@
     </li>
 @endcan
 
+{{-- Forget Inout --}}
+<li class="nav-item {{ Request::is('in_out_forgets*') ? 'active menu-open' : '' }}">
+    @can('viewAny', App\Models\InOutForget::class)
+        <a href="" class="nav-link">
+            <i class="fas fa-stopwatch"></i>
+            <p>
+                {{ trans('In out') }}
+                <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{!! route('in_out_forgets.index') !!}" class="nav-link {{ Request::is('in_out_forgets') ? 'active' : '' }}"
+                    title="{{ trans('Number of applications that have not been approved/confirmed') }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('inout.register') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $registerInOut }}
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{!! route('in_out_forgets.manage') !!}"
+                    class="nav-link {{ Request::is('in_out_forgets/manage') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('Manage Overtimes') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $unreadNotificationInOut }}
+                    </span>
+                </a>
+            </li>
+        </ul>
+    @else
+        <a href="{!! route('in_out_forgets.index') !!}" class="nav-link"
+            title="{{ trans('Number of applications that have not been approved/confirmed') }}">
+            <i class="fas fa-stopwatch"></i>
+            <p> {{ trans('In out') }}</p>
+            <span class=" badge bg-danger">
+                {{ $registerInOut }}
+            </span>
+        </a>
+    @endcan
+</li>
+
+{{-- Overtime --}}
 <li class="nav-item {{ Request::is('overtimes*') ? 'active menu-open' : '' }}">
     @can('viewAny', App\Models\Overtime::class)
         <a href="" class="nav-link">
