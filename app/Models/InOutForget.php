@@ -4,24 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Overtime extends Model
+class InOutForget extends Model
 {
     use HasFactory;
-    use SoftDeletes;
-
     protected $fillable = [
         'user_id',
+        'date',
+        'in_time',
+        'out_time',
         'total_hours',
-        'salary_hours',
         'reason',
         'evident',
         'approver_id',
         'comment',
         'status',
-        'to_datetime',
-        'from_datetime',
     ];
 
     public function user()

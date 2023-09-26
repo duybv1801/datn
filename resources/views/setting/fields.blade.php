@@ -47,7 +47,7 @@
                     <input type="number" class="form-control" value="{{ $settings['flexible_time'] ?? '2' }}"
                         name="flexible_time" id="flexible_time">
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
                 <div id="check_out_time-error-msg" class="text-danger"></div>
@@ -62,7 +62,7 @@
                     <input type="number" class="form-control" value="{{ $settings['working_time'] ?? '8' }}"
                         name="working_time" id="working_time">
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
                 <div id="working_time-error-msg" class="text-danger"></div>
@@ -120,7 +120,7 @@
                     <input type="number" class="form-control" value="{{ $settings['female_leave'] ?? '4' }}"
                         name="female_leave" id="female_leave">
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
                 <div id="female_leave-error-msg" class="text-danger"></div>
@@ -135,7 +135,7 @@
                     <input type="number" class="form-control" value="{{ $settings['paid_leave'] ?? '8' }}"
                         name="paid_leave" id="paid_leave">
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
                 <div id="paid_leave-error-msg" class="text-danger"></div>
@@ -150,7 +150,7 @@
                     <input type="number" class="form-control" value="{{ $settings['remote'] ?? '56' }}"
                         name="remote" id="remote">
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
                 <div id="remote-error-msg" class="text-danger"></div>
@@ -165,7 +165,7 @@
                     <input type="number" class="form-control" value="{{ $settings['fresher_remote'] ?? '16' }}"
                         name="fresher_remote" id="fresher_remote">
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
                 <div id="fresher_remote-error-msg" class="text-danger"></div>
@@ -182,10 +182,25 @@
                         value="{{ $settings['max_working_minutes_everyday_day'] ?? '12' }}"
                         name="max_working_minutes_everyday_day" id="max_working_minutes_everyday_day">
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
                 <div id="max_working_minutes_everyday_day-error-msg" class="text-danger"></div>
+            </div>
+        </div>
+
+        <!-- block -->
+        <div class="form-group row">
+            <label class="col-sm-6 control-label" for="block">{{ trans('setting.block') }}</label>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <input type="number" class="form-control" value="{{ $settings['block'] ?? '15' }}"
+                        name="block" id="block">
+                    <div class="input-group-append">
+                        <div class="input-group-text">{{ trans('setting.minute') }}</div>
+                    </div>
+                </div>
+                <div id="block-error-msg" class="text-danger"></div>
             </div>
         </div>
     </div>
@@ -358,7 +373,7 @@
                     <input class="form-control" type="number" name="total_ot_time" id="total_ot_time"
                         value="{{ $settings['total_ot_time'] ?? '12' }}" />
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
             </div>
@@ -370,7 +385,7 @@
                     <input class="form-control" type="number" name="ot_registration_time" id="ot_registration_time"
                         value="{{ $settings['ot_registration_time'] ?? '24' }}" />
                     <div class="input-group-append">
-                        <div class="input-group-text">{{ trans('setting.minutes') }}</div>
+                        <div class="input-group-text">{{ trans('setting.hour') }}</div>
                     </div>
                 </div>
             </div>

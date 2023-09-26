@@ -1,24 +1,24 @@
 <div class="form-group row">
     <label class="col-sm-4 col-form-label" for="code">{{ trans('inout.code') }}
     </label>
-    <div class="col-sm-8">
-        <label class="">{{ Auth::user()->code }}</label>
+    <div class="col-sm-8 input-group">
+        <label class="form-control" readonly>{{ Auth::user()->code }}</label>
     </div>
 </div>
 <div class="form-group row">
     <label class="col-sm-4 col-form-label" for="name">{{ trans('inout.name') }}
     </label>
     <div class="col-sm-8">
-        <label class="">{{ Auth::user()->name }}</label>
+        <label class="form-control" readonly>{{ Auth::user()->name }}</label>
     </div>
 </div>
 <div class="form-group row">
-    <label class="col-sm-4 control-label" for="date">{{ trans('From Date') }}
+    <label class="col-sm-4 control-label" for="date">{{ trans('Date') }}
         <span class="text-danger">*</span>
     </label>
     <div class="col-sm-8 input-group date reservationdate " id="reservationdate_from" data-target-input="nearest">
         <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate_from"
-            data-toggle="datetimepicker" name="start_date" id="date" value="{{ request('date') }}" />
+            data-toggle="datetimepicker" name="date" id="date" value="{{ request('date') }}" />
         <div class="input-group-append" data-target="#reservationdate_from" data-toggle="datetimepicker">
             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
         </div>
@@ -27,10 +27,10 @@
 <div class="form-group row">
     <label class="col-sm-4 control-label" for="in_time">{{ trans('inout.checkin') }} <span class="text-danger">*</span>
     </label>
-    <div class="col-sm-8 input-group date timepicker" id="timepicker_check_out_time" data-target-input="nearest">
-        <input type="text" class="form-control datetimepicker-input" data-target="#timepicker_check_out_time"
-            value="{{ $timesheet->in_time ?: '00:00' }}" name="in_time" id="in_time" data-toggle="datetimepicker">
-        <div class="input-group-append" data-target="#timepicker_check_out_time" data-toggle="datetimepicker">
+    <div class="col-sm-8 input-group date timepicker" id="timepicker_check_in_time" data-target-input="nearest">
+        <input type="text" class="form-control datetimepicker-input" data-target="#timepicker_check_in_time"
+            value="{{ $timesheet->in_time ?? '00:00' }}" name="in_time" id="in_time" data-toggle="datetimepicker">
+        <div class="input-group-append" data-target="#timepicker_check_in_time" data-toggle="datetimepicker">
             <div class="input-group-text"><i class="far fa-clock"></i></div>
         </div>
     </div>
@@ -41,7 +41,7 @@
     </label>
     <div class="col-sm-8 input-group date timepicker" id="timepicker_check_out_time" data-target-input="nearest">
         <input type="text" class="form-control datetimepicker-input" data-target="#timepicker_check_out_time"
-            value="{{ $timesheet->out_time ?: '00:00' }}" name="out_time" id="out_time" data-toggle="datetimepicker">
+            value="{{ $timesheet->out_time ?? '00:00' }}" name="out_time" id="out_time" data-toggle="datetimepicker">
         <div class="input-group-append" data-target="#timepicker_check_out_time" data-toggle="datetimepicker">
             <div class="input-group-text"><i class="far fa-clock"></i></div>
         </div>
@@ -50,8 +50,8 @@
 <div class="form-group row">
     <label class="col-sm-4 control-label" for="timesheet">{{ trans('inout.system_time') }}</label>
     <div class="col-sm-8 text-bold text-danger">
-        <span style="margin-right: 30px">Check In:{{ $timesheet->in_time ?: '00:00:00' }}</span>
-        Check Out: {{ $timesheet->out_time ?: '00:00:00' }}
+        <span style="margin-right: 30px">Check In:{{ $timesheet->in_time ?? '00:00:00' }}</span>
+        Check Out: {{ $timesheet->out_time ?? '00:00:00' }}
     </div>
 </div>
 <!-- resason Field -->
@@ -98,6 +98,6 @@
     <div class="col-sm-4"></div>
     <div class="col-sm-8">
         <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
-        <a href="{!! route('users.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+        <a href="{!! route('in_out_forgets.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
     </div>
 </div>

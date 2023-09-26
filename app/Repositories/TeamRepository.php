@@ -71,12 +71,36 @@ class TeamRepository extends BaseRepository
     public function getMember($poId)
     {
         $team = Team::where('manager_id', $poId)->with('users')->first();
-        $userIds = $team->users->pluck('id')->toArray();
         $userData = $team->users;
+        $filteredUserData = [];
+        foreach ($userData as $user) {
+            if ($user->id != $poId) {
+                $filteredUserData[] = $user;
+            }
+        }
+        $userIds = collect($filteredUserData)->pluck('id')->toArray();
+
         return [
             'userIds' => $userIds,
-            'userData' => $userData
+            'userData' => $filteredUserData
         ];
+    }
+
+
+    public function getTeamCc($userId)
+    {
+        $user = $this->user->find($userId);
+        $teamIds = $user->teams->pluck('id')->toArray();
+        $mailCc = [];
+
+        foreach ($teamIds as $teamId) {
+            $team = $this->team->find($teamId);
+            $mails = $team->users()->pluck('email')->toArray();
+            $mailCc = array_merge($mailCc, $mails);
+        }
+        $mailCc = array_unique($mailCc);
+
+        return $mailCc;
     }
 
     public function getTeam()

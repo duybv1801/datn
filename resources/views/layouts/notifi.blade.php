@@ -22,6 +22,8 @@
                         $route = route('manager_remote.edit', ['id' => $editId]);
                     } elseif ($notification instanceof \App\Models\Overtime) {
                         $route = route('overtimes.approve', ['id' => $editId]);
+                    } elseif ($notification instanceof \App\Models\InOutForget) {
+                        $route = route('in_out_forgets.approve', ['in_out_forget' => $notification]);
                     }
                 @endphp
 
@@ -29,10 +31,12 @@
                     <a href="{{ $route }}" class="dropdown-item">
                         <i class="fab fa-twitch"></i>
                         @if ($notification instanceof \App\Models\Remote)
-                            {{ $notification->getName() }} {{ trans('Registered Remote') }}
+                            {{ $notification->user->name }} {{ trans('Registered Remote') }}
                         @elseif ($notification instanceof \App\Models\Overtime)
-                            {{ $notification->getName() }} {{ trans('Registered OT') }}
+                            {{ $notification->user->name }} {{ trans('Registered OT') }}
                             {{ $statusData[$notification->status]['label'] }}
+                        @elseif ($notification instanceof \App\Models\InOutForget)
+                            {{ $notification->user->name }} {{ trans('Registered InOutForget') }}
                         @endif
                         <span class="float-left text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
                     </a>

@@ -28,7 +28,6 @@ class OvertimeController extends Controller
     private $settingRepository;
     private $teamRepository;
     private $userRepository;
-    private $statusData;
     private $timesheetRepository;
 
     public function __construct(
@@ -45,16 +44,6 @@ class OvertimeController extends Controller
         $this->teamRepository = $teamRepo;
         $this->userRepository = $userRepo;
         $this->timesheetRepository = $timesheetRepo;
-        $this->statusData = [
-            config('define.overtime.admin_approve') => ['label' => trans('overtime.admin_approve'), 'class' => 'badge badge-info'],
-            config('define.overtime.registered') => ['label' => trans('overtime.registered'), 'class' => 'badge badge-primary'],
-            config('define.overtime.approved') => ['label' => trans('overtime.approved'), 'class' => 'badge badge-success'],
-            config('define.overtime.confirm') => ['label' => trans('overtime.confirm'), 'class' => 'badge badge-secondary'],
-            config('define.overtime.admin_confirm') => ['label' => trans('overtime.admin_confirm'), 'class' => 'badge badge-dark'],
-            config('define.overtime.confirmed') => ['label' => trans('overtime.confirmed'), 'class' => 'badge badge-light'],
-            config('define.overtime.rejected') => ['label' => trans('overtime.rejected'), 'class' => 'badge badge-warning'],
-            config('define.overtime.cancel') => ['label' => trans('overtime.cancel'), 'class' => 'badge badge-danger'],
-        ];
     }
 
     public function index(SearchRequest $request)
@@ -76,9 +65,7 @@ class OvertimeController extends Controller
             return $item;
         });
 
-        $statusData = $this->statusData;
-
-        return view('overtime.index', compact('overtimes', 'statusData'));
+        return view('overtime.index', compact('overtimes'));
     }
 
     public function manage(SearchRequest $request)
@@ -117,8 +104,6 @@ class OvertimeController extends Controller
                 $overtimes->add($item);
             }
         }
-        $statusData = $this->statusData;
-
         $perPage = config('define.paginate');
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $overtimes = new LengthAwarePaginator(
@@ -128,7 +113,7 @@ class OvertimeController extends Controller
             $currentPage,
             ['path' => $request->url(), 'query' => $request->query()]
         );
-        return view('overtime.manage', compact('overtimes', 'statusData'));
+        return view('overtime.manage', compact('overtimes'));
     }
 
     public function create()
@@ -151,42 +136,38 @@ class OvertimeController extends Controller
         $imagePath = $avatar->storeAs($path, $filename);
         $imageUrl = asset(Storage::url($imagePath));
         $input['evident'] = $imageUrl;
-
         $holidays = $this->holidayRepository->all()->pluck('date')->transform(function ($date) {
             return $date->format(config('define.date_search'));
         })->toArray();
-
         $startAt = Carbon::createFromFormat(config('define.datetime'), $request->input('from_datetime'));
         $endAt = Carbon::createFromFormat(config('define.datetime'), $request->input('to_datetime'));
         $input['total_hours'] = $startAt->diffInMinutes($endAt);
         $input['from_datetime'] = $startAt->format(config('define.datetime_db'));
         $input['to_datetime'] = $endAt->format(config('define.datetime_db'));
-
         $dateRanges = [
             [$input['from_datetime'], $input['to_datetime']]
         ];
         $result = $this->calculateDayNightMinutes($dateRanges, $holidays);
         $coefficients = $this->settingRepository->getCoefficients();
-
         $input['salary_hours'] = ($coefficients['day_time_ot'] * $result['dayMinutes']
             + $coefficients['night_time_ot'] * $result['nightMinutes']
             + $coefficients['ot_day_dayoff'] * $result['dayMinutesWeekend']
             + $coefficients['ot_night_dayoff'] * $result['nightMinutesWeekend']
             + $coefficients['ot_day_holiday'] * $result['dayMinutesHolidays']
             + $coefficients['ot_night_holiday'] * $result['nightMinutesHolidays']) / config('define.percents');
-
         $overtime = $this->otRepository->create($input);
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
         $email = $overtime->approver->email;
         $cc = $request->cc;
-        $mail = new ApproveOT($overtime);
+        $subject = $overtime->user->name . ' ' . trans('overtime.mail_register');
+        $mail = new ApproveOT($overtime, $subject);
         if (!empty($cc)) {
             foreach ($cc as $ccEmail) {
                 $mail->cc($ccEmail);
             }
         }
-        Mail::to($email)->send($mail);
+        Mail::to($email)->queue($mail);
         Flash::success(trans('validation.crud.created'));
 
         return redirect()->route('overtimes.index');
@@ -235,13 +216,15 @@ class OvertimeController extends Controller
             'status' => $request->status,
             'comment' => $request->comment
         ];
-
+        $subject = Auth::user()->name . ' ' . trans('overtime.mail_approve');
         if ($request->check && $request->status == config('define.overtime.approved')) {
             if ($overtime->status == config('define.overtime.registered')) {
                 $input['status'] = config('define.overtime.admin_approve');
+                $subject = trans('overtime.mail_po_approve');
                 Flash::success(trans('validation.crud.approve'));
             } elseif ($overtime->status == config('define.overtime.confirm')) {
                 $input['status'] = config('define.overtime.admin_confirm');
+                $subject = trans('overtime.mail_po_confirm');
                 Flash::success(trans('validation.crud.confirm'));
             }
         }
@@ -251,14 +234,14 @@ class OvertimeController extends Controller
                 || $overtime->status == config('define.overtime.admin_confirm'))
         ) {
             $input['status'] = config('define.overtime.confirmed');
+            $subject = trans('overtime.mail_confirm');
             $this->timesheetRepository->updateOT($overtime);
         }
-
         $overtime = $this->otRepository->update($input, $id);
 
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
-        Mail::to($email)->send(new ApproveOT($overtime));
+        Mail::to($email)->queue(new ApproveOT($overtime, $subject));
 
         return redirect()->route('overtimes.manage');
     }
@@ -320,13 +303,14 @@ class OvertimeController extends Controller
         $overtime->approver_id = $overtime->approver->code;
         $email = $overtime->approver->email;
         $cc = $request->cc;
-        $mail = new ApproveOT($overtime);
+        $subject = Auth::user()->name . ' ' . trans('overtime.mail_update');
+        $mail = new ApproveOT($overtime, $subject);
         if (!empty($cc)) {
             foreach ($cc as $ccEmail) {
                 $mail->cc($ccEmail);
             }
         }
-        Mail::to($email)->send($mail);
+        Mail::to($email)->queue($mail);
         Flash::success(trans('validation.crud.updated'));
 
         return redirect()->route('overtimes.index');
@@ -341,7 +325,8 @@ class OvertimeController extends Controller
         $overtime->user_id = $overtime->user->code;
         $overtime->approver_id = $overtime->approver->code;
         $email = $overtime->approver->email;
-        Mail::to($email)->send(new ApproveOT($overtime));
+        $subject = Auth::user()->name . ' ' . trans('overtime.mail_cancel');
+        Mail::to($email)->queue(new ApproveOT($overtime, $subject));
         Flash::success(trans('validation.crud.cancel'));
         return redirect(route('overtimes.index'));
     }
