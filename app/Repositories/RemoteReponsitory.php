@@ -91,7 +91,23 @@ class RemoteReponsitory extends BaseRepository
                 $subQuery->where('code', 'like', '%' . $search['query'] . '%');
             });
         }
+        if (isset($search['sort']) && $search['column']) {
+            $query->orderBy($search['column'], $search['sort']);
+        } elseif (isset($search['order'])) {
+            $query = $query->orderByRaw('FIELD(status, ' . implode(',', $search['order']) . ')')
+                ->orderBy('created_at', 'DESC');
+        } else {
+            $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
+        }
 
         return $query;
+    }
+
+    public function checkRemoteTime($userId, $date)
+    {
+        $query = $this->model->where('user_id', $userId)
+            ->where('status', config('define.remotes.approved'))
+            ->where('to_datetime', 'like', '%' . $date . '%');
+        return $query->exists();
     }
 }

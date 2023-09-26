@@ -27,8 +27,8 @@ class CreateLeavesTable extends Migration
             $table->unsignedBigInteger('approver_id');
             $table->foreign('approver_id')->references('id')
                 ->on('users');
-            $table->text('comment');
-            $table->tinyInteger('status')->comment('1: Đang xử lý, 2: Đã duyệt, 3: Không cho phép, 4: Xin hủy, 5: Hủy');
+            $table->text('comment')->nullable();
+            $table->tinyInteger('status')->comment('1: Đang xử lý, 2: Đã duyệt, 3: Không cho phép, 4: Hủy')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });

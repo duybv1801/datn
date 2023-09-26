@@ -6,26 +6,29 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Repositories\RemoteReponsitory;
 use App\Repositories\UserRepository;
-use App\Repositories\TeamRepository;
+use App\Repositories\SettingRepository;
 use App\Http\Requests\CreateRemoteRequest;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use App\Mail\RemoteEmail;
+use App\Mail\SendEmail;
 use App\Mail\ApproveEmail;
 use Illuminate\Support\Facades\Mail;
 
 
 class RemoteController  extends AppBaseController
 {
-    private $remoteReponsitory, $userReponsitory, $teamRepository;
-    public function __construct(RemoteReponsitory $remoteRepo, UserRepository $userRepo, TeamRepository $teamRepo)
-    {
+    private $remoteReponsitory, $userReponsitory, $settingRepository;
+    public function __construct(
+        RemoteReponsitory $remoteRepo,
+        UserRepository $userRepo,
+        SettingRepository $settingRepo
+    ) {
         $this->remoteReponsitory = $remoteRepo;
         $this->userReponsitory = $userRepo;
-        $this->teamRepository = $teamRepo;
+        $this->settingRepository = $settingRepo;
     }
 
     public function index(Request $request)
@@ -34,6 +37,8 @@ class RemoteController  extends AppBaseController
             'startDate' => $request->input('startDate'),
             'endDate' => $request->input('endDate'),
             'query' => $request->input('query'),
+            'sort' => $request->sort,
+            'column' => $request->column,
         ];
         $remotes = $this->remoteReponsitory->searchByConditionsRemote($searchParams);
 
@@ -47,9 +52,10 @@ class RemoteController  extends AppBaseController
 
     public function create()
     {
+        $settings =  $this->settingRepository->getAllSettings();
         $users = $this->userReponsitory->getUsersByPosition(Config('define.role.po'));
         $codes = $this->userReponsitory->getCodes();
-        return view('remote.registration.create', compact('users', 'codes'));
+        return view('remote.registration.create', compact('users', 'codes', 'settings'));
     }
 
 
@@ -59,8 +65,7 @@ class RemoteController  extends AppBaseController
         $totalHours = $request->total_hours;
         $input = $request->all();
         $input['total_hours'] = $totalHours;
-        $userIds = Auth::user()->code;
-
+        $input['status'] = config('define.remotes.pending');
         $input['cc'] = json_encode($request->input('cc'));
         $ccIds = json_decode($input['cc'], true);
         $approverId = $input['approver_id'];
@@ -87,9 +92,9 @@ class RemoteController  extends AppBaseController
             }
             Mail::to($email)
                 ->cc($ccEmails)
-                ->send(new RemoteEmail($userIds, $remote));
+                ->send(new SendEmail('Remote', $remote));
         }
-        Mail::to($email)->send(new RemoteEmail($userIds, $remote));
+        Mail::to($email)->send(new SendEmail('Remote', $remote));
         Flash::success(trans('Add New Complete'));
 
         return redirect(route('remote.index'));
@@ -109,7 +114,6 @@ class RemoteController  extends AppBaseController
     {
         $remotes = $this->remoteReponsitory->find($id);
         $input =  $request->all();
-        $userIds = Auth::user()->code;
         $user = $this->userReponsitory->find($input['approver_id']);
         $input['cc'] = json_encode($request->input('cc'));
         $ccIds = json_decode($input['cc'], true);
@@ -127,8 +131,7 @@ class RemoteController  extends AppBaseController
             $imagePath = $avatar->storeAs($path, $filename);
             $imageUrl = Storage::url($imagePath);
             $input['evident'] = $imageUrl;
-        }
-        if ($remotes->evident) {
+
             $oldImagePath = str_replace('/storage', 'public', $remotes->evident);
             if (Storage::exists($oldImagePath)) {
                 Storage::delete($oldImagePath);
@@ -146,9 +149,9 @@ class RemoteController  extends AppBaseController
             }
             Mail::to($email)
                 ->cc($ccEmails)
-                ->send(new RemoteEmail($userIds, $remote));
+                ->send(new SendEmail('Remote', $remote));
         }
-        Mail::to($email)->send(new RemoteEmail($userIds, $remote));
+        Mail::to($email)->send(new SendEmail('Remote', $remote));
         Flash::success(trans('validation.crud.updated'));
 
         return redirect(route('remote.index'));

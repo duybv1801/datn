@@ -64,8 +64,22 @@
                         <thead>
                             <tr>
                                 <th>{{ Form::label('name', '#') }}</th>
-                                <th>{{ Form::label('from', trans('remote.from')) }}</th>
-                                <th>{{ Form::label('to', trans('remote.to')) }}</th>
+                                <th>{{ Form::label('from', trans('remote.from')) }}
+                                    <a href="#" class="sort-icon float-right mr-4" data-sort="ASC"
+                                        data-column="from_datetime">
+                                        <i class="fas fa-long-arrow-alt-up" id="from-asc"></i></a>
+                                    <a href="#" class="sort-icon float-right" data-sort="DESC"
+                                        data-column="from_datetime">
+                                        <i class="fas fa-long-arrow-alt-down" id="from-desc"></i></a>
+                                </th>
+                                <th>{{ Form::label('to', trans('remote.to')) }}
+                                    <a href="#" class="sort-icon float-right mr-4" data-sort="ASC"
+                                        data-column="to_datetime"><i class="fas fa-long-arrow-alt-up"
+                                            id="to-asc"></i></a>
+                                    <a href="#" class="sort-icon float-right" data-sort="DESC"
+                                        data-column="to_datetime"><i class="fas fa-long-arrow-alt-down"
+                                            id="to-desc"></i></a>
+                                </th>
                                 <th>{{ Form::label('total_hours', trans('remote.total_hours')) }}</th>
                                 <th>{{ Form::label('approver', trans('remote.approver')) }}</th>
                                 <th>{{ Form::label('status', trans('remote.status.name')) }}</th>
@@ -79,82 +93,71 @@
                                     <tr>
                                         <td> {{ $i++ }}</td>
                                         <td>{{ $remote->from_datetime->format(config('define.datetime')) }}</td>
-                                        <td>{{ $remote->to_datetime->format(config('define.datetime')) }}</td>
-                                        <td>{{ $remote->total_hours }}</td>
+                                        <td>{{ $remote->to_datetime->format(config('define.datetime')) }} </td>
+                                        <td>{{ round($remote->total_hours / config('define.hour'), config('define.decimal')) }}
+                                        </td>
                                         <td>{{ $remote->getApprove() }}</td>
                                         <td>
-                                            @php
-                                                $statusClasses = [
-                                                    config('define.remotes.pending') => 'badge badge-primary',
-                                                    config('define.remotes.approved') => 'badge badge-success',
-                                                    config('define.remotes.rejected') => 'badge badge-danger',
-                                                    config('define.remotes.cancelled') => 'badge badge-warning',
-                                                ];
-                                                $statusClass = $statusClasses[$remote->status] ?? '';
-                                            @endphp
-                                            <span class="{{ $statusClass }}">
-                                                {{ $remote->status == config('define.remotes.pending')
-                                                    ? trans('remote.status.regist')
-                                                    : ($remote->status == config('define.remotes.approved')
-                                                        ? trans('remote.status.approve')
-                                                        : ($remote->status == config('define.remotes.rejected')
-                                                            ? trans('remote.status.ban')
-                                                            : ($remote->status == config('define.remotes.cancelled')
-                                                                ? trans('remote.status.cancel')
-                                                                : ''))) }}
+                                            <span class="{!! trans('remote.status.label ' . $remote->status) !!}">
+                                                {!! trans('remote.status.' . $remote->status) !!}
                                             </span>
                                         </td>
                                         <td>
-                                            {!! Form::open(['route' => ['remote.cancel', $remote->id], 'method' => 'put']) !!}
                                             <div class="btn-group">
                                                 @php
                                                     $currentTime = now();
                                                     $registrationTime = $remote->from_datetime;
                                                 @endphp
+                                                <a href="{!! route('remote.details', [$remote->id]) !!}" class="btn btn-secondary btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Details') }}
+                                                </a>
                                                 @if ($remote->status == config('define.remotes.pending') && !$currentTime->greaterThanOrEqualTo($registrationTime))
                                                     <a href="{!! route('remote.edit', [$remote->id]) !!}" class="btn btn-primary btn-sm">
                                                         <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
                                                     </a>
                                                     <button type="button" class="btn btn-danger btn-sm"
-                                                        data-toggle="modal" data-target="#cancelModal">
+                                                        data-toggle="modal" data-target="#cancelModal"
+                                                        data-id="{{ $remote->id }}">
                                                         <i class="glyphicon glyphicon-trash"></i> {{ trans('Cancel') }}
                                                     </button>
                                                 @endif
                                             </div>
-                                            <div id="cancelModal" class="modal fade" tabindex="-1" role="dialog">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">
-                                                                {{ trans('Confirm cancellation!') }}
-                                                            </h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <label for="reservation_modal">{{ trans('remote.reason') }}
-                                                                <span class="text-danger">*</span>
-                                                            </label>
-
-                                                            <textarea name="comment" id="comment" required="required" class="form-control"
-                                                                placeholder="{{ trans('Enter your reason!') }}"></textarea>
-                                                        </div>
-                                                        <!-- Submit Field -->
-                                                        <div class="form-group row text-center">
-                                                            <div class="col-sm-12">
-                                                                <button type="submit"
-                                                                    class="btn btn-primary">{{ trans('Save') }}</button>
-                                                                <a href="{!! route('remote.index') !!}"
-                                                                    class="btn btn-default">{{ trans('Cancel') }}</a>
-                                                            </div>
-                                                        </div>
+                                        </td>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="cancelModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="cancelModalLabel">
+                                                            {{ trans('Confirm cancellation!') }}
+                                                        </h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
                                                     </div>
+                                                    <div class="modal-body">
+                                                        {!! Form::open(['route' => ['remote.cancel', $remote->id], 'method' => 'put']) !!}
+                                                        <label for="comment">
+                                                            {{ trans('remote.reason') }}
+                                                            <span class="text-danger">*</span>
+                                                        </label>
+                                                        <textarea name="comment" id="comment" required="required" class="form-control"
+                                                            placeholder="{{ trans('Enter your reason!') }}"></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit"
+                                                            class="btn btn-primary">{{ trans('Save') }}</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">
+                                                            {{ trans('Cancel') }}
+                                                        </button>
+                                                    </div>
+                                                    {!! Form::close() !!}
                                                 </div>
                                             </div>
-                                            {!! Form::close() !!}
-                                        </td>
+                                        </div>
                                     </tr>
                                 @endif
                             @endforeach

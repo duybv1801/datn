@@ -17,7 +17,15 @@ return [
         'regist' => 'Chưa được duyệt',
         'approve' => 'Duyệt đăng ký',
         'ban' => 'Không cho phép',
-        'cancel' => 'Hủy'
+        'cancel' => 'Hủy',
+        '1'           => 'Chưa được duyệt',
+        '2'           => 'Duyệt đăng ký',
+        '3'           => 'Không cho phép',
+        '4'           => 'Hủy',
+        'label 1'     => 'badge badge-primary',
+        'label 2'     => 'badge badge-success',
+        'label 3'     => 'badge badge-warning',
+        'label 4'     => 'badge badge-danger'
     ],
 
 ];

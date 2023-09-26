@@ -13,7 +13,7 @@ class CreateInOutFogetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('in_out_fogets', function (Blueprint $table) {
+        Schema::create('in_out_forgets', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')

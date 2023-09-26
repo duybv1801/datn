@@ -9,20 +9,6 @@
 
         </div>
 
-        <!-- First name Field -->
-        <div class="form-group row">
-            <label class="col-sm-5 control-label" for="first_name">{{ trans('staff.name.first_name') }}</label>
-            <input type="name" name="first_name" id="first_name" class="form-control col-sm-5"
-                value="{{ $user->first_name }}" />
-        </div>
-
-        <!-- Last name Field -->
-        <div class="form-group row">
-            <label class="col-sm-5 control-label" for="last_name">{{ trans('staff.name.last_name') }}</label>
-            <input type="name" name="last_name" id="last_name" class="form-control col-sm-5"
-                value="{{ $user->last_name }}" />
-        </div>
-
         {{-- email --}}
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="email">
@@ -57,6 +43,41 @@
                 value="{{ $user->official_start_date }}" />
         </div>
 
+        <!-- Official Employment Date Field -->
+        <div class="form-group row">
+            <label class="col-sm-5 control-label"
+                for="official_employment_date">{{ trans('staff.official_employment_date') }}</label>
+            <input type="date" name="official_employment_date" id="official_employment_date"
+                class="form-control col-sm-5" value="{{ $user->official_employment_date }}" />
+        </div>
+
+        <!-- Resignation Date Field -->
+        <div class="form-group row">
+            <label class="col-sm-5 control-label" for="resignation_date">{{ trans('staff.resignation_date') }}</label>
+            <input type="date" name="resignation_date" id="resignation_date" class="form-control col-sm-5"
+                value="{{ $user->resignation_date }}" />
+        </div>
+
+
+        <!-- Birthday Field -->
+        <div class="form-group row">
+            <label class="col-sm-5 control-label" for="birthday">{{ trans('staff.birthday') }}</label>
+            <input type="date" name="birthday" id="birthday" class="form-control col-sm-5"
+                value="{{ $user->birthday }}" />
+        </div>
+
+
+        <!-- Submit Field -->
+        <div class="form-group col-sm-5 ">
+            {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
+            <a href="{!! route('manager_staff.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-5 mx-auto">
+
         <!-- Gender Field -->
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="gender">{{ trans('staff.genders.name') }}</label>
@@ -72,14 +93,6 @@
             </select>
         </div>
 
-        <!-- Submit Field -->
-        <div class="form-group col-sm-5 ">
-            {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
-            <a href="{!! route('manager_staff.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
-        </div>
-    </div>
-
-    <div class="col-md-5 mx-auto">
         <!-- Dependent Person Field -->
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="dependent_person">{{ trans('staff.dependent_person') }}</label>
@@ -87,7 +100,7 @@
                 value="{{ $user->dependent_person }}" readonly />
         </div>
 
-        <!-- Contract Field -->
+        <!-- contract Field -->
         <div class="form-group row">
             <label class="col-sm-5 control-label" for="contract">{{ trans('staff.contract.name') }}
                 <span class="text-danger">*</span></label>
@@ -105,13 +118,6 @@
                     {{ trans('staff.contract.intern') }}
                 </option>
             </select>
-        </div>
-
-        <!-- Birthday Field -->
-        <div class="form-group row">
-            <label class="col-sm-5 control-label" for="birthday">{{ trans('staff.birthday') }}</label>
-            <input type="date" name="birthday" id="birthday" class="form-control col-sm-5"
-                value="{{ $user->birthday }}" />
         </div>
 
         <!-- Phone Field -->

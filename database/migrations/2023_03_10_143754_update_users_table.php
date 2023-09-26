@@ -16,7 +16,7 @@ class UpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('code')->nullable();
             $table->date('start_date')->nullable()->useCurrent();
-            $table->date('offical_start_date')->useCurrent();
+            $table->date('offical_start_date')->nullable()->useCurrent();
             $table->integer('dependent_person')->default(0);
             $table->tinyInteger('gender')->default(1);
             $table->tinyInteger('contract')->default(1);

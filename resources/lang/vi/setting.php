@@ -21,6 +21,12 @@ return [
     'ot_day_holiday' => 'Hệ số OT ban ngày ngày lễ',
     'ot_night_holiday' => 'Hệ số OT ban đêm ngày lễ',
     'max_working_minutes_everyday_day' => 'Thời gian làm việc tối đa trong ngày',
-    'minutes' => 'giờ',
+    'block' => 'Khóa mốc thời gian',
+    'hour' => 'giờ',
+    'minute' => 'phút',
     'percents' => '%',
+    'ot_approve' => 'Duyệt OT 2 bước',
+    'day' => 'ngày',
+    'total_ot_time' => 'Khi thời gian OT hơn',
+    'ot_registration_time' => 'Khi thời gian đăng kí trước ít hơn',
 ];

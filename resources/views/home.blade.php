@@ -1,111 +1,181 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="content">
-        <h1>Trang chủ</h1>
-        {{-- <div class="clearfix"></div>
-            <div class="card card-warning">
-                <div class="card-header" data-card-widget="collapse" title="Collapse">
-                    <h1 class="card-title">{{ trans('search') }}</h1>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                            <i class="fas fa-minus"></i>
+    <section class="content-header">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>{{ trans('Home') }}</h1>
+            </div>
+            <div class="col-md-6">
+                @if ($checkRemote)
+                    <div>
+                        {!! Form::open(['route' => ['inout.checkout'], 'method' => 'post']) !!}
+                        <button class="btn btn-danger float-right mr-1" type="submit">
+                            {{ trans('Check-out') }}
                         </button>
+                        {!! Form::close() !!}
                     </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            @include('flash::message')
-                            <h5 class="text-danger" style="margin-bottom: 20px">
-                                <span style="margin-right: 30px">Số phép dư: {{Auth::user()->leave_hours_left}}h</span>Phép theo tháng còn:  {{Auth::user()->leave_hours_left_in_month}}h
-                            </h5>
-                            {!! Form::open(['route' => ['home'], 'method' => 'get']) !!}
-                            <div class="form-group row">
-                                {!! Form::label('start_date', 'Ngày bắt đầu', ['class' => 'col-lg-2']) !!}
-                                {!! Form::text('start_date', $start_date, ['class' => 'form-control col-lg-10']) !!}
-                            </div>
-                            <div class="form-group row">
-                                {!! Form::label('end_date', 'Ngày kết thúc', ['class' => 'col-lg-2']) !!}
-                                {!! Form::text('end_date', $end_date, ['class' => 'form-control col-lg-10']) !!}
-                            </div>
-                            <div class="form-group row">
-                                <div class="offset-2">
-                                    {!! Form::submit('Tìm kiếm') !!}
+                @endif
+                @if ($checkRemoteCheckIn)
+                    <div>
+                        {!! Form::open(['route' => ['inout.checkin'], 'method' => 'post']) !!}
+                        <button class="btn btn-success float-right mr-1" type="submit">
+                            {{ trans('Check-in') }}
+                        </button>
+                        {!! Form::close() !!}
+                    </div>
+                @endif
+            </div>
+        </div>
+    </section>
+    <div class="content">
+        @include('flash::message')
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="row">
+                    <!-- column -->
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                {{-- search --}}
+                                <form action="{!! route('home') !!}" method="GET" id="ot_search">
+                                    <div class="row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <div class="row">
+                                                {{-- from date --}}
+                                                <div class="col-2">
+                                                    <div class="form-group">
+                                                        <label for="search_from">{{ trans('From Date') }}</label>
+                                                        <div class="input-group date reservationdate"
+                                                            id="reservationdate_from" data-target-input="nearest">
+                                                            <input type="text" class="form-control datetimepicker-input"
+                                                                data-target="#reservationdate_from"
+                                                                data-toggle="datetimepicker" name="start_date"
+                                                                id="search_from" value="{{ $start_date }}" />
+                                                            <div class="input-group-append"
+                                                                data-target="#reservationdate_from"
+                                                                data-toggle="datetimepicker">
+                                                                <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- todate --}}
+                                                <div class="col-2">
+                                                    <div class="form-group">
+                                                        <label for="search_to">{{ trans('To Date') }}</label>
+                                                        <div class="input-group date reservationdate"
+                                                            id="reservationdate_to" data-target-input="nearest">
+                                                            <input type="text" class="form-control datetimepicker-input"
+                                                                data-target="#reservationdate_to"
+                                                                data-toggle="datetimepicker" name="end_date" id="search_to"
+                                                                value="{{ $end_date }}" />
+                                                            <div class="input-group-append"
+                                                                data-target="#reservationdate_to"
+                                                                data-toggle="datetimepicker">
+                                                                <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- search --}}
+                                                <div class="col-1">
+                                                    <div class="form-group">
+                                                        <label for="filter">&nbsp;</label>
+                                                        <div class="input-group">
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="fa fa-search"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <h5 class="text-danger" style="margin-bottom: 20px">
+                                    <span style="margin-right: 30px">
+                                        {{ trans('Remaining vacation time') }}: {{ Auth::user()->leave_hours_left }}h
+                                    </span>
+                                    @if (Auth::user()->leave_hours_left_in_month != 0)
+                                        {{ trans('Remaining leave time by month') }}:
+                                        {{ Auth::user()->leave_hours_left_in_month }}h
+                                    @endif
+                                    <span style="margin-right: 30px" class="float-right">
+
+                                        {{ trans('Number of paid hours') }}: {{ $workingHours }}/{{ $totalHours }}
+                                    </span>
+
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table user-table">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ Form::label('#', trans('No.')) }}</th>
+                                                <th> {{ Form::label('name', trans('timesheet.name')) }} </th>
+                                                <th> {{ Form::label('date', trans('timesheet.date')) }} </th>
+                                                <th>{{ Form::label('check_in', trans('timesheet.check_in')) }}</th>
+                                                <th>{{ Form::label('check_out', trans('timesheet.check_out')) }}</th>
+                                                <th>{{ Form::label('work_time', trans('timesheet.work_time')) }}</th>
+                                                <th>{{ Form::label('ot_time', trans('timesheet.ot_time')) }}</th>
+                                                <th>{{ Form::label('leave_time', trans('timesheet.leave_time')) }}</th>
+                                                <th>{{ Form::label('status', trans('timesheet.status')) }}</th>
+                                                <th>{{ Form::label('functions', trans('Funtions')) }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $i = $timesheetData->firstItem(); ?>
+                                            @forelse ($timesheetData as $timesheet)
+                                                <tr>
+                                                    <td>{{ $i++ }}</td>
+                                                    <td>{!! $timesheet['name'] !!}</td>
+                                                    <td>{!! $timesheet['date'] !!}</td>
+                                                    <td>{!! $timesheet['check_in'] !!}</td>
+                                                    <td>{!! $timesheet['check_out'] !!}</td>
+                                                    <td>{!! $timesheet['working_hours'] !!}</td>
+                                                    <td>{!! $timesheet['overtime_hours'] !!}</td>
+                                                    <td>{!! $timesheet['leave_hours'] !!}</td>
+                                                    <td><span
+                                                            class="<?= $timesheet['status'] == config('define.timesheet.normal') ? 'badge badge-success' : 'badge badge-danger' ?> ">{!! __('define.timesheet.status.' . $timesheet['status']) !!}</span>
+                                                    </td>
+                                                    <td>
+                                                        @if ($timesheet['status'] == config('define.timesheet.reconfirm'))
+                                                            <div class="btn-group">
+                                                                <a href="{{ route('in_out_forgets.create', ['date' => $timesheet['date']]) }}"
+                                                                    class="btn btn-primary btn-sm">
+                                                                    {{ trans('In out') }}
+                                                                </a>
+                                                                <a href="{{ route('leaves.create', ['date' => $timesheet['date']]) }}"
+                                                                    class="btn btn-danger btn-sm">
+                                                                    {{ trans('Leaves') }}
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="10">{{ trans('No data') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="pagination justify-content-center">
+                                    {{ $timesheetData->appends([
+                                            'start_date' => request()->input('start_date'),
+                                            'end_date' => request()->input('end_date'),
+                                        ])->links() }}
                                 </div>
                             </div>
-                            {!! Form::close() !!}
                         </div>
-                        <div class="col-lg-6">
-                            <!-- check in out time -->
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="card card-warning">
-                <div class="card-header"  data-card-widget="collapse" title="Collapse">
-                    <h1 class="card-title">Timesheets</h1>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <h5 class="text-danger" style="margin-bottom: 20px">
-                        Số giờ tính lương: {{$workingHours}}/{{$totalHours}}
-                    </h5>
-                        <table class="table table-striped table-bordered table-sm table-data">
-                            <tr>
-                                <th>#</th>
-                                <th>Mã nhân viên</th>
-                                <th>Họ tên</th>
-                                <th>Ngày</th>
-                                <th>Check in</th>
-                                <th>Check out</th>
-                                <th>Trạng thái</th>
-                                <th>Giờ công</th>
-                                <th>Giờ OT</th>
-                                <th>Giờ phép</th>
-                                <th>Action</th>
-                            </tr>
-                            @php($index = 1)
-                            @forelse($timesheetData as $timesheet)
-                                <tr>
-                                    <td>{{ $index }}</td>
-                                    <td>{!! $timesheet->user->code !!}</td>
-                                    <td>{!! $timesheet->user->name !!}</td>
-                                    <td>{!! $timesheet->record_date !!}</td>
-                                    <td>{!! $timesheet->in_time !!}</td>
-                                    <td>{!! $timesheet->out_time !!}</td>
-                                    <td><span class="<?= $timesheet->status == 1 ? 'badge badge-success' : 'badge badge-danger' ?> ">{!! __('define.timesheet.status.'.$timesheet->status) !!}</span></td>
-                                    <td>{!! $timesheet->working_hours !!}</td>
-                                    <td>{!! $timesheet->overtime_hours !!}</td>
-                                    <td>{!! $timesheet->leave_hours !!}</td>
-                                    <td>
-                                        @if ($timesheet->status == 2)
-                                            <a href="{{route('in_out_forgets.create',['date' => $timesheet->record_date])}}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-bell"></i> In out
-                                            </a>
-                                            <a href="{{route('leaves.create', ['date' => $timesheet->record_date])}}" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-sharp fa-solid fa-house-user"></i> Leave
-                                            </a>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @php($index++)
-                            @empty
-                                <tr>
-                                    <td colspan="10">No data</td>
-                                </tr>
-                            @endforelse
-                        </table>
-
-                        {{ $timesheetData->links() }}
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
     </div>
 @endsection

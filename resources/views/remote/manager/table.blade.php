@@ -93,30 +93,14 @@
                                     <td>{{ $managerRemote->getName() }}</td>
                                     <td>{{ $managerRemote->from_datetime->format(config('define.datetime')) }}</td>
                                     <td>{{ $managerRemote->to_datetime->format(config('define.datetime')) }}</td>
-                                    <td>{{ $managerRemote->total_hours }}</td>
+                                    <td>{{ round($managerRemote->total_hours / config('define.hour'), config('define.decimal')) }}
+                                    </td>
                                     @if (!Auth::user()->hasRole('po'))
                                         <td>{{ $managerRemote->getApprove() }}</td>
                                     @endif
                                     <td>
-                                        @php
-                                            $statusClasses = [
-                                                config('define.remotes.pending') => 'badge badge-primary',
-                                                config('define.remotes.approved') => 'badge badge-success',
-                                                config('define.remotes.rejected') => 'badge badge-danger',
-                                                config('define.remotes.cancelled') => 'badge badge-warning',
-                                            ];
-                                            $statusClass = $statusClasses[$managerRemote->status] ?? '';
-                                        @endphp
-                                        <span class="{{ $statusClass }}">
-                                            {{ $managerRemote->status == config('define.remotes.pending')
-                                                ? trans('remote.status.regist')
-                                                : ($managerRemote->status == config('define.remotes.approved')
-                                                    ? trans('remote.status.approve')
-                                                    : ($managerRemote->status == config('define.remotes.rejected')
-                                                        ? trans('remote.status.ban')
-                                                        : ($managerRemote->status == config('define.remotes.cancelled')
-                                                            ? trans('remote.status.cancel')
-                                                            : ''))) }}
+                                        <span class="{!! trans('remote.status.label ' . $managerRemote->status) !!}">
+                                            {!! trans('remote.status.' . $managerRemote->status) !!}
                                         </span>
                                     </td>
                                     <td>

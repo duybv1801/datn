@@ -19,7 +19,9 @@ class Timesheet extends Model
         'check_out',
         'status',
         'working_hours',
+        'remote_hours',
         'overtime_hours',
+        'leave_hours',
     ];
     protected $casts = [
         'user_id' => 'integer'

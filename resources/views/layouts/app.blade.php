@@ -5,8 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ trans('auth.nal_lg') }}</title>
+    {{-- select 2 --}}
+
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
+    <link rel="stylesheet" fade
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -37,7 +39,6 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     {{-- zoom_img --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 </head>
@@ -113,13 +114,6 @@
             </footer>
     </div>
 
-
-    <style>
-        .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
-            color: black;
-            list-style: none;
-        }
-    </style>
     <!-- JavaScript Bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
     <!-- ./wrapper -->
@@ -170,6 +164,18 @@
     </script>
     {{-- Calendar --}}
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    {{-- fancybox --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+    {{-- select 2 --}}
+    <!-- lightbox2 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+
+    <!-- lightbox2 JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
     {{-- zoom_img --}}
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
@@ -215,6 +221,15 @@
             });
 
 
+            //Date and time picker
+            $('.reservationdatetime').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm',
+                icons: {
+                    time: 'far fa-clock'
+                },
+                stepping: {{ $settings['block'] ?? '15' }},
+            });
+
             //Date range picker
             $('.reservation').daterangepicker({
                 locale: {
@@ -251,7 +266,8 @@
 
             //Timepicker        
             $('.timepicker').datetimepicker({
-                format: 'HH:mm'
+                format: 'HH:mm',
+                stepping: {{ $settings['block'] }},
             });
             $('#reservationdate').datetimepicker({
                 format: 'DD/MM/YYYY'
@@ -347,14 +363,7 @@
             }
         }
     </script>
-    {{-- multy choice cc --}} <!-- Include the Select2 library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('#cc').select2();
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datetimepicker@4.17.47/build/js/bootstrap-datetimepicker.min.js">
@@ -374,11 +383,12 @@
                     today: 'fa fa-calendar-check',
                     clear: 'fa fa-trash',
                     close: 'fa fa-times'
-                }
+                },
+                stepping: {{ $settings['block'] }},
             });
         });
     </script>
-
+    {{-- total caculator --}}
 
     <script>
         function calculateTotalHours() {
@@ -388,28 +398,43 @@
             var fromDate = moment(from_datetime, 'DD/MM/YYYY HH:mm');
             var toDate = moment(to_datetime, 'DD/MM/YYYY HH:mm');
 
-            // Trừ đi khoảng thời gian nghỉ trưa
-            var lunchBreakStart = moment('11:30', 'HH:mm');
-            var lunchBreakEnd = moment('13:00', 'HH:mm');
-
+            // Calculate the total working time
             var totalDuration = moment.duration(toDate.diff(fromDate));
 
-            if (fromDate.isBefore(lunchBreakStart) && toDate.isAfter(lunchBreakEnd)) {
-                var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
-                totalDuration.subtract(lunchBreakDuration);
-            } else if (fromDate.isBetween(lunchBreakStart, lunchBreakEnd) || toDate.isBetween(lunchBreakStart,
-                    lunchBreakEnd)) {
-                var overlapStart = moment.max(fromDate, lunchBreakStart);
-                var overlapEnd = moment.min(toDate, lunchBreakEnd);
-                var overlapDuration = moment.duration(overlapEnd.diff(overlapStart));
-                totalDuration.subtract(overlapDuration);
+
+            // Subtract the lunch break time
+            var lunchBreakStart = moment('11:30', 'HH:mm');
+            var lunchBreakEnd = moment('13:00', 'HH:mm');
+            var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
+
+            // Check if the start date and end date are the same day
+
+            if (fromDate.isSame(toDate, 'day')) {
+                // If the same day, only subtract the lunch break time if any
+                if (fromDate.isBefore(lunchBreakStart) && toDate.isAfter(lunchBreakEnd)) {
+                    totalDuration.subtract(lunchBreakDuration);
+                } else if (fromDate.isBetween(lunchBreakStart, lunchBreakEnd) || toDate.isBetween(lunchBreakStart,
+                        lunchBreakEnd)) {
+                    var overlapStart = moment.max(fromDate, lunchBreakStart);
+                    var overlapEnd = moment.min(toDate, lunchBreakEnd);
+                    var overlapDuration = moment.duration(overlapEnd.diff(overlapStart));
+                    totalDuration.subtract(overlapDuration);
+                }
+            } else {
+                // If different, calculate the number of days difference and multiply by the lunch break time for each day
+                var daysDiff = toDate.diff(fromDate, 'DD/MM/YYYY');
+                var lunchBreakTotal = lunchBreakDuration.clone().multiply(daysDiff);
+                totalDuration.subtract(lunchBreakTotal);
             }
 
+            // Format the result
             var totalHours = totalDuration.asHours().toFixed(2);
 
             document.getElementById('total').value = totalHours;
         }
     </script>
+
+
     {{-- search fast --}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -427,7 +452,61 @@
             });
         });
     </script>
+    {{-- multy choice cc --}} <!-- Include the Select2 library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
+    <script>
+        $(document).ready(function() {
+            $('#cc').select2();
+            $('#user').select2();
+        });
+    </script>
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+            color: black;
+            list-style: none;
+        }
+    </style>
+    {{--  modal cancel --}}
+    <script>
+        $(document).ready(function() {
+            $('#cancelModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Nút mở modal
+                var remoteId = button.data('id'); // Lấy giá trị ID từ thuộc tính data-id
+
+                // Hiển thị ID trong modal
+                var modal = $(this);
+                modal.find('.modal-title').text('{{ trans('Confirm cancellation!') }} ');
+
+                // Cập nhật action của form trong modal để gửi ID khi submit
+                var form = modal.find('form');
+                var action = form.attr('action');
+                action = action.replace(/\/\d+$/, '/' + remoteId); // Thay thế ID trong action
+                form.attr('action', action);
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#cancelModal').on('hidden.bs.modal', function() {
+                var form = $(this).find('form');
+                form[0].reset(); // Xóa giá trị trong form
+
+                // Xóa giá trị old('comment') trong trường hợp sử dụng Laravel
+                var commentInput = form.find('#comment');
+                commentInput.val('');
+            })
+        });
+        // {{-- change label name when import file --}}
+        <
+        script >
+            document.getElementById('csv_file').addEventListener('change', function(event) {
+                const fileInput = event.target;
+                const fileName = fileInput.files[0].name;
+                const label = fileInput.nextElementSibling;
+                label.innerText = fileName;
+            });
+    </script>
 
 </body>
 

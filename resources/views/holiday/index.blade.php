@@ -84,9 +84,8 @@
                                                 id="reservation_modal" name="daterange" required>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-4"></div>
-                                        <div class="col-sm-8">
+                                    <div class="form-group row text-center">
+                                        <div class="col-sm-12">
                                             <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
                                             <a href="{!! route('holidays.index') !!}"
                                                 class="btn btn-default">{{ trans('Cancel') }}</a>
@@ -127,9 +126,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-4"></div>
-                                        <div class="col-sm-8">
+                                    <div class="form-group row text-center">
+                                        <div class="col-sm-12">
                                             <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
                                             <a href="{!! route('holidays.index') !!}"
                                                 class="btn btn-default">{{ trans('Cancel') }}</a>
@@ -221,16 +219,6 @@
 
         document.getElementById('dateOption').addEventListener('click', function() {
             $('#dateModal').modal('show');
-        });
-    </script>
-
-    {{-- change label name when import file --}}
-    <script>
-        document.getElementById('csv_file').addEventListener('change', function(event) {
-            const fileInput = event.target;
-            const fileName = fileInput.files[0].name;
-            const label = fileInput.nextElementSibling;
-            label.innerText = fileName;
         });
     </script>
 @endsection

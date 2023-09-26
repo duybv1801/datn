@@ -14,7 +14,7 @@
                     data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="from_datetimenew" name="from_datetime"
                         class="form-control datetimepicker-input" data-target="#from_datetime"
-                        value="{{ \Carbon\Carbon::parse(old('from_datetime'))->format(config('define.datetime')) }}"
+                        value="{{ \Carbon\Carbon::parse($settings['check_in_time'])->format(config('define.datetime')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -33,7 +33,7 @@
                     data-target-input="nearest"onchange="calculateTotalHours()">
                     <input type="text" id="to_datetimenew" name="to_datetime"
                         class="form-control datetimepicker-input" data-target="#to_datetime"
-                        value="{{ \Carbon\Carbon::parse(old('to_datetime'))->format(config('define.datetime')) }}"
+                        value="{{ \Carbon\Carbon::parse($settings['check_out_time'])->format(config('define.datetime')) }}"
                         required="required" />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -61,7 +61,7 @@
         </div>
 
         <!-- total hour Field -->
-        <input type="hidden" name="total_hours" value="{{ old('total_hours') }}" />
+        <input type="hidden" id="total_hours" name="total_hours" value="{{ old('total_hours') }}" />
 
 
         <!-- approver_id Field -->

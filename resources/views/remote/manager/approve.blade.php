@@ -38,7 +38,8 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label" for="total">{{ trans('remote.total_hours') }}</label>
             <div class="col-sm-8">
-                <input type="text" id="total" name="total" value="{{ $managerRemotes->total_hours }}"
+                <input type="text" id="total" name="total"
+                    value="{{ round($managerRemotes->total_hours / config('define.hour'), config('define.decimal')) }}"
                     class="form-control" readonly />
             </div>
         </div>
