@@ -50,6 +50,37 @@
             </div>
         </div>
 
+
+        <!-- type Field -->
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label" for="type">{{ trans('leave.type.name') }}
+                <span class="text-danger">*</span>
+            </label>
+            <div class="col-sm-8">
+                <select name="type" id="type" class="form-control">
+                    <option value="{{ config('define.type.unpaid_leave') }}"
+                        {{ old('type') == config('define.type.unpaid_leave') ? 'selected' : '' }}>
+                        {{ trans('leave.type.unpaid_leave') }}
+                    </option>
+                    <option value="{{ config('define.type.sister_leave') }}"
+                        {{ old('type') == config('define.type.sister_leave') ? 'selected' : '' }}>
+                        {{ trans('leave.type.sister_leave') }}
+                    </option>
+                    <option value="{{ config('define.type.paid_leave') }}"
+                        {{ old('type') == config('define.type.paid_leave') ? 'selected' : '' }}>
+                        {{ trans('leave.type.paid_leave') }}
+                    </option>
+                    <option value="{{ config('define.type.leave_mode') }}"
+                        {{ old('type') == config('define.type.leave_mode') ? 'selected' : '' }}>
+                        {{ trans('leave.type.leave_mode') }}
+                    </option>
+                    <option value="{{ config('define.type.Insurance_leave') }}"
+                        {{ old('type') == config('define.type.Insurance_leave') ? 'selected' : '' }}>
+                        {{ trans('leave.type.Insurance_leave') }}
+                    </option>
+                </select>
+            </div>
+        </div>
         <!-- resason Field -->
         <div class="form-group row">
             <label class="col-sm-4 col-form-label" for="reason">{{ trans('remote.reason') }}
@@ -116,7 +147,7 @@
             <div class="col-sm-4"></div>
             <div class="col-sm-8">
                 <button type="submit" class="btn btn-primary">{{ trans('Save') }}</button>
-                <a href="{!! route('remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+                <a href="{!! route('leaves.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
             </div>
         </div>
 

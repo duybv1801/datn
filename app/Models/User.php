@@ -11,7 +11,7 @@ use App\Traits\HasPermission;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class   User extends Authenticatable
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasPermission, SoftDeletes;
 
@@ -31,7 +31,7 @@ class   User extends Authenticatable
         'official_start_date',
         'dependent_person',
         'gender',
-        'constract',
+        'contract',
         'birthday',
         'phone',
         'status',
@@ -39,7 +39,12 @@ class   User extends Authenticatable
         'user_id',
         'avatar',
         'role_id',
-        'team_id'
+        'team_id',
+        'leave_hours_left',
+        'official_employment_date',
+        'resignation_date',
+        'leave_update_date'
+
     ];
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
@@ -75,5 +80,9 @@ class   User extends Authenticatable
     public function remotes()
     {
         return $this->hasMany(Remote::class);
+    }
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
     }
 }

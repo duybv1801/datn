@@ -8,7 +8,7 @@
     {{-- select 2 --}}
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
+    <link rel="stylesheet" fade
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -227,7 +227,7 @@
                 icons: {
                     time: 'far fa-clock'
                 },
-                stepping: {{ $settings['block'] }},
+                stepping: {{ $settings['block'] ?? '15' }},
             });
 
             //Date range picker
@@ -383,11 +383,12 @@
                     today: 'fa fa-calendar-check',
                     clear: 'fa fa-trash',
                     close: 'fa fa-times'
-                }
+                },
+                stepping: {{ $settings['block'] }},
             });
         });
     </script>
-
+    {{-- total caculator --}}
 
     <script>
         function calculateTotalHours() {
@@ -397,28 +398,43 @@
             var fromDate = moment(from_datetime, 'DD/MM/YYYY HH:mm');
             var toDate = moment(to_datetime, 'DD/MM/YYYY HH:mm');
 
-            // Trừ đi khoảng thời gian nghỉ trưa
-            var lunchBreakStart = moment('11:30', 'HH:mm');
-            var lunchBreakEnd = moment('13:00', 'HH:mm');
-
+            // Calculate the total working time
             var totalDuration = moment.duration(toDate.diff(fromDate));
 
-            if (fromDate.isBefore(lunchBreakStart) && toDate.isAfter(lunchBreakEnd)) {
-                var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
-                totalDuration.subtract(lunchBreakDuration);
-            } else if (fromDate.isBetween(lunchBreakStart, lunchBreakEnd) || toDate.isBetween(lunchBreakStart,
-                    lunchBreakEnd)) {
-                var overlapStart = moment.max(fromDate, lunchBreakStart);
-                var overlapEnd = moment.min(toDate, lunchBreakEnd);
-                var overlapDuration = moment.duration(overlapEnd.diff(overlapStart));
-                totalDuration.subtract(overlapDuration);
+
+            // Subtract the lunch break time
+            var lunchBreakStart = moment($setting['lunch_time_start'], 'HH:mm');
+            var lunchBreakEnd = moment($setting['lunch_time_end'], 'HH:mm');
+            var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
+
+            // Check if the start date and end date are the same day
+
+            if (fromDate.isSame(toDate, 'day')) {
+                // If the same day, only subtract the lunch break time if any
+                if (fromDate.isBefore(lunchBreakStart) && toDate.isAfter(lunchBreakEnd)) {
+                    totalDuration.subtract(lunchBreakDuration);
+                } else if (fromDate.isBetween(lunchBreakStart, lunchBreakEnd) || toDate.isBetween(lunchBreakStart,
+                        lunchBreakEnd)) {
+                    var overlapStart = moment.max(fromDate, lunchBreakStart);
+                    var overlapEnd = moment.min(toDate, lunchBreakEnd);
+                    var overlapDuration = moment.duration(overlapEnd.diff(overlapStart));
+                    totalDuration.subtract(overlapDuration);
+                }
+            } else {
+                // If different, calculate the number of days difference and multiply by the lunch break time for each day
+                var daysDiff = toDate.diff(fromDate, 'DD/MM/YYYY');
+                var lunchBreakTotal = lunchBreakDuration.clone().multiply(daysDiff);
+                totalDuration.subtract(lunchBreakTotal);
             }
 
+            // Format the result
             var totalHours = totalDuration.asHours().toFixed(2);
 
             document.getElementById('total').value = totalHours;
         }
     </script>
+
+
     {{-- search fast --}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -451,6 +467,44 @@
             list-style: none;
         }
     </style>
+    {{--  modal cancel --}}
+    <script>
+        $(document).ready(function() {
+            $('#cancelModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var remoteId = button.data('id');
+
+                var modal = $(this);
+                modal.find('.modal-title').text('{{ trans('Confirm cancellation!') }} ');
+
+                var form = modal.find('form');
+                var action = form.attr('action');
+                action = action.replace(/\/\d+$/, '/' + remoteId);
+                form.attr('action', action);
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#cancelModal').on('hidden.bs.modal', function() {
+                var form = $(this).find('form');
+                form[0].reset();
+
+                var commentInput = form.find('#comment');
+                commentInput.val('');
+            })
+        });
+        // {{-- change label name when import file --}}
+        <
+        script >
+            document.getElementById('csv_file').addEventListener('change', function(event) {
+                const fileInput = event.target;
+                const fileName = fileInput.files[0].name;
+                const label = fileInput.nextElementSibling;
+                label.innerText = fileName;
+            });
+    </script>
+
     {{-- change label name when import file --}}
     <script>
         document.getElementById('csv_file').addEventListener('change', function(event) {

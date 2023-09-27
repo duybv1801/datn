@@ -27,7 +27,8 @@ return [
         'mail_approved' => 'Bạn đã được đồng ý duyệt !',
         'mail_rejected' => 'Bạn đã bị từ chối duyệt !',
         'mail_cancelled' => 'Xác nhận hủy !',
-        'mail_remote_register_subject' => 'Đã đăng kí Remote !',
+        'mail_remote_register_subject' => ' đã đăng kí làm việc từ xa !',
+        'mail_remote_register_leave' => ' đã đăng kí nghỉ phép !',
     ]
 
 ];

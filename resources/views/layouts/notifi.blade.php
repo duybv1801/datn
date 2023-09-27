@@ -22,6 +22,8 @@
                         $route = route('manager_remote.edit', ['id' => $editId]);
                     } elseif ($notification instanceof \App\Models\Overtime) {
                         $route = route('overtimes.approve', ['id' => $editId]);
+                    } elseif ($notification instanceof \App\Models\Overtime) {
+                        $route = route('leaves.edit', ['id' => $editId]);
                     } elseif ($notification instanceof \App\Models\InOutForget) {
                         $route = route('in_out_forgets.approve', ['in_out_forget' => $notification]);
                     }
@@ -35,6 +37,8 @@
                         @elseif ($notification instanceof \App\Models\Overtime)
                             {{ $notification->user->name }} {{ trans('Registered OT') }}
                             {{ $statusData[$notification->status]['label'] }}
+                        @elseif ($notification instanceof \App\Models\Leave)
+                            {{ $notification->getName() }} {{ trans('Registered Leaves') }}
                         @elseif ($notification instanceof \App\Models\InOutForget)
                             {{ $notification->user->name }} {{ trans('Registered InOutForget') }}
                         @endif

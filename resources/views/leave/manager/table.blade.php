@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- search --}}
-                <form action="{{ route('manager_remote.index') }}" method="GET">
+                <form action="{{ route('manager_leave.index') }}" method="GET">
                     <div class="row">
                         <div class="col-md-10 offset-md-1">
                             <div class="row">
@@ -74,54 +74,69 @@
                         <thead>
                             <tr>
                                 <th>{{ Form::label('name', '#') }}</th>
-                                <th>{{ Form::label('name', trans('remote.creator')) }}</th>
-                                <th>{{ Form::label('from', trans('remote.from')) }}</th>
-                                <th>{{ Form::label('to', trans('remote.to')) }}</th>
-                                <th>{{ Form::label('total_hours', trans('remote.total_hours')) }}</th>
+                                <th>{{ Form::label('name', trans('leave.creator')) }}</th>
+                                <th>{{ Form::label('from', trans('leave.from')) }}</th>
+                                <th>{{ Form::label('to', trans('leave.to')) }}</th>
+                                <th>{{ Form::label('total_hours', trans('leave.total_hours')) }}</th>
                                 @if (!Auth::user()->hasRole('po'))
-                                    <th>{{ Form::label('approver', trans('remote.approver')) }}</th>
+                                    <th>{{ Form::label('approver', trans('leave.approver')) }}</th>
                                 @endif
-                                <th>{{ Form::label('status', trans('remote.status.name')) }}</th>
+                                <th>{{ Form::label('type', trans('leave.type.name')) }}</th>
+                                <th>{{ Form::label('status', trans('leave.status.name')) }}</th>
                                 <th>{{ Form::label('functions', trans('Funtions')) }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = $managerRemotes->firstItem(); ?>
-                            @foreach ($managerRemotes as $managerRemote)
+                            <?php $i = $managerLeaves->firstItem(); ?>
+                            @foreach ($managerLeaves as $managerLeave)
                                 <tr>
                                     <td> {{ $i++ }}</td>
-                                    <td>{{ $managerRemote->getName() }}</td>
-                                    <td>{{ $managerRemote->from_datetime->format(config('define.datetime')) }}</td>
-                                    <td>{{ $managerRemote->to_datetime->format(config('define.datetime')) }}</td>
-                                    <td>{{ round($managerRemote->total_hours / config('define.hour'), config('define.decimal')) }}
+                                    <td>{{ $managerLeave->getName() }}</td>
+                                    <td>{{ $managerLeave->from_datetime->format(config('define.datetime')) }}</td>
+                                    <td>{{ $managerLeave->to_datetime->format(config('define.datetime')) }}</td>
+                                    <td>{{ round($managerLeave->total_hours / config('define.hour'), config('define.decimal')) }}
                                     </td>
                                     @if (!Auth::user()->hasRole('po'))
-                                        <td>{{ $managerRemote->getApprove() }}</td>
+                                        <td>{{ $managerLeave->getApprove() }}</td>
                                     @endif
                                     <td>
-                                        <span class="{!! trans('remote.status.label ' . $managerRemote->status) !!}">
-                                            {!! trans('remote.status.' . $managerRemote->status) !!}
+                                        <span class="{!! trans('leave.type.label ' . $managerLeave->type) !!}">
+                                            {!! trans('leave.type.' . $managerLeave->type) !!}
                                         </span>
                                     </td>
                                     <td>
-                                        {!! Form::open(['route' => ['manager_remote.edit', $managerRemote->id], 'method' => 'put']) !!}
+                                        <span class="{!! trans('leave.status.label ' . $managerLeave->status) !!}">
+                                            {!! trans('leave.status.' . $managerLeave->status) !!}
+                                        </span>
+                                    </td>
+                                    <td>
                                         <div class="btn-group">
-                                            @if ($managerRemote->status == config('define.remotes.pending'))
-                                                <a href="{!! route('manager_remote.edit', [$managerRemote->id]) !!}" class="btn btn-primary btn-sm">
+                                            @if ($managerLeave->status == config('define.leaves.pending'))
+                                                <a href="{!! route('manager_leave.edit', [$managerLeave->id]) !!}" class="btn btn-primary btn-sm">
                                                     <i class="glyphicon glyphicon-edit"></i>{{ trans('Approve') }}
                                                 </a>
 
-                                                <a href="{!! route('manager_remote.edit', [$managerRemote->id]) !!}" class="btn btn-danger btn-sm">
+                                                <a href="{!! route('manager_leave.edit', [$managerLeave->id]) !!}" class="btn btn-danger btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Reject') }}
+                                                </a>
+                                            @elseif (
+                                                ($managerLeave->status == config('define.leaves.pending') ||
+                                                    $managerLeave->status == config('define.leaves.confirming')) &&
+                                                    Auth::user()->hasRole('admin'))
+                                                <a href="{!! route('manager_leave.edit_admin', [$managerLeave->id]) !!}" class="btn btn-primary btn-sm">
+                                                    <i class="glyphicon glyphicon-edit"></i>{{ trans('Approve') }}
+                                                </a>
+
+                                                <a href="{!! route('manager_leave.edit_admin', [$managerLeave->id]) !!}" class="btn btn-danger btn-sm">
                                                     <i class="glyphicon glyphicon-edit"></i>{{ trans('Reject') }}
                                                 </a>
                                             @endif
                                         </div>
-                                        {!! Form::close() !!}
                             @endforeach
                         </tbody>
                     </table>
                     <div class="pagination justify-content-center">
-                        {{ $managerRemotes->appends([
+                        {{ $managerLeaves->appends([
                                 'start_date' => request()->input('start_date'),
                                 'end_date' => request()->input('end_date'),
                                 'sort_by' => request()->input('sort_by'),

@@ -67,7 +67,7 @@ class UserController extends AppBaseController
 
         return view('users.password')->with('user', $user);
     }
-    public function change_password($id, Request $request)
+    public function changePassword($id, Request $request)
     {
         $user = $this->userRepository->find($id);
 

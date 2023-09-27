@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Remote;
+use App\Models\Leave;
 use App\Models\InOutForget;
 use App\Models\Setting;
 
@@ -54,9 +55,10 @@ class NotifiProvider extends ServiceProvider
             $notifications = [];
             $ots = [];
             $remotes = Remote::where('status', config('define.remotes.pending'))->get();
+            $leaves = Leave::where('status', config('define.leaves.pending'))->get();
             $inOutForget = InOutForget::where('status', config('define.remotes.pending'))->get();
             $ots = Overtime::whereIn('status', $statusApprove)->get();
-            $notifications = collect($remotes)->concat($ots)->concat($inOutForget)->sortByDesc('created_at');
+            $notifications = collect($remotes)->concat($ots)->concat($inOutForget)->concat($leaves)->sortByDesc('created_at');
             $unreadNotifications = count($notifications);
 
             $view->with([
@@ -72,12 +74,18 @@ class NotifiProvider extends ServiceProvider
             $remotes = Remote::where('status',  config('define.remotes.pending'))
                 ->where('approver_id', $user->id)
                 ->get();
+            $leaves = Leave::where('status',  config('define.remotes.pending'))
+                ->where('approver_id', $user->id)
+                ->get();
+            $notificationLeave = collect($leaves);
             $notificationRemotes = collect($remotes);
+            $unreadNotificationLeave = count($notificationLeave);
             $unreadNotificationRemotes = count($notificationRemotes);
 
             $view->with([
                 'notificationRemotes' => $notificationRemotes,
-                'unreadNotificationRemotes' => $unreadNotificationRemotes
+                'unreadNotificationRemotes' => $unreadNotificationRemotes,
+                'unreadNotificationLeave' => $unreadNotificationLeave
             ]);
         });
         View::composer('layouts.menu', function ($view) {
@@ -87,9 +95,16 @@ class NotifiProvider extends ServiceProvider
                 ->get();
             $notificationRemotes = collect($remotes);
             $registerRemotes = count($notificationRemotes);
+            //leaves
+            $leaves = Leave::where('status', config('define.remotes.pending'))
+                ->where('user_id', $user->id)
+                ->get();
+            $notificationLeave = collect($leaves);
+            $registerLeaves = count($notificationLeave);
 
             $view->with([
-                'registerRemotes' => $registerRemotes
+                'registerRemotes' => $registerRemotes,
+                'registerLeaves' => $registerLeaves
             ]);
         });
         //OT

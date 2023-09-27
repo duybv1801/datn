@@ -10,7 +10,7 @@
                 <div class="input-group date datetime_24h" id="from_datetime" data-target-input="nearest">
                     <input type="text" name="from_datetime" class="form-control datetimepicker-input"
                         data-target="#from_datetime"
-                        value="{{ \Carbon\Carbon::parse($managerRemotes->from_datetime)->format(config('define.datetime')) }}"
+                        value="{{ \Carbon\Carbon::parse($managerLeaves->from_datetime)->format(config('define.datetime')) }}"
                         required="required" readonly />
                     <div class="input-group-append" data-target="#from_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -26,7 +26,7 @@
                 <div class="input-group date datetime_24h" id="to_datetime" data-target-input="nearest">
                     <input type="text" name="to_datetime" class="form-control datetimepicker-input"
                         data-target="#from_datetime"
-                        value="{{ \Carbon\Carbon::parse($managerRemotes->to_datetime)->format(config('define.datetime')) }}"
+                        value="{{ \Carbon\Carbon::parse($managerLeaves->to_datetime)->format(config('define.datetime')) }}"
                         required="required" readonly />
                     <div class="input-group-append" data-target="#to_datetime" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -39,8 +39,20 @@
             <label class="col-sm-4 col-form-label" for="total">{{ trans('remote.total_hours') }}</label>
             <div class="col-sm-8">
                 <input type="text" id="total" name="total"
-                    value="{{ round($managerRemotes->total_hours / config('define.hour'), config('define.decimal')) }}"
+                    value="{{ round($managerLeaves->total_hours / config('define.hour'), config('define.decimal')) }}"
                     class="form-control" readonly />
+            </div>
+        </div>
+
+        <!-- type Field -->
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label" for="type">{{ trans('leave.type.name') }}
+            </label>
+            <div class="col-sm-8">
+                <label class="form-control" readonly>
+                    <span class="{!! trans('leave.type.label ' . $managerLeaves->status) !!}">
+                        {!! trans('leave.type.' . $managerLeaves->status) !!}
+                    </span></label>
             </div>
         </div>
 
@@ -48,8 +60,8 @@
         <div class="form-group row">
             <label class="col-sm-4 col-form-label" for="evident">{{ trans('remote.evident') }}</label>
             <div class="col-sm-8">
-                <a data-fancybox="gallery" href="{{ $managerRemotes->evident }}">
-                    <img class="img-thumbnail" src="{{ $managerRemotes->evident }}" alt="Preview">
+                <a data-fancybox="gallery" href="{{ $managerLeaves->evident }}">
+                    <img class="img-thumbnail" src="{{ $managerLeaves->evident }}" alt="Preview">
                 </a>
             </div>
         </div>
@@ -58,7 +70,7 @@
             <label class="col-sm-4 col-form-label" for="reason">{{ trans('remote.reason') }}
             </label>
             <div class="col-sm-8">
-                <textarea name="reason" id="reason" class="form-control" required="required" readonly>{{ $managerRemotes->reason }}</textarea>
+                <textarea name="reason" id="reason" class="form-control" required="required" readonly>{{ $managerLeaves->reason }}</textarea>
             </div>
         </div>
 
@@ -70,8 +82,8 @@
             <div class="col-3 mt-2">
                 <div class="form-check">
                     <input required="required" class="form-check-input" type="radio" name="status" id="approveRadio"
-                        value="{{ config('define.remotes.approved') }}"
-                        {{ $managerRemotes->status == config('define.remotes.approved') ? 'checked' : '' }}>
+                        value="{{ config('define.leaves.approved') }}"
+                        {{ $managerLeaves->status == config('define.leaves.approved') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="approveRadio">
                         {{ trans('Approve') }}
                     </label>
@@ -80,8 +92,8 @@
             <div class="col-3 mt-2 ">
                 <div class="form-check">
                     <input required="required" class="form-check-input" type="radio" name="status" id="rejectRadio"
-                        value="{{ config('define.remotes.rejected') }}"
-                        {{ $managerRemotes->status == config('define.remotes.rejected') ? 'checked' : '' }}>
+                        value="{{ config('define.leaves.rejected') }}"
+                        {{ $managerLeaves->status == config('define.leaves.rejected') ? 'checked' : '' }}>
                     <label class="form-check-label rounded-circle" for="rejectRadio">
                         {{ trans('Reject') }}
                     </label>

@@ -22,33 +22,33 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => bcrypt('password'), // password
             'remember_token' => Str::random(10),
-            'code' => function($attributes) {
+            'code' => function ($attributes) {
                 $names = explode(' ', $attributes['name']);
                 $name = end($names);
-                for($i=0 ; $i< count($names)-1; $i++) {
-                    $name.= substr($names[$i],1);
+                for ($i = 0; $i < count($names) - 1; $i++) {
+                    $name .= substr($names[$i], 1);
                 }
 
                 return $name;
             },
-            'start_date' => Carbon::parse('- '.rand(60, 1000). ' days')->format('Y-m-d'),
-            'offical_start_date' => function($attributes) {
+            'start_date' => Carbon::parse('- ' . rand(60, 1000) . ' days')->format('Y-m-d'),
+            'official_start_date' => function ($attributes) {
                 return Carbon::parse($attributes['start_date'])->addMonths(2)->format('Y-m-d H:i:s');
             },
             'dependent_person' => 0,
-            'gender' => rand(1,2),
+            'gender' => rand(1, 2),
             'contract' => 1,
-            'birthday' => Carbon::parse('-'.rand(7300, 21900). ' days')->format('Y-m-d'),
+            'birthday' => Carbon::parse('-' . rand(7300, 21900) . ' days')->format('Y-m-d'),
             'leave_hours_left' => rand(1, 32),
-            'leave_hours_left_in_month' => function($attributes) {
+            'leave_hours_left_in_month' => function ($attributes) {
                 return $attributes['gender'] == 2 ? 4 : 0;
             },
             'phone' => '',
             'status' => 1,
-            'position'=> 1,
+            'position' => 1,
             'user_id' => null,
             'avatar' => null,
-            'role' => 1
+            'role_id' => 1
         ];
     }
 

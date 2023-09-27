@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- search --}}
-                <form action="{!! route('remote.index') !!}" method="GET">
+                <form action="{!! route('leaves.index') !!}" method="GET">
                     <div class="row">
                         <div class="col-md-10 offset-md-1">
                             <div class="row">
@@ -58,13 +58,23 @@
                         </div>
                     </div>
                 </form>
+                <h5 class="text-danger" style="margin-bottom: 20px">
+                    <span style="margin-right: 30px">
+                        {{ trans('Remaining vacation time') }}:
+                        {{ round(Auth::user()->leave_hours_left / config('define.hour'), config('define.decimal')) }}h
+                    </span>
+                    @if (Auth::user()->leave_hours_left_in_month != 0)
+                        {{ trans('Remaining leave time by month') }}:
+                        {{ round(Auth::user()->leave_hours_left_in_month / config('define.hour'), config('define.decimal')) }}h
+                    @endif
 
+                </h5>
                 <div class="table-responsive">
                     <table class="table user-table">
                         <thead>
                             <tr>
                                 <th>{{ Form::label('name', '#') }}</th>
-                                <th>{{ Form::label('from', trans('remote.from')) }}
+                                <th>{{ Form::label('from', trans('leave.from')) }}
                                     <a href="#" class="sort-icon float-right mr-4" data-sort="ASC"
                                         data-column="from_datetime">
                                         <i class="fas fa-long-arrow-alt-up" id="from-asc"></i></a>
@@ -72,7 +82,7 @@
                                         data-column="from_datetime">
                                         <i class="fas fa-long-arrow-alt-down" id="from-desc"></i></a>
                                 </th>
-                                <th>{{ Form::label('to', trans('remote.to')) }}
+                                <th>{{ Form::label('to', trans('leave.to')) }}
                                     <a href="#" class="sort-icon float-right mr-4" data-sort="ASC"
                                         data-column="to_datetime"><i class="fas fa-long-arrow-alt-up"
                                             id="to-asc"></i></a>
@@ -80,44 +90,49 @@
                                         data-column="to_datetime"><i class="fas fa-long-arrow-alt-down"
                                             id="to-desc"></i></a>
                                 </th>
-                                <th>{{ Form::label('total_hours', trans('remote.total_hours')) }}</th>
-                                <th>{{ Form::label('approver', trans('remote.approver')) }}</th>
-                                <th>{{ Form::label('status', trans('remote.status.name')) }}</th>
+                                <th>{{ Form::label('total_hours', trans('leave.total_hours')) }}</th>
+                                <th>{{ Form::label('approver', trans('leave.approver')) }}</th>
+                                <th>{{ Form::label('type', trans('leave.type.name')) }}</th>
+                                <th>{{ Form::label('status', trans('leave.status.name')) }}</th>
                                 <th>{{ Form::label('functions', trans('Funtions')) }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $i = $remotes->firstItem(); ?>
-                            @foreach ($remotes as $remote)
-                                @if ($remote->user_id == Auth::id())
+                            <?php $i = 1; ?>
+                            @foreach ($leaves as $leave)
+                                @if ($leave->user_id == Auth::id())
                                     <tr>
                                         <td> {{ $i++ }}</td>
-                                        <td>{{ $remote->from_datetime->format(config('define.datetime')) }}</td>
-                                        <td>{{ $remote->to_datetime->format(config('define.datetime')) }} </td>
-                                        <td>{{ round($remote->total_hours / config('define.hour'), config('define.decimal')) }}
-                                        </td>
-                                        <td>{{ $remote->getApprove() }}</td>
+                                        <td>{{ $leave->from_datetime->format(config('define.datetime')) }}</td>
+                                        <td>{{ $leave->to_datetime->format(config('define.datetime')) }} </td>
+                                        <td>{{ round($leave->total_hours / config('define.hour'), config('define.decimal')) }}
+                                        <td>{{ $leave->getApprove() }}</td>
                                         <td>
-                                            <span class="{!! trans('remote.status.label ' . $remote->status) !!}">
-                                                {!! trans('remote.status.' . $remote->status) !!}
+                                            <span class="{!! trans('leave.type.label ' . $leave->type) !!}">
+                                                {!! trans('leave.type.' . $leave->type) !!}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="{!! trans('leave.status.label ' . $leave->status) !!}">
+                                                {!! trans('leave.status.' . $leave->status) !!}
                                             </span>
                                         </td>
                                         <td>
                                             <div class="btn-group">
                                                 @php
                                                     $currentTime = now();
-                                                    $registrationTime = $remote->from_datetime;
+                                                    $registrationTime = $leave->from_datetime;
                                                 @endphp
-                                                <a href="{!! route('remote.details', [$remote->id]) !!}" class="btn btn-secondary btn-sm">
+                                                <a href="{!! route('leaves.details', [$leave->id]) !!}" class="btn btn-secondary btn-sm">
                                                     <i class="glyphicon glyphicon-edit"></i>{{ trans('Details') }}
                                                 </a>
-                                                @if ($remote->status == config('define.remotes.pending') && !$currentTime->greaterThanOrEqualTo($registrationTime))
-                                                    <a href="{!! route('remote.edit', [$remote->id]) !!}" class="btn btn-primary btn-sm">
+                                                @if ($leave->status == config('define.leaves.pending') && !$currentTime->greaterThanOrEqualTo($registrationTime))
+                                                    <a href="{!! route('leaves.edit', [$leave->id]) !!}" class="btn btn-primary btn-sm">
                                                         <i class="glyphicon glyphicon-edit"></i>{{ trans('Edit') }}
                                                     </a>
                                                     <button type="button" class="btn btn-danger btn-sm"
                                                         data-toggle="modal" data-target="#cancelModal"
-                                                        data-id="{{ $remote->id }}">
+                                                        data-id="{{ $leave->id }}">
                                                         <i class="glyphicon glyphicon-trash"></i> {{ trans('Cancel') }}
                                                     </button>
                                                 @endif
@@ -138,9 +153,9 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        {!! Form::open(['route' => ['remote.cancel', $remote->id], 'method' => 'put']) !!}
+                                                        {!! Form::open(['route' => ['leaves.cancel', $leave->id], 'method' => 'put']) !!}
                                                         <label for="comment">
-                                                            {{ trans('remote.reason') }}
+                                                            {{ trans('leave.reason') }}
                                                             <span class="text-danger">*</span>
                                                         </label>
                                                         <textarea name="comment" id="comment" required="required" class="form-control"
@@ -158,13 +173,14 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </tr>
                                 @endif
                             @endforeach
                         </tbody>
                     </table>
                     <div class="pagination justify-content-center">
-                        {{ $remotes->appends([
+                        {{ $leaves->appends([
                                 'start_date' => request()->input('start_date'),
                                 'end_date' => request()->input('end_date'),
                                 'sort_by' => request()->input('sort_by'),

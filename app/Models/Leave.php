@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Leave
@@ -21,38 +21,49 @@ class Leave extends Model
 
     use HasFactory;
 
-    public $table = 'leaves';
-    
-
     protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
         'user_id',
         'from_datetime',
-        'to_datetime'
+        'to_datetime',
+        'total_hours',
+        'type',
+        'reason',
+        'evident',
+        'approver_id',
+        'comment',
+        'status',
+        'calculator_leave',
+        'calculator_leave_in_month',
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'user_id' => 'integer',
-    ];
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function getName()
+    {
+        $approver = User::find($this->user_id);
 
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
-    public static $rules = [
-        'user_id' => 'required',
-        'from_datetime' => 'required',
-        'to_datetime' => 'required'
-    ];
+        return $approver->code;
+    }
+    public function getApprove()
+    {
+        $approver = User::find($this->approver_id);
 
-    
+        return $approver->code;
+    }
+    public function getLeftLeave()
+    {
+        $leftLeave = User::find($this->user_id);
+
+        return $leftLeave->leave_hours_left;
+    }
+    public function getLeftLeaveMonth()
+    {
+        $leftLeave = User::find($this->user_id);
+
+        return $leftLeave->leave_hours_left_in_month;
+    }
 }

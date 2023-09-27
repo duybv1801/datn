@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,8 +14,20 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
+    protected $commands = [
+        'App\Console\Commands\LeaveCommand',
+        'App\Console\Commands\UpdateLeaveCommand',
+        'App\Console\Commands\InactiveLeaveCommand',
+    ];
     protected function schedule(Schedule $schedule)
     {
+
+        $schedule->command('leave:create-date')
+            ->everyMinute();
+        $schedule->command('user:resignation-date')
+            ->everyMinute();
+        $schedule->command('leave:update-leave')
+            ->monthlyOn(1, '00:00');
         $schedule->command('command:dailyTimesheet')->daily();
     }
 

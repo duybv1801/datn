@@ -11,6 +11,8 @@ return [
     'percents'          => '100',
     'hour'              => 60,
     'decimal'           => 2,
+    'sunday'            => 0,
+    'saturday'          => 6,
     'overtime'          => [
         'registered'    => '1',
         'admin_approve' => '2',
@@ -32,6 +34,13 @@ return [
         'approved'      => '2',
         'rejected'      => '3',
         'cancelled' => '4',
+    ],
+    'leaves' => [
+        'pending' => '1',
+        'confirming' => '2',
+        'approved' => '3',
+        'rejected' => '4',
+        'cancelled' => '5',
     ],
     'position' => [
         'staff' => '1',
@@ -58,6 +67,19 @@ return [
         'accounter' => '3',
         'hr' => '4',
         'po' => '5',
+    ],
+    'leave_hours' => [
+        'leave_hours_month' => '480',
+        'leave_hours_half_month' => '240',
+        'leave_days' => '1',
+        'leave_days_month' => '15'
+    ],
+    'type' => [
+        'paid_leave' => '1',
+        'sister_leave' => '2',
+        'unpaid_leave' => '3',
+        'leave_mode' => '4',
+        'Insurance_leave' => '5'
     ],
     'add_minutes' => '10',
     'random' => '10',

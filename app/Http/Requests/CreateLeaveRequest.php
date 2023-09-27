@@ -2,24 +2,30 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Setting;
 use App\Models\Remote;
 use Illuminate\Contracts\Validation\Validator;
 use Carbon\Carbon;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class CreateRemoteRequest extends FormRequest
+class CreateLeaveRequest extends FormRequest
 {
-    public $attributes = [
-        'total_hours' => null,
-    ];
-
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
@@ -51,6 +57,7 @@ class CreateRemoteRequest extends FormRequest
 
                 $validator->errors()->add('total_duration', trans('validation.crud.overtime_false'));
             }
+
             if (!$validator->errors()->any()) {
                 $this->merge([
                     'total_hours' => $totalDuration,

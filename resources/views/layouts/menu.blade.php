@@ -44,6 +44,7 @@
 
 {{-- Manager staff --}}
 @can('viewAny', App\Models\User::class)
+    <li class="nav-item {{ Request::is('manager_staff*') ? 'active menu-open' : '' }}">
     <li class="nav-item {{ Request::is('manager_staff*') ? 'active' : '' }}">
         <a href="{!! route('manager_staff.index') !!}" class="nav-link">
             <i class="fas fa-user-friends"></i>
@@ -181,7 +182,7 @@
 </li>
 
 {{-- Registration Remote --}}
-<li class="nav-item {{ Request::is('doadboard*') ? 'active' : '' }}">
+<li class="nav-item {{ Request::is('remote*') || Request::is('manager_remote*') ? 'active menu-open' : '' }}">
     <a href="#" class="nav-link">
         <i class="fab fa-twitch"></i>
         <p>
@@ -191,7 +192,7 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{!! route('remote.index') !!}" class="nav-link">
+            <a href="{!! route('remote.index') !!}" class="nav-link {{ Request::is('remote') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p> {{ trans('Registration') }}</p>
                 <span class=" badge bg-danger">
@@ -202,12 +203,50 @@
 
         @can('viewAny', App\Models\Remote::class)
             <li class="nav-item">
-                <a href="{!! route('manager_remote.index') !!}" class="nav-link">
+                <a href="{!! route('manager_remote.index') !!}" class="nav-link {{ Request::is('manager_remote') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
                     <p> {{ trans('Approve') }}
                         @if (Auth::user()->hasRole('po'))
                             <span class=" badge bg-danger">
                                 {{ $unreadNotificationRemotes }}
+                            </span>
+                        @endif
+                    </p>
+                </a>
+            </li>
+        @endcan
+    </ul>
+</li>
+
+
+{{-- Registration leave --}}
+<li class="nav-item {{ Request::is('leaves*') || Request::is('manager_leave*') ? 'active menu-open' : '' }}">
+    <a href="#" class="nav-link">
+        <i class="fas fa-toggle-off"></i>
+        <p>
+            {{ trans('leave.leave') }}
+            <i class="fas fa-angle-left right"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{!! route('leaves.index') !!}" class="nav-link {{ Request::is('leaves') ? 'active' : '' }}">
+                <i class="far fa-circle nav-icon"></i>
+                <p> {{ trans('Registration') }}</p>
+                <span class=" badge bg-danger">
+                    {{ $registerLeaves }}
+                </span>
+
+            </a>
+        </li>
+        @can('viewAny', App\Models\Leave::class)
+            <li class="nav-item">
+                <a href="{!! route('manager_leave.index') !!}" class="nav-link {{ Request::is('manager_leave') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('Approve') }}
+                        @if (Auth::user()->hasRole('po'))
+                            <span class=" badge bg-danger">
+                                {{ $unreadNotificationLeave }}
                             </span>
                         @endif
                     </p>

@@ -17,6 +17,8 @@ return [
     'code' => 'Mã nhân viên',
     'start_date' => 'Ngày bắt đầu',
     'official_start_date' => 'Ngày bắt đầu tại cơ quan',
+    'official_employment_date' => 'Ngày lên chính thức',
+    'resignation_date' => 'Ngày nghỉ việc',
     'dependent_person' => 'Người phụ thuộc',
     'team' => 'Tên Team',
     'name' => [
@@ -28,7 +30,7 @@ return [
         'name' => 'Loại Hợp đồng',
         'probationary' => 'Thử việc',
         'intern' => 'Thực tập',
-        'staff' => 'Nhân viên',
+        'staff' => 'Chính thức',
     ],
     'genders' => [
         'name' => 'Giới tính',

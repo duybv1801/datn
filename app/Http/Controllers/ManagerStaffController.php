@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 
 class ManagerStaffController extends AppBaseController
 {
-    private $userRepository, $teamRepository;
+    private $userRepository, $teamRepository, $leaveService;
     public function __construct(UserRepository $userRepo, TeamRepository $teamRepo)
     {
         $this->userRepository = $userRepo;
@@ -61,7 +61,6 @@ class ManagerStaffController extends AppBaseController
     {
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
-
         $roleId = $request->input('roleId');
         $role = $this->userRepository->getRoleById($roleId);
         $user = $this->userRepository->create($input);
@@ -124,7 +123,9 @@ class ManagerStaffController extends AppBaseController
         $input['teamId'] = $team->id;
 
         $user = $this->userRepository->update($input, $id);
+
         $user->roles()->sync($role);
+
         Flash::success(trans('validation.crud.updated'));
 
         return redirect(route('manager_staff.index'));

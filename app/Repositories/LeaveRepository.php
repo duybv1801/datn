@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use Carbon\Carbon;
-use App\Models\Remote;
+use App\Models\Leave;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
  * @package App\Repositories
  */
 
-class RemoteReponsitory extends BaseRepository
+class LeaveRepository extends BaseRepository
 {
     /**
      * @var array
@@ -21,13 +21,13 @@ class RemoteReponsitory extends BaseRepository
         'user_id',
         'from_datetime',
         'to_datetime',
+        'type',
         'total_hours',
         'reason',
         'evident',
         'approver_id',
         'comment',
         'status',
-
     ];
 
     /**
@@ -45,14 +45,14 @@ class RemoteReponsitory extends BaseRepository
      **/
     public function model()
     {
-        return Remote::class;
+        return Leave::class;
     }
     public function findByUserId($userId)
     {
         return $this->model->where('user_id', $userId);
     }
 
-    public function searchByConditionsRemote($search)
+    public function searchByConditionsLeave($search)
     {
         $query = $this->model->where('user_id', Auth::user()->id);
 
@@ -91,23 +91,7 @@ class RemoteReponsitory extends BaseRepository
                 $subQuery->where('code', 'like', '%' . $search['query'] . '%');
             });
         }
-        if (isset($search['sort']) && $search['column']) {
-            $query->orderBy($search['column'], $search['sort']);
-        } elseif (isset($search['order'])) {
-            $query = $query->orderByRaw('FIELD(status, ' . implode(',', $search['order']) . ')')
-                ->orderBy('created_at', 'DESC');
-        } else {
-            $query = $query->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
-        }
 
         return $query;
-    }
-
-    public function checkRemoteTime($userId, $date)
-    {
-        $query = $this->model->where('user_id', $userId)
-            ->where('status', config('define.remotes.approved'))
-            ->where('to_datetime', 'like', '%' . $date . '%');
-        return $query->exists();
     }
 }
