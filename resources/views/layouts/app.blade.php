@@ -403,8 +403,8 @@
 
 
             // Subtract the lunch break time
-            var lunchBreakStart = moment('11:30', 'HH:mm');
-            var lunchBreakEnd = moment('13:00', 'HH:mm');
+            var lunchBreakStart = moment($setting['lunch_time_start'], 'HH:mm');
+            var lunchBreakEnd = moment($setting['lunch_time_end'], 'HH:mm');
             var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
 
             // Check if the start date and end date are the same day
@@ -471,17 +471,15 @@
     <script>
         $(document).ready(function() {
             $('#cancelModal').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget); // Nút mở modal
-                var remoteId = button.data('id'); // Lấy giá trị ID từ thuộc tính data-id
+                var button = $(event.relatedTarget);
+                var remoteId = button.data('id');
 
-                // Hiển thị ID trong modal
                 var modal = $(this);
                 modal.find('.modal-title').text('{{ trans('Confirm cancellation!') }} ');
 
-                // Cập nhật action của form trong modal để gửi ID khi submit
                 var form = modal.find('form');
                 var action = form.attr('action');
-                action = action.replace(/\/\d+$/, '/' + remoteId); // Thay thế ID trong action
+                action = action.replace(/\/\d+$/, '/' + remoteId);
                 form.attr('action', action);
             });
         });
@@ -490,9 +488,8 @@
         $(document).ready(function() {
             $('#cancelModal').on('hidden.bs.modal', function() {
                 var form = $(this).find('form');
-                form[0].reset(); // Xóa giá trị trong form
+                form[0].reset();
 
-                // Xóa giá trị old('comment') trong trường hợp sử dụng Laravel
                 var commentInput = form.find('#comment');
                 commentInput.val('');
             })

@@ -62,7 +62,6 @@ class InactiveLeaveCommand extends Command
                 $user->status = config('define.status_user.inactive');
                 $user->leave_hours_left = $totalSalaryDays;
                 $user->save();
-                dd('oke');
             }
         }
     }

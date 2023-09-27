@@ -38,26 +38,6 @@ class Leave extends Model
         'calculator_leave_in_month',
     ];
 
-    /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
-    // protected $casts = [
-    //     'user_id' => 'integer',
-    // ];
-
-    // /**
-    //  * Validation rules
-    //  *
-    //  * @var array
-    //  */
-    // public static $rules = [
-    //     'user_id' => 'required',
-    //     'from_datetime' => 'required',
-    //     'to_datetime' => 'required'
-    // ];
-
     public function users()
     {
         return $this->belongsTo(User::class);
