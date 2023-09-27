@@ -45,6 +45,7 @@
 {{-- Manager staff --}}
 @can('viewAny', App\Models\User::class)
     <li class="nav-item {{ Request::is('manager_staff*') ? 'active menu-open' : '' }}">
+    <li class="nav-item {{ Request::is('manager_staff*') ? 'active' : '' }}">
         <a href="{!! route('manager_staff.index') !!}" class="nav-link">
             <i class="fas fa-user-friends"></i>
             <p>

@@ -26,7 +26,7 @@ class CreateRemoteRequest extends FormRequest
             $fromDatetime = Carbon::createFromFormat(config('define.datetime'), $this->input('from_datetime'));
             $toDatetime = Carbon::createFromFormat(config('define.datetime'), $this->input('to_datetime'));
 
-            $settings = Setting::whereIn('key', ['check_in_time', 'check_out_time', 'lunch_time_start', 'lunch_time_end', 'working_time', 'remote'])->pluck('value', 'key');
+            $settings = Setting::whereIn('key', ['check_in_time', 'check_out_time', 'lunch_time_start', 'lunch_time_end', 'max_working_minutes_everyday_day', 'remote'])->pluck('value', 'key');
             $startTime = Carbon::createFromFormat(config('define.time'), $settings['check_in_time']);
             $endTime = Carbon::createFromFormat(config('define.time'), $settings['check_out_time']);
             $breakStartTime = Carbon::createFromFormat(config('define.time'), $settings['lunch_time_start']);
@@ -45,7 +45,7 @@ class CreateRemoteRequest extends FormRequest
                 $breakDuration = $breakEndTime->diffInMinutes($breakStartTime);
                 $totalDuration -= $breakDuration;
             }
-            $workingTime = $settings['working_time'] * config('define.hour');
+            $workingTime = $settings['max_working_minutes_everyday_day'] * config('define.hour');
 
             if ($totalDuration > $workingTime) {
 

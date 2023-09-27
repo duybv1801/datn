@@ -17,5 +17,66 @@ class PermissionRoles extends Seeder
             ['name' => 'hr'],
             ['name' => 'po']
         ]);
+
+        DB::table('permissions')->insert([
+            ['name' => 'read'],
+            ['name' => 'create'],
+            ['name' => 'update'],
+            ['name' => 'delete'],
+        ]);
+
+
+        DB::table('permission_role')->insert([
+            [
+                'role_id' => 1,
+                'permission_id' => 1,
+            ],
+            [
+                'role_id' => 1,
+                'permission_id' => 2,
+            ],
+            [
+                'role_id' => 1,
+                'permission_id' => 3,
+            ],
+            [
+                'role_id' => 1,
+                'permission_id' => 4,
+            ],
+        ]);
+
+
+        DB::table('permission_role')->insert([
+            [
+                'role_id' => 2,
+                'permission_id' => 1,
+            ],
+            [
+                'role_id' => 2,
+                'permission_id' => 3,
+            ],
+        ]);
+
+        DB::table('permission_role')->insert([
+            [
+                'role_id' => 3,
+                'permission_id' => 1,
+            ],
+            [
+                'role_id' => 3,
+                'permission_id' => 3,
+            ],
+        ]);
+
+        DB::table('permission_role')->insert([
+            [
+                'role_id' => 4,
+                'permission_id' => 1,
+            ],
+            [
+                'role_id' => 4,
+                'permission_id' => 3,
+            ],
+        ]);
     }
 }
