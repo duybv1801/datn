@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'user_code' => 'Mã nhân viên',
+    'user_code' => 'Mã NV',
     'name' => 'Họ tên',
     'date' => 'Ngày',
     'check_in' => 'Giờ vào',
@@ -15,4 +15,18 @@ return [
     'home' => 'Chấm công',
     'normal' => 'Bình thường',
     'user' => 'Nhân viên',
+    'salary_total' => 'Tổng giờ lương',
+    'salary_defautly' => 'Lương cứng',
+    'salary_real' => 'Lương thực tế',
+    'email' => 'Email',
+    'salary' => 'Lương',
+    'user_name' => 'Tên NV',
+    'total_time' => 'Giờ công',
+    'total_missing' => 'Giờ thiếu',
+    'total_leave' => 'Giờ phép',
+    'total_hours_month' => 'GIỜ CÔNG CẦN THIẾT',
+    'total_ot' => 'Giờ OT',
+    'salary_hours' => 'Giờ lương',
+    'export_all' => 'Không chọn để export toàn bộ',
+    'sum' => 'Tổng',
 ];

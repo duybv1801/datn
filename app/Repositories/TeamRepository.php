@@ -33,13 +33,14 @@ class TeamRepository extends BaseRepository
         return Team::class;
     }
 
-    public function getTeamInfo($userId)
+    public function  getTeamInfo($userId)
     {
         $user = $this->user->find($userId);
         $manager = null;
         $teamIds = $user->teams->pluck('id')->toArray();
+        
         $managers = [];
-        if ($user->hasRole('po')) {
+        if ($user->hasRole('po') || empty($teamIds) ) {
             $adminUsers = $this->user->whereHas('roles', function ($query) {
                 $query->where('name', 'admin');
             })->select('id', 'code', 'email')->get();

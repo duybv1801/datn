@@ -17,13 +17,13 @@
                 @php
                     $editId = $notification->id;
                     $route = '';
-                    
+
                     if ($notification instanceof \App\Models\Remote) {
                         $route = route('manager_remote.edit', ['id' => $editId]);
                     } elseif ($notification instanceof \App\Models\Overtime) {
                         $route = route('overtimes.approve', ['id' => $editId]);
-                    } elseif ($notification instanceof \App\Models\Overtime) {
-                        $route = route('leaves.edit', ['id' => $editId]);
+                    } elseif ($notification instanceof \App\Models\Leave) {
+                        $route = route('manager_leave.edit', ['id' => $editId]);
                     } elseif ($notification instanceof \App\Models\InOutForget) {
                         $route = route('in_out_forgets.approve', ['in_out_forget' => $notification]);
                     }

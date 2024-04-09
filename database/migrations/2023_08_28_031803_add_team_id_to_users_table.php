@@ -14,16 +14,16 @@ class AddTeamIdToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('team_id')->nullable();
-            $table->foreign('team_id')->references('id')->on('teams')->onDelete('set null');
+//            $table->unsignedBigInteger('team_id')->nullable();
+//            $table->foreign('team_id')->references('id')->on('teams')->onDelete('set null');
         });
     }
 
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['team_id']);
-            $table->dropColumn('team_id');
+//            $table->dropForeign(['team_id']);
+//            $table->dropColumn('team_id');
         });
     }
 }

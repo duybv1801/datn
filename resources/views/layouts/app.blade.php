@@ -227,7 +227,7 @@
                 icons: {
                     time: 'far fa-clock'
                 },
-                stepping: {{ $settings['block'] ?? '15' }},
+                stepping: {{ $settings['block'] ?? 15 }},
             });
 
             //Date range picker
@@ -267,7 +267,7 @@
             //Timepicker        
             $('.timepicker').datetimepicker({
                 format: 'HH:mm',
-                stepping: {{ $settings['block'] }},
+                stepping: {{ $settings['block'] ?? 15 }},
             });
             $('#reservationdate').datetimepicker({
                 format: 'DD/MM/YYYY'
@@ -402,9 +402,9 @@
             var totalDuration = moment.duration(toDate.diff(fromDate));
 
 
-            // Subtract the lunch break time
-            var lunchBreakStart = moment($setting['lunch_time_start'], 'HH:mm');
-            var lunchBreakEnd = moment($setting['lunch_time_end'], 'HH:mm');
+            // Subtract the lunch break time    
+            var lunchBreakStart = moment('{{ $settings['lunch_time_start'] }}', 'HH:mm');
+            var lunchBreakEnd = moment('{{ $settings['lunch_time_end'] }}', 'HH:mm');
             var lunchBreakDuration = moment.duration(lunchBreakEnd.diff(lunchBreakStart));
 
             // Check if the start date and end date are the same day
@@ -459,6 +459,7 @@
         $(document).ready(function() {
             $('#cc').select2();
             $('#user').select2();
+            $('#user_export').select2();
         });
     </script>
     <style>
@@ -494,15 +495,15 @@
                 commentInput.val('');
             })
         });
-        // {{-- change label name when import file --}}
-        <
-        script >
-            document.getElementById('csv_file').addEventListener('change', function(event) {
-                const fileInput = event.target;
-                const fileName = fileInput.files[0].name;
-                const label = fileInput.nextElementSibling;
-                label.innerText = fileName;
-            });
+    </script>
+    {{-- change label name when import file --}}
+    <script>
+        document.getElementById('csv_file').addEventListener('change', function(event) {
+            const fileInput = event.target;
+            const fileName = fileInput.files[0].name;
+            const label = fileInput.nextElementSibling;
+            label.innerText = fileName;
+        });
     </script>
 
     {{-- change label name when import file --}}
@@ -512,6 +513,22 @@
             const fileName = fileInput.files[0].name;
             const label = fileInput.nextElementSibling;
             label.innerText = fileName;
+        });
+    </script>
+    {{-- export timesheet modal --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const exportButton = document.getElementById("exportButton");
+            const closeButton = document.querySelector("#exportTimesheet .close");
+            exportButton.addEventListener("click", function() {
+                const exportTimesheetModal = document.getElementById("exportTimesheet");
+                const closeEvent = new MouseEvent("click", {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                closeButton.dispatchEvent(closeEvent);
+            });
         });
     </script>
 </body>

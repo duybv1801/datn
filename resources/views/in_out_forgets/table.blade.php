@@ -116,7 +116,7 @@
                                                          </button>
                                                      </div>
                                                      <div class="modal-body">
-                                                         {!! Form::open(['route' => ['in_out_forgets.cancel', $inOutForget], 'method' => 'put']) !!}
+                                                         {!! Form::open(['route' => ['in_out_forgets.cancel', $inOutForget->id], 'method' => 'put']) !!}
                                                          <div class="form-group">
                                                              <label
                                                                  for="cancelReason">{{ trans('overtime.cancel_reason') }}

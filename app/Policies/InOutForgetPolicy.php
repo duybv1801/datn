@@ -28,22 +28,19 @@ class InOutForgetPolicy
         return $user->hasAnyRole(['admin', 'hr', 'member']);
     }
 
-    public function details(User $user, InOutForget $inOutForget)
+    public function details(User $user)
     {
-        $userId = $inOutForget->user_id;
-        return $user->hasAnyRole(['admin', 'hr', 'po']) || $user->id === $userId;
+        return $user->hasAnyRole(['admin', 'hr', 'po', 'member']);
     }
 
-    public function update(User $user, InOutForget $inOutForget)
+    public function update(User $user)
     {
-        $userId = $inOutForget->user_id;
-        return $user->id === $userId;
+        return $user->hasAnyRole(['admin', 'hr', 'po', 'member']);
     }
 
     public function delete(User $user, InOutForget $inOutForget)
     {
-        $userId = $inOutForget->user_id;
-        return $user->id === $userId;
+        return $user->hasAnyRole(['admin', 'hr', 'po', 'member']);
     }
 
     public function approve(User $user)

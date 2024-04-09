@@ -44,9 +44,10 @@ class UpdateLeaveCommand extends Command
             if ($user->contract == config('define.contract.staff') && $user->status == config('define.status_user.active')) {
                 $user->leave_hours_left += config('define.leave_hours.leave_hours_month');
                 $user->save();
-            } elseif ($user->gender == config('define.gender.female')) {
-                $user->leave_hours_left_in_month = config('define.leave_hours.leave_hours_half_month');
-                $user->save();
+                if ($user->gender == config('define.gender.female')) {
+                    $user->leave_hours_left_in_month = config('define.leave_hours.leave_hours_half_month');
+                    $user->save();
+                }
             }
         }
     }

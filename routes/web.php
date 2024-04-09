@@ -15,6 +15,7 @@ use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\ManagerLeaveController;
 use App\Http\Controllers\InOutController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,7 +39,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('timesheet/home', [HomeController::class, 'index'])->name('timesheet.home');
     Route::get('timesheet/manage', [HomeController::class, 'manage'])->name('timesheet.manage')->middleware('can:viewAny,App\Models\Timesheet');
-    Route::post('timesheet/exporter', [HomeController::class, 'export'])->name('timesheet.export')->middleware('can:viewAny,App\Models\Timesheet');
+    Route::post('timesheet/exporter', [HomeController::class, 'exportTimesheet'])->name('timesheet.export')->middleware('can:viewAny,App\Models\Timesheet');
+    Route::post('timesheet/export/salary', [HomeController::class, 'exportSalary'])->name('timesheet.export_salary')->middleware('can:viewAny,App\Models\Timesheet');
+    Route::post('timesheet/export/sample/salary', [HomeController::class, 'exportSheetSalary'])->name('timesheet.sample_salary')->middleware('can:viewAny,App\Models\Timesheet');
     Route::post('timesheet/import', [HomeController::class, 'import'])->name('timesheet.import')->middleware('can:viewAny,App\Models\Timesheet');
 
     //Check-in check-out

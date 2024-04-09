@@ -129,7 +129,7 @@
                                     @include('adminlte-templates::common.errors')
                                     <div class="box box-primary">
                                         <div class="box-body">
-                                            {!! Form::model($holiday, [
+                                            {!! Form::model($holidays, [
                                                 'route' => ['holidays.update', '__id__'],
                                                 'method' => 'put',
                                                 'enctype' => 'multipart/form-data',

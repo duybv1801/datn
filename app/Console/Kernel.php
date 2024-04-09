@@ -27,7 +27,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('user:resignation-date')
             ->everyMinute();
         $schedule->command('leave:update-leave')
-            ->monthlyOn(1, '00:00');
+            // ->monthlyOn(1, '00:00');
+            ->everyMinute();
         $schedule->command('command:dailyTimesheet')->daily();
     }
 

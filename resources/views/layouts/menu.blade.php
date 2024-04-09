@@ -1,5 +1,5 @@
 <li class="nav-item {{ Request::is('timesheet*') || Request::is('/') ? 'active menu-open' : '' }}">
-    @can('viewAny', App\Models\Overtime::class)
+    @can('viewAny', App\Models\Timesheet::class)
         <a href="{!! route('home') !!}" class="nav-link">
             <i class="fas fa-home"></i>
             <p>

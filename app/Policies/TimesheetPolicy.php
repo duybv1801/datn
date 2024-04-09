@@ -30,6 +30,6 @@ class TimesheetPolicy
 
     public function import(User $user)
     {
-        return $user->hasAnyRole(['admin', 'hr', 'po']);
+        return $user->hasAnyRole(['admin', 'hr']);
     }
 }

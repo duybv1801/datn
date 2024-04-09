@@ -93,4 +93,8 @@ class UserRepository extends BaseRepository
     {
         return $this->model->where('code', $code)->first();
     }
+    public function getAllUserByCode($code)
+    {
+        return $this->model->whereIn('code', $code)->get();
+    }
 }

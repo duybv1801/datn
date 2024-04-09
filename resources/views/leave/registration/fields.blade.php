@@ -135,7 +135,7 @@
                 <div class="col-sm-8">
                     <div class="custom-file">
                         <input type="file" class="form-control" id="evident" name="evident"
-                            required="required" onchange="previewAvatar(event)">
+                            onchange="previewAvatar(event)">
                         <label class="custom-file-label" for="evident">{{ trans('leave.evident') }}</label>
                     </div>
                     <img id="avatar-preview" src="{{ $leave->evident }}" alt="Preview"

@@ -1,6 +1,6 @@
 <?php
 return [
-    'paginate'          => '10',
+    'paginate'          => '25',
     'date_search'       => 'Y-m-d',
     'date_show'         => 'd/m/Y',
     'datetime'          => 'd/m/Y H:i',

@@ -115,7 +115,7 @@
         <!-- Submit Field -->
         <div class="form-group col-sm-4 ">
             {!! Form::submit(trans('Save'), ['class' => 'btn btn-primary']) !!}
-            <a href="{!! route('manager_remote.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
+            <a href="{!! route('manager_leave.index') !!}" class="btn btn-default">{{ trans('Cancel') }}</a>
         </div>
 
 

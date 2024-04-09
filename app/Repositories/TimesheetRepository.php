@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Timesheet;
 use App\Models\User;
+use App\Models\Setting;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -93,12 +94,15 @@ class TimesheetRepository extends BaseRepository
                 }
             }
         }
+        $setting = Setting::where('key', 'working_time')->pluck('value', 'key');
 
-        return $query->get()->sum(function ($timesheet) {
-            return round($timesheet->working_hours / config('define.hour'), config('define.decimal'))
-                + round($timesheet->leave_hours / config('define.hour'), config('define.decimal'))
+        $result = $query->get()->sum(function ($timesheet) use ($setting) {
+            return  min((int) $setting['working_time'], round($timesheet->working_hours / config('define.hour'), config('define.decimal'))
+                + round($timesheet->leave_hours / config('define.hour'), config('define.decimal')))
                 + round($timesheet->overtime_hours / config('define.hour'), config('define.decimal'));
         });
+
+        return $result;
     }
 
     public function findByConditions($search)
@@ -216,5 +220,54 @@ class TimesheetRepository extends BaseRepository
             $check = false;
         }
         return $check;
+    }
+
+    public function calculateHours($search)
+    {
+        $query = $this->model;
+
+        if (count($search)) {
+            foreach ($search as $key => $value) {
+                switch ($key) {
+                    case 'start_date':
+                        $startDate = Carbon::createFromFormat(config('define.date_show'), $value)->format(config('define.date_search'));
+                        $query = $query->where('record_date', '>=', $startDate);
+                        break;
+                    case 'end_date':
+                        $endDate = Carbon::createFromFormat(config('define.date_show'), $value)->format(config('define.date_search'));
+                        $query = $query->where('record_date', '<=', $endDate);
+                        break;
+                    default:
+                        $query = $query->where($key, $value);
+                        break;
+                }
+            }
+        }
+
+        $leaveHours = $query->get()->sum(function ($timesheet) {
+            return round($timesheet->leave_hours / config('define.hour'), config('define.decimal'));
+        });
+
+        $otHours = $query->get()->sum(function ($timesheet) {
+            return round($timesheet->overtime_hours / config('define.hour'), config('define.decimal'));
+        });
+
+        $workHours = $query->get()->sum(function ($timesheet) {
+            return round($timesheet->working_hours / config('define.hour'), config('define.decimal'));
+        });
+
+        return [
+            'leaveHours' => $leaveHours,
+            'otHours' => $otHours,
+            'workHours' => $workHours,
+        ];
+    }
+    public function getRecordDate()
+    {
+        return $this->model->pluck('record_date')->toArray();
+    }
+    public function getEmployeesByCodes(array $codes)
+    {
+        return $this->model->whereIn('code', $codes)->get();
     }
 }
