@@ -97,7 +97,7 @@ class TimesheetRepository extends BaseRepository
         $setting = Setting::where('key', 'working_time')->pluck('value', 'key');
 
         $result = $query->get()->sum(function ($timesheet) use ($setting) {
-            return  min((int) $setting['working_time'], round($timesheet->working_hours / config('define.hour'), config('define.decimal'))
+            return  min((int) $setting['working_time'], $timesheet->working_hours 
                 + round($timesheet->leave_hours / config('define.hour'), config('define.decimal')))
                 + round($timesheet->overtime_hours / config('define.hour'), config('define.decimal'));
         });

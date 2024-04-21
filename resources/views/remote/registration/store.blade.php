@@ -71,10 +71,13 @@
             </label>
             <div class="col-sm-8">
                 <select name="approver_id" id="approver_id" class="form-control">
-                    @foreach ($users as $user)
-                        <option value="{{ $user->id }}" {{ old('approver_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->code }}
-                        </option>
+                    <option hidden></option>
+                    @foreach ($teamInfo['managers'] as $manager)
+                        @if (!empty($manager))
+                            <option value="{{ $manager['id'] }}">
+                                {{ $manager['code'] }} ({{ $manager['email'] }})
+                            </option>
+                        @endif
                     @endforeach
                 </select>
             </div>
@@ -85,10 +88,9 @@
             <label class="col-sm-4 col-form-label" for="cc">{{ trans('remote.cc') }}</label>
             <div class="col-sm-8">
                 <select id="cc" class="form-control" name="cc[]" multiple>
-                    @foreach ($codes as $code)
-                        <option value="{{ $code }}"
-                            {{ in_array($code, (array) old('cc', [])) ? 'selected' : '' }}>
-                            {{ $code }}
+                    @foreach ($teamInfo['otherUsers'] as $otherMember)
+                        <option value="{{ $otherMember['email'] }}">
+                            {{ $otherMember['code'] }}
                         </option>
                     @endforeach
                 </select>

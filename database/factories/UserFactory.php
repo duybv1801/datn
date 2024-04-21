@@ -23,14 +23,12 @@ class UserFactory extends Factory
             'password' => bcrypt('password'), // password
             'remember_token' => Str::random(10),
             'code' => function ($attributes) {
-                $names = explode(' ', $attributes['name']);
-                $name = end($names);
-                for ($i = 0; $i < count($names) - 1; $i++) {
-                    $name .= substr($names[$i], 1);
-                }
-
-                return $name;
+                $normalized_name = Str::slug($attributes['name'], '');
+                $code = substr($normalized_name, 0, 5);
+                $code .= mt_rand(1, 5);
+                return $code;
             },
+
             'start_date' => Carbon::parse('- ' . rand(60, 1000) . ' days')->format('Y-m-d'),
             'official_start_date' => function ($attributes) {
                 return Carbon::parse($attributes['start_date'])->addMonths(2)->format('Y-m-d H:i:s');

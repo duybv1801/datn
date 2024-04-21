@@ -63,7 +63,7 @@ class HomeController extends Controller
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format(config('define.date_show')));
         $userId = Auth::id();
         $allDates = [];
-        $currentDate = Carbon::createFromFormat(config('define.date_show'), $endDate);
+        $currentDate = Carbon::now();
         $startDateCarbon = Carbon::createFromFormat(config('define.date_show'), $startDate);
         while ($currentDate >= $startDateCarbon) {
             $allDates[] = $currentDate->format(config('define.date_show'));
@@ -97,7 +97,7 @@ class HomeController extends Controller
             if ($timesheet) {
                 $checkIn = Carbon::parse($timesheet->in_time)->format(config('define.time'));
                 $checkOut = Carbon::parse($timesheet->out_time)->format(config('define.time'));
-                $workingHours = round($timesheet->working_hours / config('define.hour'), config('define.decimal'));
+                $workingHours = $timesheet->working_hours;
                 $overtimeHours = round($timesheet->overtime_hours / config('define.hour'), config('define.decimal'));
                 $leaveHours = round($timesheet->leave_hours / config('define.hour'), config('define.decimal'));
                 $status = $timesheet->status;
@@ -168,7 +168,7 @@ class HomeController extends Controller
         $data['timesheetData']->getCollection()->transform(function ($item) {
             $item->in_time = Carbon::parse($item->in_time)->format(config('define.time'));
             $item->out_time = Carbon::parse($item->out_time)->format(config('define.time'));
-            $item->working_hours = round($item->working_hours / config('define.hour'), config('define.decimal'));
+            $item->working_hours = $item->working_hours;
             $item->leave_hours = round($item->leave_hours / config('define.hour'), config('define.decimal'));
             $item->overtime_hours = round($item->overtime_hours / config('define.hour'), config('define.decimal'));
             $item->record_date = Carbon::parse($item->record_date)->format(config('define.date_show'));

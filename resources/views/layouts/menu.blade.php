@@ -92,9 +92,9 @@
             title="{{ trans('Number of applications that have not been approved/confirmed') }}">
             <i class="fas fa-stopwatch"></i>
             <p> {{ trans('In out') }}</p>
-            <span class=" badge bg-danger">
+            {{-- <span class=" badge bg-danger">
                 {{ $registerInOut }}
-            </span>
+            </span> --}}
         </a>
     @endcan
 </li>
@@ -139,9 +139,9 @@
             <p>
                 {{ trans('Overtimes') }}
             </p>
-            <span class=" badge bg-danger">
+            {{-- <span class=" badge bg-danger">
                 {{ $registerOT }}
-            </span>
+            </span> --}}
         </a>
     @endcan
 </li>
@@ -183,25 +183,26 @@
 
 {{-- Registration Remote --}}
 <li class="nav-item {{ Request::is('remote*') || Request::is('manager_remote*') ? 'active menu-open' : '' }}">
-    <a href="#" class="nav-link">
-        <i class="fab fa-twitch"></i>
-        <p>
-            {{ trans('Remote') }}
-            <i class="fas fa-angle-left right"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
-        <li class="nav-item">
-            <a href="{!! route('remote.index') !!}" class="nav-link {{ Request::is('remote') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('Registration') }}</p>
-                <span class=" badge bg-danger">
-                    {{ $registerRemotes }}
-                </span>
-            </a>
-        </li>
-
-        @can('viewAny', App\Models\Remote::class)
+    @can('viewAny', App\Models\Remote::class)
+        <a href="#" class="nav-link">
+            <i class="fab fa-twitch"></i>
+            <p>
+                {{ trans('Remote') }}
+                <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{!! route('remote.index') !!}" class="nav-link {{ Request::is('remote') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('Registration') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $registerRemotes }}
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav nav-treeview">
             <li class="nav-item">
                 <a href="{!! route('manager_remote.index') !!}" class="nav-link {{ Request::is('manager_remote') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
@@ -214,32 +215,39 @@
                     </p>
                 </a>
             </li>
-        @endcan
-    </ul>
+        </ul>
+    @else
+        <a href="{!! route('remote.index') !!}" class="nav-link"
+            title="{{ trans('Number of applications that have not been approved/confirmed') }}">
+            <i class="fab fa-twitch"></i>
+            <p>
+                {{ trans('Remote') }}
+            </p>
+        </a>
+    @endcan
 </li>
-
 
 {{-- Registration leave --}}
 <li class="nav-item {{ Request::is('leaves*') || Request::is('manager_leave*') ? 'active menu-open' : '' }}">
-    <a href="#" class="nav-link">
-        <i class="fas fa-toggle-off"></i>
-        <p>
-            {{ trans('leave.leave') }}
-            <i class="fas fa-angle-left right"></i>
-        </p>
-    </a>
-    <ul class="nav nav-treeview">
-        <li class="nav-item">
-            <a href="{!! route('leaves.index') !!}" class="nav-link {{ Request::is('leaves') ? 'active' : '' }}">
-                <i class="far fa-circle nav-icon"></i>
-                <p> {{ trans('Registration') }}</p>
-                <span class=" badge bg-danger">
-                    {{ $registerLeaves }}
-                </span>
+    @can('viewAny', App\Models\Leave::class)
+        <a href="#" class="nav-link">
+            <i class="fas fa-toggle-off"></i>
+            <p>
+                {{ trans('leave.leave') }}
+                <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{!! route('leaves.index') !!}" class="nav-link {{ Request::is('leaves') ? 'active' : '' }}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p> {{ trans('Registration') }}</p>
+                    <span class=" badge bg-danger">
+                        {{ $registerLeaves }}
+                    </span>
 
-            </a>
-        </li>
-        @can('viewAny', App\Models\Leave::class)
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="{!! route('manager_leave.index') !!}" class="nav-link {{ Request::is('manager_leave') ? 'active' : '' }}">
                     <i class="far fa-circle nav-icon"></i>
@@ -252,8 +260,16 @@
                     </p>
                 </a>
             </li>
-        @endcan
-    </ul>
+        </ul>
+    @else
+        <a href="{!! route('leaves.index') !!}" class="nav-link"
+            title="{{ trans('Number of applications that have not been approved/confirmed') }}">
+            <i class="fas fa-toggle-off"></i>
+            <p>
+                {{ trans('leave.leave') }}
+            </p>
+        </a>
+    @endcan
 </li>
 
 {{-- setting --}}

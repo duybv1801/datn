@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Timesheet;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,9 +16,9 @@ class DatabaseSeeder extends Seeder
     {
        $this->call([
         //    SettingSeeder::class,
-           UserSeeder::class,
+        //    UserSeeder::class,
         //    HolidaySeeder::class,
        ]);
-        $this->call(PermissionRoles::class);
+        $this->call(TimesheetSeeder::class);
     }
 }

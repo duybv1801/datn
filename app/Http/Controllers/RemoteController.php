@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Repositories\RemoteReponsitory;
+use App\Repositories\TeamRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\SettingRepository;
 use App\Http\Requests\CreateRemoteRequest;
@@ -21,14 +22,18 @@ use Illuminate\Support\Facades\Mail;
 class RemoteController  extends AppBaseController
 {
     private $remoteReponsitory, $userReponsitory, $settingRepository;
+    private $teamRepository;
+
     public function __construct(
         RemoteReponsitory $remoteRepo,
         UserRepository $userRepo,
-        SettingRepository $settingRepo
+        SettingRepository $settingRepo,
+        TeamRepository $teamRepo
     ) {
         $this->remoteReponsitory = $remoteRepo;
         $this->userReponsitory = $userRepo;
         $this->settingRepository = $settingRepo;
+        $this->teamRepository = $teamRepo;
     }
 
     public function index(Request $request)
@@ -53,9 +58,10 @@ class RemoteController  extends AppBaseController
     public function create()
     {
         $settings =  $this->settingRepository->getAllSettings();
-        $users = $this->userReponsitory->getUsersByPosition(Config('define.role.po'));
-        $codes = $this->userReponsitory->getCodes();
-        return view('remote.registration.create', compact('users', 'codes', 'settings'));
+        $userId = Auth::id();
+        $teamInfo = $this->teamRepository->getTeamInfo($userId);
+
+        return view('remote.registration.create', compact('teamInfo', 'settings'));
     }
 
 

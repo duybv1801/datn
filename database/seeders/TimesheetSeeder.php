@@ -38,13 +38,13 @@ class TimesheetSeeder extends Seeder
         }
 
         if(empty($userId)){
-            $users = User::where('id', '<>', 1)->get()->pluck('id')->toArray();
+            $users = User::where('id', '<>', 0)->get()->pluck('id')->toArray();
         } else {
             $users = $userId;
         }
 
-        $this->startTime = Carbon::parse('07:00')->timestamp;
-        $this->endTime = Carbon::parse('09:00')->timestamp;
+        $this->startTime = Carbon::parse('13:00')->timestamp;
+        $this->endTime = Carbon::parse('15:00')->timestamp;
         while($startDate->lte($endDate)) {
             if(!$startDate->isWeekend()) {
                 $recordDate = $startDate->format('Y-m-d');

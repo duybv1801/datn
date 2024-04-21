@@ -12,16 +12,16 @@ class PermissionRoles extends Seeder
         // Tạo roles
         // DB::table('roles')->insert([
         //     ['name' => 'admin'],
+        //     ['name' => 'po'],
         //     ['name' => 'member'],
         //     ['name' => 'accounter'],
         //     ['name' => 'hr'],
-        //     ['name' => 'po']
         // ]);
 
         DB::table('role_user')->insert([
             [
-                'role_id' => 2,
-                'user_id' => 2,
+                'role_id' => 1,
+                'user_id' => 1,
             ],
         ]);
 

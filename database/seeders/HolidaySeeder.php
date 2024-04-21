@@ -13,12 +13,12 @@ class HolidaySeeder extends Seeder
         $currentYear = date('Y');
 
         $fixedHolidays = [
-            ['date' => '01-01', 'title' => 'Tết Dương lịch'],
-            ['date' => '02-14', 'title' => 'Tết Nguyên Đán'],
-            ['date' => '03-10', 'title' => 'Giỗ Tổ Hùng Vương'],
-            ['date' => '04-30', 'title' => 'Thống nhất đất nước'],
-            ['date' => '05-01', 'title' => 'Quốc tế Lao động'],
-            ['date' => '09-02', 'title' => 'Quốc khánh'],
+            ['date' => '01-01', 'title' => 'Tết Dương lịch', 'status' => 1],
+            ['date' => '02-14', 'title' =>'Tết Nguyên Đán', 'status' => 1],
+            ['date' => '03-10', 'title' =>'Giỗ Tổ Hùng Vương', 'status' => 1],
+            ['date' => '04-30', 'title' =>'Thống nhất đất nước', 'status' => 1],
+            ['date' => '05-01', 'title' =>'Quốc tế Lao động', 'status' => 1],
+            ['date' => '09-02', 'title' =>'Quốc khánh', 'status' => 1],
         ];
 
         $data = [];

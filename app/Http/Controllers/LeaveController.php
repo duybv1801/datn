@@ -6,6 +6,7 @@ use App\Http\Requests\CreateLeaveRequest;
 use App\Repositories\LeaveRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\SettingRepository;
+use App\Repositories\TeamRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Laracasts\Flash\Flash;
@@ -21,14 +22,18 @@ class LeaveController extends AppBaseController
 {
     /** @var LeaveRepository $leaveRepository*/
     private $leaveRepository, $userReponsitory, $settingRepository;
+    private $teamRepository;
+
     public function __construct(
         LeaveRepository $leaveRepo,
         UserRepository $userRepo,
+        TeamRepository $teamRepo,
         SettingRepository $settingRepo
     ) {
         $this->leaveRepository = $leaveRepo;
         $this->userReponsitory = $userRepo;
         $this->settingRepository = $settingRepo;
+        $this->teamRepository = $teamRepo;
     }
 
     /**
@@ -62,9 +67,9 @@ class LeaveController extends AppBaseController
     public function create()
     {
         $settings =  $this->settingRepository->getAllSettings();
-        $users = $this->userReponsitory->getUsersByPosition(Config('define.role.po'));
-        $codes = $this->userReponsitory->getCodes();
-        return view('leave.registration.create', compact('users', 'codes', 'settings'));
+        $userId = Auth::id();
+        $teamInfo = $this->teamRepository->getTeamInfo($userId);
+        return view('leave.registration.create', compact('teamInfo', 'settings'));
     }
 
     /**
